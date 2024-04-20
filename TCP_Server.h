@@ -25,8 +25,14 @@
 #ifndef _TCP_Server_h_
 #define _TCP_Server_h_
 
-#include <ESP8266WiFi.h>
-#include <WiFiServer.h>
+#ifdef __linux__
+#include <assert.h>
+#include "os_compat.h"
+#include "Endpoint.h"
+#else
+#include "os_compat.h"
+#include <Endpoint.h>
+#endif
 
 class TCP_Server
 {
@@ -48,7 +54,7 @@ class TCP_Server
     bool begin(void)
     {
         assert(m_server == NULL);
-        m_server = new WiFiServer(m_server_port);
+        m_server = new Endpoint(m_server_port);
         if (!m_server)
         {
             return false;
@@ -61,13 +67,13 @@ class TCP_Server
 
     /// Get a command string from a client, if any.
     /// \param p_command Reference to the string that receives the command.
-    /// \returns The WiFiClient along with the command in p_command,
-    ///          or returns a Null WiFiClient if not commands.
+    /// \returns The Endpoint along with the command in p_command,
+    ///          or returns a Null Endpoint if not commands.
     ///
-    WiFiClient get_command(String& p_command)
+    Endpoint* get_command(String& p_command)
     {
         // Get the next client with data to read
-        WiFiClient client = m_server->available();
+        Endpoint* client = m_server->available();
         if (client)
         {
             // Get the next line
@@ -105,7 +111,7 @@ class TCP_Server
     }
 
   private:
-    WiFiServer*         m_server;
+    Endpoint*           m_server;
     int                 m_server_port;
     bool                m_echo;
 };

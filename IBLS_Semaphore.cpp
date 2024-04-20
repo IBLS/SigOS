@@ -23,7 +23,11 @@
  * 
  */
 
+#ifdef __linux__
+#include "IBLS_Semaphore.h"
+#else
 #include <IBLS_Semaphore.h>
+#endif
 
 
 // ESP01 Pinout
@@ -54,7 +58,7 @@ void power_up_pinmode(void)
 // Keep a list of all the commands defined
 CommandList_t CommandList;
 
-bool ProcessCommand(WiFiClient p_client, String& p_command)
+bool ProcessCommand(Endpoint p_client, String& p_command)
 {
     Timestamp cmd_ts;
     IPAddress source_ip = p_client.remoteIP();

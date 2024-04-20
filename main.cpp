@@ -22,6 +22,9 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  */
+#ifdef __linux__
+#include "TCP_Server.h"
+#else
 #include <ESP8266WiFi.h>
 #include <WiFiUDP.h>
 #include <FS.h>
@@ -29,6 +32,7 @@
 #include <Array.h>
 #include <NTPClient.h>
 #include <TCP_Server.h>
+#endif
 
 TCP_Server telnet;
 
@@ -87,7 +91,7 @@ void loop() {
 
   // Get telnet command, if any
   String telnet_command;
-  WiFiClient client = telnet.get_command(telnet_command);
+  Endpoint client = telnet.get_command(telnet_command);
   if (client)
   {
       ProcessCommand(client, telnet_command);
@@ -96,3 +100,4 @@ void loop() {
   delay(1000);                       // wait for a second
   Serial.println("Waiting");
 }
+
