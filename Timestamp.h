@@ -27,7 +27,7 @@
 
 #include <Arduino.h>
 #include <string.h>
-#include <Array.h>
+//#include <Array.h>
 #include <assert.h>
 
 
@@ -69,4 +69,3 @@ class Timestamp
 };
 
 #endif // _Timestamp_h_
-

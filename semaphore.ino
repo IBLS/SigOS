@@ -25,10 +25,10 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUDP.h>
 #include <FS.h>
-#include <IBLS_Semaphore.h>
-#include <Array.h>
+#include "IBLS_Semaphore.h"
+#include "Array.h"
 #include <NTPClient.h>
-#include <TCP_Server.h>
+#include "TCP_Server.h"
 
 TCP_Server telnet;
 
@@ -87,7 +87,7 @@ void loop() {
 
   // Get telnet command, if any
   String telnet_command;
-  WiFiClient client = telnet.get_command(telnet_command);
+  EndpointClient client = telnet.get_command(telnet_command);
   if (client)
   {
       ProcessCommand(client, telnet_command);

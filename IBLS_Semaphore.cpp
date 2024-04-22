@@ -23,11 +23,7 @@
  * 
  */
 
-#ifdef __linux__
 #include "IBLS_Semaphore.h"
-#else
-#include <IBLS_Semaphore.h>
-#endif
 
 
 // ESP01 Pinout
@@ -58,7 +54,7 @@ void power_up_pinmode(void)
 // Keep a list of all the commands defined
 CommandList_t CommandList;
 
-bool ProcessCommand(Endpoint p_client, String& p_command)
+bool ProcessCommand(EndpointClient p_client, String& p_command)
 {
     Timestamp cmd_ts;
     IPAddress source_ip = p_client.remoteIP();
@@ -545,4 +541,3 @@ cfg ipv4 mask 255.255.255.0 Network mask
 cfg wifi ssid LiveSteam - The WiFi SSID to connect with
 cfg wifi pass superheater The password of the wifi network
 #endif
-

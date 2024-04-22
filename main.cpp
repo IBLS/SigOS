@@ -23,8 +23,8 @@
  * 
  */
 #ifdef __linux__
+
 #include "TCP_Server.h"
-#else
 #include <ESP8266WiFi.h>
 #include <WiFiUDP.h>
 #include <FS.h>
@@ -32,7 +32,6 @@
 #include <Array.h>
 #include <NTPClient.h>
 #include <TCP_Server.h>
-#endif
 
 TCP_Server telnet;
 
@@ -101,3 +100,4 @@ void loop() {
   Serial.println("Waiting");
 }
 
+#endif // __linux__

@@ -25,23 +25,13 @@
 #ifndef _Command_h_
 #define _Command_h_
 
-#ifdef __linux__
-#include "Endpoint.h"
-#include "string.h"
-#include "Array.h"
-#include "assert.h"
-#include "IPAddress.h"
-#include "Timestamp.h"
-#else
-#include <Arduino.h>
-//#include <ESP8266WiFi.h>
-#include <Endpoint.h>
+#include "EndpointClient.h"
 #include <string.h>
-#include <Array.h>
+#include "Array.h"
 #include <assert.h>
 #include <IPAddress.h>
-#include <Timestamp.h>
-#endif
+#include "Timestamp.h"
+
 
 // Forward declaration
 class Command;
@@ -49,7 +39,7 @@ class Command;
 typedef bool (*Command_Func_t)(Command* p_command, String& p_output);
 typedef Array<Command*> CommandList_t;
 
-extern bool ProcessCommand(Endpoint p_client, String& p_command);
+extern bool ProcessCommand(EndpointClient p_client, String& p_command);
 
 class Command
 {
@@ -186,4 +176,3 @@ class Command
 
 
 #endif // _Command_h_
-

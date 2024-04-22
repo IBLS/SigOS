@@ -25,24 +25,14 @@
 #ifndef _IBLS_Semaphore_h_
 #define _IBLS_Semaphore_h_
 
-#ifdef __linux__
 #include <assert.h>
-#include "string.h"
-#include "Endpoint.h"
+#include <string.h>
+#include <Arduino.h>
 #include "Array.h"
-#include "IPAddress.h"
+#include <IPAddress.h>
 #include "Timestamp.h"
 #include "Command.h"
-#else
-#include <Arduino.h>
-#include <string.h>
-#include <Endpoint.h>
-#include <Array.h>
-#include <assert.h>
-#include <IPAddress.h>
-#include <Timestamp.h>
-#include <Command.h>
-#endif
+
 
 // Compute the number of elements in a constant array
 #define ELEMENTS_OF(x) (sizeof(x) / sizeof((x)[0]))
@@ -368,4 +358,3 @@ class StateMgr
 
 
 #endif // _IBLS_Semaphore_h_
-

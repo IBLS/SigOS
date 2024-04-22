@@ -25,14 +25,10 @@
 #ifndef _TCP_Server_h_
 #define _TCP_Server_h_
 
-#ifdef __linux__
 #include <assert.h>
 #include "os_compat.h"
-#include "Endpoint.h"
-#else
-#include "os_compat.h"
-#include <Endpoint.h>
-#endif
+#include "EndpointClient.h"
+#include "EndpointServer.h"
 
 class TCP_Server
 {
@@ -54,7 +50,7 @@ class TCP_Server
     bool begin(void)
     {
         assert(m_server == NULL);
-        m_server = new Endpoint(m_server_port);
+        m_server = new EndpointServer(m_server_port);
         if (!m_server)
         {
             return false;
@@ -70,10 +66,11 @@ class TCP_Server
     /// \returns The Endpoint along with the command in p_command,
     ///          or returns a Null Endpoint if not commands.
     ///
-    Endpoint* get_command(String& p_command)
+    EndpointClient get_command(String& p_command)
     {
         // Get the next client with data to read
-        Endpoint* client = m_server->available();
+        EndpointClient client = m_server->available(); // deprecated
+        // EndpointClient client = m_server->accept();
         if (client)
         {
             // Get the next line
@@ -111,10 +108,9 @@ class TCP_Server
     }
 
   private:
-    Endpoint*           m_server;
+    EndpointServer*     m_server;
     int                 m_server_port;
     bool                m_echo;
 };
 
 #endif // _TCP_Server_h
-
