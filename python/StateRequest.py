@@ -27,6 +27,11 @@ import Timestamp
 
 class StateRequest:
 
+    # Initialize a new StateRequest.
+    # @param p_state_request The integer state being requested.
+    # @param p_source The id of the requestor, usually IP addr.
+    # @param p_timestamp The Timestamp of this request.
+    #
     def __init__(self, p_state_request, p_source, p_timestamp):
         self.m_state_request = p_state_request
         self.m_source = p_source
@@ -42,7 +47,7 @@ class StateRequest:
                 (self.m_source == p_state_request.m_source))
 
 
-    # @returns The requested state
+    # @returns The integer requested state
     # 
     def get_state(self):
         return self.m_state_request
