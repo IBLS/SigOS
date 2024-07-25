@@ -27,12 +27,13 @@ import time
 
 class Timestamp:
 
+    # Initialize the new Timestamp to the current time
+    #
     def __init__(self):
         self.m_time = time.time()
 
-    '''
-    Returns a human-readable string value of this Timestamp
-    '''
+    # @returns A human-readable string value of this Timestamp
+    #
     def __str__(self):
         ltime = time.localtime(self.m_time)
         s = "{:04n}".format(ltime[0])
