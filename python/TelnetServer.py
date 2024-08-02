@@ -97,23 +97,23 @@ class TelnetConn(IOBase):
             if (self.m_state == 0):
                 # discard telnet control characters and
                 # null bytes 
-                if (byte == 0)
-                    self.m_discard_count++
+                if (byte == 0):
+                    self.m_discard_count += 1
                     continue
                 if (byte == 0xFF):
                     self.m_state = 1
-                    self.m_discard_count++
+                    self.m_discard_count += 1
                     continue
 
             if (self.m_state == 1):
                 # Discard this control character
-                self.m_discard_count++
+                self.m_discard_count += 1
                 self.m_state = 0
                 continue
 
             # Add character to p_buffer
             p_buffer[i] = byte
-            readbytes++
+            readbytes += 1
 
         return readbytes
 

@@ -24,6 +24,7 @@
 #
 
 import network
+import time
 
 class WiFi:
 
@@ -31,25 +32,40 @@ class WiFi:
     # or Access Point
     #
     def __init__(self):
-        self.m_sta_if = network.WLAN(network.STA_IF)
-        self.m_sta_ip = None
-        self.m_sta_mask = None
+        self.m_wifi = network.WLAN(network.STA_IF)
+        #self.m_wifi = network.WLAN(network.AP_IF)
+        self.m_wifi_ip = None
+        self.m_wifi_mask = None
 
 
     # Attempt to connect to the Router/AP.
     # @returns True on successful connection, returns False if Router/AP not found
     #
     def connect(self):
-        if not self.m_sta_if.isconnected():
+        if not self.m_wifi.isconnected():
             print('connecting to network...')
-            self.m_sta_if.active(True)
-            self.m_sta_if.connect('IGNRR', 'downcase')
-            if (not self.m_sta_if.isconnect()):
-                return False
-        addr4 = self.m_sta_if.ipconfig('addr4')
-        self.m_sta_ip = addr[0]
-        self.m_sta_mask = addr[1]
-        print('network config: %', self.m_sta_ip)
+            self.m_wifi.active(True)
+
+            # Limit the transmit power, otherwise the board will reboot
+            print("default txpower={}", self.m_wifi.config('txpower'))
+            self.m_wifi.config(txpower=7.0)
+            print("configured txpower={}", self.m_wifi.config('txpower'))
+
+            time.sleep(1)
+            self.m_wifi.connect('IGNRR', 'downcase')
+
+            # Wait here until connected
+            while (not self.m_wifi.isconnected()):
+                print("status={}", self.m_wifi.status())
+                pass
+
+        config = self.m_wifi.ifconfig()
+        print('wifi config: {}', config)
+        #addr4 = self.m_wifi.config('addr4')
+        self.m_wifi_ip = config[0]
+        self.m_wifi_mask = config[1]
+        self.m_wifi_router = config[2]
+        self.m_wifi_dns = config[3]
         return True
 
 
@@ -57,12 +73,12 @@ class WiFi:
     #
     def disconnect(self):
         # Disconnect from wifi
-        self.m_sta_if.active(False)
+        self.m_wifi.active(False)
 
 
     # Destructor will disconnect
     #
     def __del__(self):
-        self.m_sta_if.disconnect()
+        self.m_wifi.disconnect()
 
 
