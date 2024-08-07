@@ -80,13 +80,13 @@ class Hardware:
             self.m_detect_bm = Pin(4, Pin.IN, Pin.PULL_UP)
             self.m_detect_bp = Pin(7, Pin.IN, Pin.PULL_UP)
         else:
-            raise Exception('Unrecognized hardware % 02407241136', self.m_platform)
+            raise Exception('Unrecognized hardware {} 02407241136', self.m_platform)
 
     # Destructor - shut down PWM
     #
     def __del__(self):
         self.m_led.deinit()
-        self.m_server.deinit()
+        self.m_servo.deinit()
 
 
     # Set the Lumen intensity level of the LED
@@ -103,7 +103,7 @@ class Hardware:
     # Set the angular position of the semaphore flag
     # @param p_percent A percent value between 0 (fully down) and 100 (fully up)
     #
-    def set_server_angle(self, p_percent)
+    def set_servo_angle(self, p_percent)
         min = 40
         max = 115
         duty = (max - min) * p_percent
@@ -111,7 +111,7 @@ class Hardware:
             duty /= 100
         duty += min
         self.m_servo_pwm_duty = duty
-        self.m_servero.duty(duty)
+        self.m_servo.duty(duty)
 
 
     # @returns True if the B input signal has detected a train

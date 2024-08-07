@@ -1,0 +1,62 @@
+{
+    "rule_set": "ATSF Rules 1953 - Signal System One",
+    "source": "http://old.atsfrr.org/Members/Rules/1953Rules.pdf",
+    "author": "Daris A Nevil <daris@nevil.org>",
+
+    "rules": [
+
+        {
+            "rule": "271",
+            "name": "STOP",
+            "indication": "STOP",
+            "priority": 199,
+            "condition": "!number_plate",
+            "aspect": "semaphore angle:90; lumen color:red"
+        },
+
+        {
+            "rule": "272",
+            "name": "STOP AND PROCEED",
+            "indication": "STOP, THEN PROCEED IN ACCORDANCE WITH RULE 509",
+            "priority": 180,
+            "condition": "number_plate",
+            "aspect": "semaphore angle:90; lumen color:red"
+        },
+
+        {
+            "rule": "273",
+            "name": "APPROACH-RESTRICTING",
+            "indication": "PROCEED PREPARED TO ENTER TURNOUT OR TO STOP SHORT OF TRAIN OR OBSTRUCTION",
+            "priority": 170,
+            "condition": "!number_plate",
+            "aspect": "semaphore angle:45; lumen color:yellow"
+        },
+
+        {
+            "rule": "274",
+            "name": "APPROACH",
+            "indication": "PROCEED PREPARED TO STOP AT NEXT SIGNAL; IF EXCEEDING MEDIUM SPEED, IMMEDIATELY REDUCE TO THAT SPEED",
+            "priority": 160,
+            "condition": "number_plate",
+            "aspect": "semaphore angle:45; lumen color:yellow"
+        },
+
+        {
+            "rule": "275",
+            "name": "ADVANCE",
+            "indication": "PROCEED; APPROACH NEXT SIGNAL AT MEDIUM SPEED",
+            "priority": 150,
+            "condition": "!number_plate",
+            "aspect": "semaphore angle:45; lumen color:yellow"
+        },
+
+        {
+            "rule": "276",
+            "name": "CLEAR",
+            "indication": "PROCEED",
+            "priority": 140,
+            "condition": "",
+            "aspect": "semaphore angle:0; lumen color:green"
+        }
+    ]
+}

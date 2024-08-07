@@ -1,0 +1,39 @@
+
+From https://www.trains.com/trn/train-basics/abcs-of-railroading/railroad-signals-101/
+
+The lights displayed by a signal have three properties: aspect, name, and indication.
+* The aspect describes what is displayed, e.g., red over green.
+* The name is the formal name classification for that signal, e.g., diverging clear.
+* The indication is the instruction conveyed by the signal.
+* (ed: a fourth field used by ATSF is Rule Number)
+
+A train crew seeing a signal with a yellow aspect will understand they are nearing an approach signal, which conveys an indication that might mean “proceed prepared to stop before your train passes the next signal; trains exceeding 35 mph must immediately reduce to that speed.” (There’s more to it than simply “the next signal is red.”)
+
+The most constant signals and the easiest to understand are single-head block signals. Red means stop; green means proceed, and yellow means caution or approach, usually indicating that the next signal is red. Four-indication block signaling usually uses either a flashing yellow aspect or two signal heads showing yellow-over-green or yellow-over-yellow to indicate two blocks clear (“advance approach” or “approach medium”).The most constant signals and the easiest to understand are single-head block signals. Red means stop; green means proceed, and yellow means caution or approach, usually indicating that the next signal is red. Four-indication block signaling usually uses either a flashing yellow aspect or two signal heads showing yellow-over-green or yellow-over-yellow to indicate two blocks clear (“advance approach” or “approach medium”).
+
+The two- and three-head signals found at interlockings are more complex. All red means stop. That’s universal. For other aspects, the general principle is that green on top means main route or normal speed, and red over green or yellow indicates diverging route or medium speed.
+
+The chance for each road to show its individuality comes with such things as flashing lights, white lights, blue lights, and dark signal heads.
+
+Semaphores
+
+At first, the “lower-quadrant” semaphore design was used – the blade moved in the lower-right portion of an imaginary circle whose center was the blade’s pivot point. Most lower-quadrant semaphores had two aspects: A horizontal (raised) blade meant “stop;” a blade hanging down about 60 degrees from horizontal meant proceed. Lower-quadrant blades had to be counterweighted so they would go to the horizontal position in case of failure of the controlling mechanism. Although there were three-position lower-quadrant semaphores, the two-position Union Switch & Signal “Style B” of 1898 (usually employing two arms) has come to be the best known.
+
+Shortly after the turn of the century, the three-position (vertical, diagonal, horizontal) upper-quadrant semaphore was introduced. It had three aspects: horizontal for stop, 45 degrees above horizontal for caution, vertical for proceed. In 1908 this type became the standard for new installations. Such signals still exist on several roads. With the advent of light signals, semaphores came to be seen as inherently inferior, since they used two different aspects – blade position by day and light color by night – to convey their message. Also, their relatively numerous and heavy moving parts made them less attractive from a maintenance standpoint.
+
+Color light signals
+
+power consumption.
+
+Color-light signals consist of three bulbs shining through three lenses, or “roundels,” one each red, yellow, and green. Typically, the lights are grouped vertically with green at the top, exactly opposite of the highway traffic signals that protect road intersections. Next most common is the triangular arrangement. Some roads, like Chicago & North Western, used a horizontal grouping.
+
+Unlike semaphore lights, color-light signals are equipped with visors so sunlight reflections will not give false readings. Union Pacific fits its “tri-lights” with large hoods for this purpose.
+
+Searchlight signals
+
+The searchlight signal – which uses a single lamp with a system of movable lenses to project three colors – first appeared in 1920. Lens improvements in 1930 made signals with a 1-mile range and low power consumption possible, and the searchlight found widespread use.
+
+A relay-type mechanism moves colored lenses in front of a white light, not unlike a semaphore. To achieve long range, the light beam is very intense and narrow, and must be precisely aimed for best visibility from approaching locomotive cabs.
+
+To many, the searchlight’s simple, clean appearance made it a perfect aesthetic complement to the streamliners and diesels the railroads began to embrace in the 1930’s. Today, the low power consumption of its single light has come to be offset by the high maintenance cost of the movable lens system, so that now trilight signals are preferred for new installations and are replacing searchlights in many places.
+

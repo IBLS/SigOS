@@ -1,0 +1,106 @@
+{
+    "rule_set": "ATSF Rules 1959 - Signal System Two",
+    "source": "https://www.jonroma.net/media/rail/opdocs/na/atsf/AT%26SF.%20Rules%20of%20the%20Operating%20Department%201959-12-06%20%5Bexcerpts%5D.pdf",
+    "author": "Daris A Nevil <daris@nevil.org>",
+
+    "rules": [
+        {
+            "rule": "281",
+            "name": "CLEAR",
+            "indication": "PROCEED",
+            "priority": 100,
+            "condition": "",
+            "aspect": "semaphore angle:0; lumen color:green"
+        },
+
+        {
+            "rule": "281A",
+            "name": "APPROACH-LIMITED",
+            "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING LIMITED SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
+            "priority": 110,
+            "condition": "!semaphore",
+            "aspect": "semaphore angle:0; lumen color:green flashing"
+        },
+
+        {
+            "rule": "282",
+            "name": "APPROACH-MEDIUM",
+            "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
+            "priority": 120,
+            "condition": "one_head",
+            "aspect": "semaphore angle:45; lumen color:yellow flashing"
+        },
+
+        {
+            "rule": "282",
+            "name": "APPROACH-MEDIUM",
+            "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
+            "priority": 120,
+            "condition": "two_heads",
+            "aspect": "semaphore angle:45; lumen head:1 color:yellow; lumen head:2 color:yellow"
+        },
+
+        {
+            "rule": "283",
+            "name": "DIVERGING-CLEAR",
+            "indication": "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT",
+            "priority": 130,
+            "condition": "two_heads;!semaphore",
+            "aspect": "lumen head:1 color:red; lumen head:2 color:green"
+        },
+
+        {
+            "rule": "285",
+            "name": "APPROACH",
+            "indication": "PROCEED PREPARING TO STOP AT NEXT SIGNAL; IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED",
+            "priority": 140,
+            "condition": "",
+            "aspect": "semaphore angle:45; lumen color:yellow"
+        },
+
+        {
+            "rule": "286",
+            "name": "DIVERGING-APPROACH",
+            "indication": "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT; APPROACH NEXT SIGNAL PREPARING TO STOP, IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED",
+            "priority": 150,
+            "condition": "!semaphore",
+            "aspect": "lumen head:1 color:red; lumen head:2 color:yellow flashing"
+        },
+
+        {
+            "rule": "290",
+            "name": "RESTRICTING",
+            "indication": "PROCEED AT RESTRICTED SPEED",
+            "priority": 160,
+            "condition": "one_head",
+            "aspect": "semaphore angle:90; lumen color:red flashing"
+        },
+
+        {
+            "rule": "290",
+            "name": "RESTRICTING",
+            "indication": "PROCEED AT RESTRICTED SPEED",
+            "priority": 160,
+            "condition": "two_heads;!semaphore",
+            "aspect": "lumen head:1 color:red; lumen head:2 color:yellow"
+        },
+
+        {
+            "rule": "291",
+            "name": "STOP AND PROCEED",
+            "indication": "STOP; THEN PROCEED AS PRESCRIBED BY RULE 320",
+            "priority": 170,
+            "condition": "number_plate",
+            "aspect": "semaphore angle:90; lumen color:red"
+        },
+
+        {
+            "rule": "292",
+            "name": "STOP",
+            "indication": "STOP",
+            "priority": 180,
+            "condition": "!number_plate",
+            "aspect": "semaphore angle:90; lumen color:red"
+        }
+    ]
+}
