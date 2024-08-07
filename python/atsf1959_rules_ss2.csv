@@ -1,0 +1,27 @@
+# ATSF Rules 1959
+# Signal System Two
+
+# Rule, Name, Indication, Priority, Condition, Aspect
+
+"281", "CLEAR", "PROCEED", 100, , "semaphore angle:0; lumen color:green"
+
+"281A", "APPROACH-LIMITED", "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING LIMITED SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED", 110, "!semaphore", "semaphore angle:0; lumen color:green flashing"
+
+"282", "APPROACH-MEDIUM", "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED", 120, "one_head", "semaphore angle:45; lumen color:yellow flashing"
+
+"282", "APPROACH-MEDIUM", "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED", 120, "two_heads", "semaphore angle:45; lumen head:1 color:yellow; lumen head:2 color:yellow"
+
+"283", "DIVERGING-CLEAR", "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT", 130, "two_heads;!semaphore", "lumen head:1 color:red; lumen head:2 color:green"
+
+"285", "APPROACH", "PROCEED PREPARING TO STOP AT NEXT SIGNAL; IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED", 140, , "semaphore angle:45; lumen color:yellow"
+
+"286", "DIVERGING-APPROACH", "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT; APPROACH NEXT SIGNAL PREPARING TO STOP, IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED", 150, "!semaphore", "lumen head:1 color:red; lumen head:2 color:yellow flashing"
+
+"290", "RESTRICTING", "PROCEED AT RESTRICTED SPEED", 160, "one_head", "semaphore angle:90; lumen color:red flashing"
+
+"290", "RESTRICTING", "PROCEED AT RESTRICTED SPEED", 160, "two_heads;!semaphore", "lumen head:1 color:red; lumen head:2 color:yellow"
+
+"291", "STOP AND PROCEED", "STOP; THEN PROCEED AS PRESCRIBED BY RULE 320", 170, "number_plate", "semaphore angle:90; lumen color:red"
+
+"292", "STOP", "STOP", 180, "!number_plate", "semaphore angle:90; lumen color:red"
+
