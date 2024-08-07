@@ -10,7 +10,7 @@
             "indication": "PROCEED",
             "priority": 100,
             "condition": "",
-            "aspect": "semaphore angle:0; lumen color:green"
+            "aspect": "semaphore head:1 angle:0; lumen head:1 color:green"
         },
 
         {
@@ -18,8 +18,8 @@
             "name": "APPROACH-LIMITED",
             "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING LIMITED SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
             "priority": 110,
-            "condition": "!semaphore",
-            "aspect": "semaphore angle:0; lumen color:green flashing"
+            "condition": "semaphores=0",
+            "aspect": "semaphore head:1 angle:0; lumen head:1 color:green flashing"
         },
 
         {
@@ -27,8 +27,8 @@
             "name": "APPROACH-MEDIUM",
             "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
             "priority": 120,
-            "condition": "one_head",
-            "aspect": "semaphore angle:45; lumen color:yellow flashing"
+            "condition": "heads=1",
+            "aspect": "semaphore head:1 angle:45; lumen head:1 color:yellow flashing"
         },
 
         {
@@ -36,8 +36,8 @@
             "name": "APPROACH-MEDIUM",
             "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
             "priority": 120,
-            "condition": "two_heads",
-            "aspect": "semaphore angle:45; lumen head:1 color:yellow; lumen head:2 color:yellow"
+            "condition": "heads>1",
+            "aspect": "semaphore head:1 angle:45; lumen head:1 color:yellow; lumen head:2 color:yellow"
         },
 
         {
@@ -45,7 +45,7 @@
             "name": "DIVERGING-CLEAR",
             "indication": "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT",
             "priority": 130,
-            "condition": "two_heads;!semaphore",
+            "condition": "heads>1;semaphore=0",
             "aspect": "lumen head:1 color:red; lumen head:2 color:green"
         },
 
@@ -55,7 +55,7 @@
             "indication": "PROCEED PREPARING TO STOP AT NEXT SIGNAL; IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED",
             "priority": 140,
             "condition": "",
-            "aspect": "semaphore angle:45; lumen color:yellow"
+            "aspect": "semaphore head:1 angle:45; lumen head:1 color:yellow"
         },
 
         {
@@ -63,7 +63,7 @@
             "name": "DIVERGING-APPROACH",
             "indication": "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT; APPROACH NEXT SIGNAL PREPARING TO STOP, IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED",
             "priority": 150,
-            "condition": "!semaphore",
+            "condition": "semaphore=0",
             "aspect": "lumen head:1 color:red; lumen head:2 color:yellow flashing"
         },
 
@@ -72,8 +72,8 @@
             "name": "RESTRICTING",
             "indication": "PROCEED AT RESTRICTED SPEED",
             "priority": 160,
-            "condition": "one_head",
-            "aspect": "semaphore angle:90; lumen color:red flashing"
+            "condition": "heads=1",
+            "aspect": "semaphore head:1 angle:90; lumen head:1 color:red flashing"
         },
 
         {
@@ -81,7 +81,7 @@
             "name": "RESTRICTING",
             "indication": "PROCEED AT RESTRICTED SPEED",
             "priority": 160,
-            "condition": "two_heads;!semaphore",
+            "condition": "heads>1;semaphores=0",
             "aspect": "lumen head:1 color:red; lumen head:2 color:yellow"
         },
 
@@ -90,8 +90,8 @@
             "name": "STOP AND PROCEED",
             "indication": "STOP; THEN PROCEED AS PRESCRIBED BY RULE 320",
             "priority": 170,
-            "condition": "number_plate",
-            "aspect": "semaphore angle:90; lumen color:red"
+            "condition": "number_plates>0",
+            "aspect": "semaphore head:1 angle:90; lumen head:1 color:red"
         },
 
         {
@@ -99,8 +99,8 @@
             "name": "STOP",
             "indication": "STOP",
             "priority": 180,
-            "condition": "!number_plate",
-            "aspect": "semaphore angle:90; lumen color:red"
+            "condition": "number_plates=0",
+            "aspect": "semaphore head:1 angle:90; lumen head:1 color:red"
         }
     ]
 }

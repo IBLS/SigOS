@@ -1,0 +1,11 @@
+{
+  "light_on_approach": "on",
+  "number_board": "",
+  "heads" : [
+        {
+            "head-id": 1,
+            "light-id": 1,
+            "semaphore-id": 1
+        }
+    ]
+}

@@ -10,8 +10,8 @@
             "name": "STOP",
             "indication": "STOP",
             "priority": 199,
-            "condition": "!number_plate",
-            "aspect": "semaphore angle:90; lumen color:red"
+            "condition": "number_plates=0",
+            "aspect": "semaphore head:1 angle:90; lumen head:1 color:red"
         },
 
         {
@@ -19,8 +19,8 @@
             "name": "STOP AND PROCEED",
             "indication": "STOP, THEN PROCEED IN ACCORDANCE WITH RULE 509",
             "priority": 180,
-            "condition": "number_plate",
-            "aspect": "semaphore angle:90; lumen color:red"
+            "condition": "number_plates>0",
+            "aspect": "semaphore head:1 angle:90; lumen head:1 color:red"
         },
 
         {
@@ -28,8 +28,8 @@
             "name": "APPROACH-RESTRICTING",
             "indication": "PROCEED PREPARED TO ENTER TURNOUT OR TO STOP SHORT OF TRAIN OR OBSTRUCTION",
             "priority": 170,
-            "condition": "!number_plate",
-            "aspect": "semaphore angle:45; lumen color:yellow"
+            "condition": "number_plates=0",
+            "aspect": "semaphore head:1 angle:45; lumen head:1 color:yellow"
         },
 
         {
@@ -37,8 +37,8 @@
             "name": "APPROACH",
             "indication": "PROCEED PREPARED TO STOP AT NEXT SIGNAL; IF EXCEEDING MEDIUM SPEED, IMMEDIATELY REDUCE TO THAT SPEED",
             "priority": 160,
-            "condition": "number_plate",
-            "aspect": "semaphore angle:45; lumen color:yellow"
+            "condition": "number_plates>0",
+            "aspect": "semaphore head:1 angle:45; lumen head:1 color:yellow"
         },
 
         {
@@ -46,8 +46,8 @@
             "name": "ADVANCE",
             "indication": "PROCEED; APPROACH NEXT SIGNAL AT MEDIUM SPEED",
             "priority": 150,
-            "condition": "!number_plate",
-            "aspect": "semaphore angle:45; lumen color:yellow"
+            "condition": "number_plates=0",
+            "aspect": "semaphore head:1 angle:45; lumen head:1 color:yellow"
         },
 
         {
@@ -56,7 +56,7 @@
             "indication": "PROCEED",
             "priority": 140,
             "condition": "",
-            "aspect": "semaphore angle:0; lumen color:green"
+            "aspect": "semaphore head:1 angle:0; lumen head:1 color:green"
         }
     ]
 }

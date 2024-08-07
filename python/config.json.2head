@@ -1,0 +1,22 @@
+{
+  "light_on_approach": "on",
+  "number_board": "6224-1",
+  "heads" : [
+        {
+            "head-id": 1,
+            "light-id": 1
+        },
+        {
+            "head-id": 1,
+            "light-id": 2
+        },
+        {
+            "head-id": 1,
+            "light-id": 3
+        },
+        {
+            "head-id": 2,
+            "light-id": 1
+        }
+    ]
+}
