@@ -23,6 +23,7 @@
 # 
 #
 
+import sys
 import network
 import time
 
@@ -47,9 +48,13 @@ class WiFi:
             self.m_wifi.active(True)
 
             # Limit the transmit power, otherwise the board will reboot
-            print("default txpower={}", self.m_wifi.config('txpower'))
-            self.m_wifi.config(txpower=7.0)
-            print("configured txpower={}", self.m_wifi.config('txpower'))
+            if (sys.platform == 'esp8266'):
+                # txpower Not support in ESP8266
+                pass
+            else:
+                print("default txpower={}", self.m_wifi.config('txpower'))
+                self.m_wifi.config(txpower=7.0)
+                print("configured txpower={}", self.m_wifi.config('txpower'))
 
             time.sleep(1)
             self.m_wifi.connect('IGNRR', 'downcase')

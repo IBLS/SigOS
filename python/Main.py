@@ -23,13 +23,7 @@
 # 
 #
 
-import WiFi
-import TelnetServer
-
-#wifi = WiFi.WiFi()
-#wifi.connect()
-
-
+import sys
 import network
 import time
 
@@ -37,14 +31,15 @@ WIFI_SSID = "IGNRR"
 WIFI_PASSWD = "downcase"
 
 def do_connect():
-    import network
-    import time
-
     wlan = network.WLAN(network.STA_IF) # create station interface
     wlan.active(True)       # activate the interface
-    print("txpower={}", wlan.config('txpower'))
-    wlan.config(txpower=7.0)
-    print("txpower={}", wlan.config('txpower'))
+    if (sys.platform == 'esp8266'):
+        # txpower Not support in ESP8266
+        pass
+    else:
+        print("txpower={}", wlan.config('txpower'))
+        wlan.config(txpower=7.0)
+        print("txpower={}", wlan.config('txpower'))
     if not wlan.isconnected():      # check if the station is connected to an AP
         wlan.connect(WIFI_SSID, WIFI_PASSWD) # connect to an AP
 

@@ -38,7 +38,7 @@ class Rules:
         rd = json.load(fs)
         fs.close()
 
-        self.m_rule_set = rd["rule_set"]
+        self.m_rule_set = rd["rule-set"]
         self.m_source = rd["source"]
         self.m_author = rd["author"]
         rules = rd["rules"]
@@ -58,7 +58,7 @@ class Rules:
     # @returns A string representation of this rule set
     #
     def __str__(self):
-        s = "rule_set: "
+        s = "rule-set: "
         s += self.m_rule_set
         s += "\nsource: "
         s += self.m_source

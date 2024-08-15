@@ -1,5 +1,5 @@
 {
-    "rule_set": "ATSF Rules 1953 - Signal System One",
+    "rule-set": "ATSF Rules 1953 - Signal System One",
     "source": "http://old.atsfrr.org/Members/Rules/1953Rules.pdf",
     "author": "Daris A Nevil <daris@nevil.org>",
 

@@ -1,11 +1,14 @@
 {
-  "light_on_approach": "on",
-  "number_board": "",
+  "board-type": "esp8266",
+  "ip-addr": "192.168.1.101",
+  "light-on-approach": "on",
+  "number-board": "",
+  "rules-file": "atsf1959_rules_ss2.json",
   "heads" : [
         {
             "head-id": 1,
-            "light-id": 1,
-            "semaphore-id": 1
+            "lights": [1],
+            "semaphores": [1]
         }
     ]
 }

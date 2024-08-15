@@ -1,22 +1,18 @@
 {
-  "light_on_approach": "on",
-  "number_board": "6224-1",
+  "board-type": "esp32-c2-mini",
+  "ip-addr": "192.168.1.100",
+  "light-on-approach": "on",
+  "number-board": "6224-1",
+  "rules-file": "atsf1959_rules_ss2.json",
   "heads" : [
         {
             "head-id": 1,
-            "light-id": 1
-        },
-        {
-            "head-id": 1,
-            "light-id": 2
-        },
-        {
-            "head-id": 1,
-            "light-id": 3
+            "lights": [1, 2, 3],
+            "semaphores" : []
         },
         {
             "head-id": 2,
-            "light-id": 1
+            "lights": [1, 2]
         }
     ]
 }
