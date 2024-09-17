@@ -37,24 +37,34 @@ from uio import IOBase
 class TelnetConn(IOBase):
     
     # Class variables
-    c_wrapper_list = ()
+    c_wrapper_list = list()
 
 
     # Initialize instance variable for a new object
     # @param p_client_socket A socket object for read/writing to the attached client
-    # @param p_clietn_addr The IP address of the attached client
+    # @param p_client_addr The IP address of the attached client
+    # @param p_client_port The port number of the attached client
     #
-    def __init__(self, p_client_socket, p_client_addr):
+    def __init__(self, p_client_socket, p_client_addr, p_client_port):
         self.m_client_socket = p_client_socket
+        self.m_client_addr = p_client_addr
+        self.m_client_port = p_client_port
+
         self.m_discard_count = 0
         self.m_state = 0
-        c_wrapper_list.append(self)
+        TelnetConn.c_wrapper_list.append(self)
 
-        p_client_socket.setblocking(False)
-        p_client_socket.sendall(bytes([255, 252, 34])) # dont allow line mode
-        p_client_socket.sendall(bytes([255, 251, 1])) # turn off local echo
+        self.m_client_socket.setblocking(False)
+        self.m_client_socket.sendall(bytes([255, 252, 34])) # dont allow line mode
+        self.m_client_socket.sendall(bytes([255, 251, 1])) # turn off local echo
 
-        self.sart_repl()
+        self.write("Welcome ")
+        self.write(str(self.m_client_addr))
+        self.write(":")
+        self.write(str(self.m_client_port))
+        self.write("!\r\n")
+
+        #self.start_repl()
 
 
     # Connect the MicroPython terminal (the REPL) to the client socket
@@ -158,8 +168,8 @@ class TelnetConn(IOBase):
 class TelnetServer:
 
     # Class variables
-    c_server_port = ()
-    c_server_socket = ()
+    c_server_port = list()
+    c_server_socket = list()
 
     # Initialize instance variables
     #
@@ -174,8 +184,8 @@ class TelnetServer:
     #
     def start(self, p_port=23, p_backlog=4):
         # Make sure the service is not already established
-        for i in c_server_port:
-            if (c_server_port[i] == p_port):
+        for i in TelnetServer.c_server_port:
+            if (TelnetServer.c_server_port[i] == p_port):
                 return False
 
         self.m_server_port = p_port
@@ -183,9 +193,9 @@ class TelnetServer:
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         # Register with the class
-        c_server_port.append(p_port)
-        c_server_socket.append(server_socket)
-        if (len(c_server_port) != len(c_server_socket)):
+        TelnetServer.c_server_port.append(p_port)
+        TelnetServer.c_server_socket.append(server_socket)
+        if (len(TelnetServer.c_server_port) != len(TelnetServer.c_server_socket)):
             # Something went wrong
             return False
 
@@ -222,12 +232,14 @@ class TelnetServer:
 # and stop local echoing
 # @returns A ClientWrapper for reading and writing
 #
-def accept_telnet_connect(p_server_socket):
+def cb_accept_telnet_connect(p_server_socket):
 
-    client_socket, client_addr = p_server_socket.accept()
-    print("Telnet connection from:", client_addr)
+    client_socket, client_addr_port = p_server_socket.accept()
+    client_addr = client_addr_port[0]
+    client_port = client_addr_port[1]
+    print("Telnet connection from:", client_addr, ":", client_port)
 
     # Create a new TelnetConn object
-    TelnetConn(client_socket, client_addr)
+    TelnetConn(client_socket, client_addr, client_port)
 
 

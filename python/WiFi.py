@@ -32,11 +32,16 @@ class WiFi:
     # Intialize the object as a Station that will connect to a Router
     # or Access Point
     #
-    def __init__(self):
+    def __init__(self, p_ssid, p_password):
+        self.m_ssid = p_ssid
+        self.m_password = p_password
+
         self.m_wifi = network.WLAN(network.STA_IF)
         #self.m_wifi = network.WLAN(network.AP_IF)
         self.m_wifi_ip = None
         self.m_wifi_mask = None
+        self.m_wifi_router = None
+        self.m_wifi_dns = None
 
 
     # Attempt to connect to the Router/AP.
@@ -57,20 +62,21 @@ class WiFi:
                 print("configured txpower={}", self.m_wifi.config('txpower'))
 
             time.sleep(1)
-            self.m_wifi.connect('IGNRR', 'downcase')
+            self.m_wifi.connect(self.m_ssid, self.m_password)
 
             # Wait here until connected
             while (not self.m_wifi.isconnected()):
                 print("status={}", self.m_wifi.status())
                 pass
 
+        # Get my DHCP configuration
         config = self.m_wifi.ifconfig()
         print('wifi config: {}', config)
-        #addr4 = self.m_wifi.config('addr4')
         self.m_wifi_ip = config[0]
         self.m_wifi_mask = config[1]
         self.m_wifi_router = config[2]
         self.m_wifi_dns = config[3]
+
         return True
 
 

@@ -23,34 +23,23 @@
 # 
 #
 
-import sys
-import network
-import time
+#import sys
+#import network
+#import time
+import WiFi
+import TelnetServer
 
 WIFI_SSID = "IGNRR"
 WIFI_PASSWD = "downcase"
 
 def do_connect():
-    wlan = network.WLAN(network.STA_IF) # create station interface
-    wlan.active(True)       # activate the interface
-    if (sys.platform == 'esp8266'):
-        # txpower Not support in ESP8266
-        pass
-    else:
-        print("txpower={}", wlan.config('txpower'))
-        wlan.config(txpower=7.0)
-        print("txpower={}", wlan.config('txpower'))
-    if not wlan.isconnected():      # check if the station is connected to an AP
-        wlan.connect(WIFI_SSID, WIFI_PASSWD) # connect to an AP
+    wifi = WiFi.WiFi(WIFI_SSID, WIFI_PASSWD)
+    wifi.connect()
 
-        for _ in range(20):
-            if wlan.isconnected():      # check if the station is connected to an AP
-                break
-            print('.', end='')
-            time.sleep(0.5)
-        else:
-            print(" Connect attempt timed out\n")
-            return
-    print('\nnetwork config:', wlan.ifconfig())
+    telnet_server = TelnetServer.TelnetServer()
+    telnet_server.start()
+
+    return
+
 
 do_connect()
