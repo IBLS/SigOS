@@ -29,7 +29,7 @@ class Rule:
     # @param p_rule The rule number assigned to this aspect.
     # @param p_name The formal name classifcation, e.g. "Diverging-clear"
     # @param p_indication Descriptive instruction conveyed by the signal
-    # @param p_priority The relative priority of this aspect
+    # @param p_priority The numeric (real or float) relative priority of this aspect
     # @param p_condition List of conditions that must be met, or None
     # @param p_aspect A list of commands that will change the signal
     #        semaphore, lights, etc to indicate the desired Aspect.

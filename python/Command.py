@@ -23,8 +23,6 @@
 # 
 #
 
-import Timestamp
-
 class Command:
 
     # Define a command

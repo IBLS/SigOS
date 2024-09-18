@@ -26,6 +26,8 @@
 import io
 import json
 import Head
+import Semaphore
+import Light
 
 class Config:
 
@@ -41,7 +43,7 @@ class Config:
 
         self.m_board_type = config["board-type"]
         self.m_ip_addr = config["ip-addr"]
-        self.m_light_on_approach = config["light-on-approach"]
+        self.m_light_on_approach = config["light-on-approach"] == "true"
         self.m_number_board = config["number-board"]
         self.m_rules_file = config["rules-file"]
 
@@ -50,19 +52,25 @@ class Config:
         self.m_head_array = []
         for head in heads:
             head_id = head["head-id"]
-            hobj = Head.Head(head_id)
+            head_obj = Head.Head(head_id)
 
             if ("lights" in head):
                 lights_list = head["lights"]
                 for light in lights_list:
-                    hobj.add_light(light)
+                    light_id = light["light-id"]
+                    colors = light["colors"]
+                    light_obj = Light.Light(head_id, light_id, colors)
+                    head_obj.add_light(light_obj)
 
             if ("semaphores" in head):
                 semaphore_list = head["semaphores"]
                 for semaphore in semaphore_list:
-                    hobj.add_semaphore(semaphore)
+                    semaphore_id = semaphore["semaphore-id"]
+                    degrees_per_second = semaphore["degrees-per-second"]
+                    semaphore_obj = Semaphore.Semaphore(head_id, semaphore_id, degrees_per_second)
+                    head_obj.add_semaphore(semaphore_obj)
 
-            self.m_head_array.append(hobj)
+            self.m_head_array.append(head_obj)
 
 
     # @returns A string representation of this rule set
@@ -73,7 +81,7 @@ class Config:
         s += "\nip-addr: "
         s += self.m_ip_addr
         s += "\nlight-on-approach: "
-        s += self.m_light_on_approach
+        s += str(self.m_light_on_approach)
         s += "\nnumber-board: "
         s += self.m_number_board
         s += "\nrules_file: "

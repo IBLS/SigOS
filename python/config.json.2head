@@ -1,18 +1,39 @@
 {
   "board-type": "esp32-c2-mini",
   "ip-addr": "192.168.1.100",
-  "light-on-approach": "on",
+  "light-on-approach": "true",
   "number-board": "6224-1",
   "rules-file": "atsf1959_rules_ss2.json",
   "heads" : [
         {
             "head-id": 1,
-            "lights": [1, 2, 3],
-            "semaphores" : []
+            "lights": [
+                {
+                    "light-id": 1,
+                    "colors": ["green"]
+                },
+                {
+                    "light-id": 2,
+                    "colors": ["yellow"]
+                },
+                {
+                    "light-id": 3,
+                    "colors": ["red"]
+                }
+            ]
         },
         {
             "head-id": 2,
-            "lights": [1, 2]
+            "lights": [
+                {
+                    "light-id": 1,
+                    "colors": ["green"]
+                },
+                {
+                    "light-id": 2,
+                    "colors": ["red"]
+                }
+            ]
         }
     ]
 }

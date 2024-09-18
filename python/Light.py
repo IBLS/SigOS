@@ -1,5 +1,5 @@
 #
-# Class for encapsulating a signal head for SigOS
+# Class for modeling a Light in SigOS
 #
 # Copyright (C) 2021-2024 Daris A Nevil - International Brotherhood of Live Steamers
 #
@@ -23,58 +23,29 @@
 # 
 #
 
-import Semaphore
-import Light
+class Light:
 
-class Head:
-
-    # Create a Rule object to encapsulates a single operating rule
-    # @param p_head_id ID of the head
+    # Create a Light object
+    # @param p_head_id The identifier (number) of the Head containing this light,
+    #                  1 is the highest head, 2 is the next highest, etc
+    # @param p_light_id The identifier (number) of the Light, 1 is highest on the head,
+    #             2 is next highest, etc
+    # @param p_colors A list of one or more valid color names for this light
     #
-    def __init__(self, p_head_id):
+    def __init__(self, p_head_id, p_light_id, p_colors):
         self.m_head_id = p_head_id
-        self.m_light_list = list()
-        self.m_semaphore_list = list()
+        self.m_light_id = p_light_id
+        self.m_colors = p_colors
 
 
-    # Add a light to this signal head
-    # @param p_light_obj A Light object
-    #
-    def add_light(self, p_light_obj):
-        self.m_light_list.append(p_light_obj)
-
-
-    # Add a semaphore to this signal head.
-    # @param p_semaphore_obj An Semaphore object
-    #
-    def add_semaphore(self, p_semaphore_obj):
-        self.m_semaphore_list.append(p_semaphore_obj)
-
-
-    # @returns The number of lights on this head
-    #
-    def light_count(self):
-        return len(self.m_light_list)
-
-
-    # @returns The number of semaphores on this head
-    #
-    def semaphore_count(self):
-        return len(self.m_semaphore_list)
-
-
-    # @returns A string representation of this head
+    # @returns A string representation of this Light
     #
     def __str__(self):
-        s = "  head_id: "
+        s = "  light: "
+        s += str(self.m_light_id)
+        s += "\n    head-id: "
         s += str(self.m_head_id)
-
-        for light in self.m_light_list:
-            s += str(light)
-
-        for semaphore in self.m_semaphore_list:
-            s += str(semaphore)
-
-        s += "\n"
+        s += "\n    colors: "
+        s += str(self.m_colors)
         return s
 

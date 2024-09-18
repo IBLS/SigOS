@@ -1,14 +1,24 @@
 {
   "board-type": "esp8266",
   "ip-addr": "192.168.1.101",
-  "light-on-approach": "on",
+  "light-on-approach": "true",
   "number-board": "",
   "rules-file": "atsf1959_rules_ss2.json",
   "heads" : [
         {
             "head-id": 1,
-            "lights": [1],
-            "semaphores": [1]
+            "lights": [
+                {
+                    "light-id": 1,
+                    "colors": ["red", "green", "yellow"]
+                }
+            ],
+            "semaphores": [
+                {
+                    "semaphore-id": 1,
+                    "degrees-per-second": 30
+                }
+            ]
         }
     ]
 }
