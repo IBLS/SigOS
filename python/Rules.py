@@ -41,9 +41,11 @@ class Rules:
         self.m_rule_set = rd["rule-set"]
         self.m_source = rd["source"]
         self.m_author = rd["author"]
+        self.m_default_rule = rd["default-rule"]
+
         rules = rd["rules"]
 
-        self.m_rule_array = []
+        self.m_rule_list = list()
         for rule in rules:
             robj = Rule.Rule(
                         rule["rule"],
@@ -52,7 +54,74 @@ class Rules:
                         rule["priority"],
                         rule["condition"],
                         rule["aspect"])
-            self.m_rule_array.append(robj)
+            self.m_rule_list.append(robj)
+
+
+
+    # Startup by activating the default Rule.
+    # Call this once at system startup after the hardware has been initialized
+    #
+    def startup(self):
+        self.activate_by_rule(self.m_default_rule)
+
+
+    # Find and return the currently active Rule, or None
+    #
+    def find_active_rule(self):
+        for rule in self.m_rule_list:
+            if (rule.is_active()):
+                return rule
+
+        return None
+
+
+    # Find and activiate the Rule by the given rule number
+    # @param p_rule The rule number to activate
+    # @returns True if the Rule was activated, False otherwise
+    #
+    def activate_by_rule(self, p_rule):
+        active_priority = 0
+        active_rule = self.find_active_rule()
+        if (active_rule):
+            active_priority = self.get_priority()
+
+        for rule in self.m_rule_list:
+            if (rule.match_by_rule(p_rule)):
+                if (active_priority <= rule.get_priority()):
+                    if (active_rule):
+                        active_rule.deactivate()
+                    rule.activate()
+                    return True
+
+        return False
+
+
+    # Find and activiate the Rule by the given rule name
+    # @param p_name The name of the Rule to activate
+    # @returns True if the Rule was activated, False otherwise
+    #
+    def activate_by_name(self, p_name):
+        active_priority = 0
+        active_rule = self.find_active_rule()
+        if (active_rule):
+            active_priority = self.get_priority()
+
+        for rule in self.m_rule_list:
+            if (rule.match_by_name(p_name)):
+                if (active_priority <= rule.get_priority()):
+                    active_rule.deactivate()
+                    rule.activate()
+                    return True
+
+        return False
+
+
+
+    # Deactivate any active rule.
+    #
+    def deactivate(self):
+        for rule in rules:
+            rule.deactivate()
 
 
     # @returns A string representation of this rule set
@@ -65,7 +134,7 @@ class Rules:
         s += "\nauthor: "
         s += self.m_author
         s += "\n"
-        for rule in self.m_rule_array:
+        for rule in self.m_rule_list:
             s += str(rule)
             s += "\n"
         return s

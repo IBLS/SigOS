@@ -26,7 +26,8 @@
 class Rule:
 
     # Create a Rule object to encapsulates a single operating rule
-    # @param p_rule The rule number assigned to this aspect.
+    # @param p_rule The rule number assigned to this aspect. This is actaully a string,
+    #               because some rules use alpha designators, e.g. "281" and "281A"
     # @param p_name The formal name classifcation, e.g. "Diverging-clear"
     # @param p_indication Descriptive instruction conveyed by the signal
     # @param p_priority The numeric (real or float) relative priority of this aspect
@@ -41,6 +42,45 @@ class Rule:
         self.m_priority = p_priority
         self.m_condition = p_condition
         self.m_aspect = p_aspect
+        self.m_is_active = False
+
+
+    # @returns True if this Rule is currently active
+    #
+    def is_active(self):
+        return self.m_is_active
+
+
+    # Activate this Rule
+    #
+    def activate(self):
+        self.m_is_active = True
+
+
+    # De-activate this Rule
+    #
+    def deactivate(self):
+        self.m_is_active = False
+
+
+    # @returns The relative priority of this Rule
+    #
+    def get_priority(self):
+        return self.m_priority
+
+
+    # @returns True if this Rule matches the given rule number
+    # @param p_rule The number identifying this Rule
+    #
+    def match_by_rule(self, p_rule):
+        return p_rule == self.m_rule
+
+
+    # @returns True if this Rule matches the given rule number
+    # @param p_name The name of this Rule
+    #
+    def match_by_name(self, p_name):
+        return p_name == self.m_name
 
 
     # @returns A string representation of this rule set

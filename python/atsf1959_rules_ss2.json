@@ -2,6 +2,7 @@
     "rule-set": "ATSF Rules 1959 - Signal System Two",
     "source": "https://www.jonroma.net/media/rail/opdocs/na/atsf/AT%26SF.%20Rules%20of%20the%20Operating%20Department%201959-12-06%20%5Bexcerpts%5D.pdf",
     "author": "Daris A Nevil <daris@nevil.org>",
+    "default-rule": "281",
 
     "rules": [
         {
