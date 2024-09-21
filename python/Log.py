@@ -43,6 +43,10 @@ class Log:
         pass
 
 
+    # Add new entry to the log
+    # @param p_source Name of the source associated with the log entry
+    # @param p_text Test string to add to the log
+    #
     def add(self, p_source, p_text):
         # Add the log entry
         ts = Timestamp.Timestamp()
@@ -56,16 +60,69 @@ class Log:
             Log.c_log_source.pop(0)
             Log.c_log_text.pop(0)
 
-    # @returns A string representation of this rule set
+
+    # Get an entry from the log
+    # @param p_index Zero gets the most recent entry, 1 gets the next
+    #                most recent entry, etc
+    # @returns A string of the specified log entry
     #
-    def __str__(self):
-        s = ""
-        for i in range(len(Log.c_log_time)):
-            s += str(Log.c_log_time[i])
-            s += " "
-            s += Log.c_log_source[i]
-            s += " "
-            s += Log.c_log_text[i]
-            s += "\n"
+    def get_single(self, p_index):
+        if (p_index >= len(Log.c_log_time)):
+            return None
+        s = str(Log.c_log_time[p_index])
+        s += " "
+        s += Log.c_log_source[p_index]
+        s += " "
+        s += Log.c_log_text[p_index]
         return s
+
+
+    # Get all entries in the log
+    # @return A list of log entries, oldest to newest
+    #
+    def get_all(self):
+        l = list()
+        for i in range(len(Log.c_log_time)):
+            s = self.get_single(i)
+            l.append(s)
+        return s
+
+
+    # Get all entries in the log
+    # @return A list of log entries, newest to oldest
+    #
+    def get_all_rev(self):
+        l = list()
+        for i in range(len(Log.c_log_time)-1, -1):
+            s = self.get_single(i)
+            l.append(s)
+        return s
+
+
+    # @returns The number of entries in the log
+    #
+    def get_num_entries(self):
+        return len(Log.c_log_time)
+
+
+    def unit_test(self):
+        log1 = Log()
+        log1.add("Me", "Message 1")
+        log1.add("You", "Message 2")
+        if (log1.get_num_entries() != 2):
+            print("Failed 1000\n")
+
+        log2 = Log()
+        for i in range(Log.c_log_limit):
+            text = "Message " + str(i)
+            log2.add("ABC", text)
+
+        if (log2.get_num_entries() != Log.c_log_limit):
+            print("Failed 1010\n")
+
+        log2.add("EFG", "Message X")
+        if (log2.get_num_entries() != Log.c_log_limit):
+            print("Failed 1020\n")
+
+        print("Unit tests completed\n") 
 
