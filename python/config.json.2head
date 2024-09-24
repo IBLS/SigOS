@@ -1,5 +1,8 @@
 {
   "board-type": "esp32-c2-mini",
+  "hostname": "thurber-east",
+  "wifi-ssid": "IGNRR",
+  "wifi-password": "downcase",
   "ip-addr": "192.168.1.100",
   "light-on-approach": "true",
   "number-board": "6224-1",

@@ -1,5 +1,5 @@
 #
-# Main startup for SigOS
+# Commands for SigOS
 #
 # Copyright (C) 2021-2024 Daris A Nevil - International Brotherhood of Live Steamers
 #
@@ -23,28 +23,45 @@
 # 
 #
 
-#import sys
-#import network
-#import time
-import WiFi
-import TelnetServer
-import Config
-
-def get_config():
-    config = Config.Config("config.json")
-
-def do_connect():
-    ssid = Config.Config.c_config.m_wifi_ssid
-    password = Config.Config.c_config.m_wifi_password
-    hostname = Config.Config.c_config.m_hostname
-    wifi = WiFi.WiFi(ssid, password, hostname)
-    wifi.connect()
-
-    telnet_server = TelnetServer.TelnetServer()
-    telnet_server.start()
-
-    return
+import Command
 
 
-get_config()
-do_connect()
+def fn_help(p_word_list):
+    return True, Command.Help()
+
+wl = ["help"]
+Command.Command(wl, "Provide a list of supported commands", fn_help)
+
+
+def fn_request(p_word_list):
+    ok = ["ok"]
+    return True, ok
+
+wl = ["request", "$"]
+Command.Command(wl, "Request activation of a Rule by number or name", fn_request)
+
+
+def fn_release(p_word_list):
+    ok = ["ok"]
+    return True, ok
+
+wl = ["release", "$"]
+Command.Command(wl, "Release previous Rule activation by number or name", fn_release)
+
+
+def fn_log(p_word_list):
+    ok = ["ok"]
+    return True, ok
+
+wl = ["log"]
+Command.Command(wl, "Print the full Log", fn_log)
+
+
+def fn_log_n(p_word_list):
+    ok = ["ok"]
+    return True, ok
+
+wl = ["log", "$"]
+Command.Command(wl, "Print a specified line of the log Log", fn_log_n)
+
+

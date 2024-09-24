@@ -31,6 +31,9 @@ import Light
 
 class Config:
 
+    # Class variable - singleton for the configuration
+    c_config = None
+
     # Create an object to encapsulate configuraton for the signal
     # @param p_file Filename of a json config file
     #
@@ -42,6 +45,9 @@ class Config:
         fs.close()
 
         self.m_board_type = config["board-type"]
+        self.m_hostname = config["hostname"]
+        self.m_wifi_ssid = config["wifi-ssid"]
+        self.m_wifi_password = config["wifi-password"]
         self.m_ip_addr = config["ip-addr"]
         self.m_light_on_approach = config["light-on-approach"] == "true"
         self.m_number_board = config["number-board"]
@@ -72,12 +78,17 @@ class Config:
 
             self.m_head_array.append(head_obj)
 
+        # Save this singleton
+        Config.c_config = self
+
 
     # @returns A string representation of this rule set
     #
     def __str__(self):
         s = "board-type: "
         s += self.m_board_type
+        s = "hostname: "
+        s += self.m_hostname
         s += "\nip-addr: "
         s += self.m_ip_addr
         s += "\nlight-on-approach: "

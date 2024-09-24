@@ -32,9 +32,10 @@ class WiFi:
     # Intialize the object as a Station that will connect to a Router
     # or Access Point
     #
-    def __init__(self, p_ssid, p_password):
+    def __init__(self, p_ssid, p_password, p_hostname):
         self.m_ssid = p_ssid
         self.m_password = p_password
+        self.m_hostname = p_hostname
 
         self.m_wifi = network.WLAN(network.STA_IF)
         #self.m_wifi = network.WLAN(network.AP_IF)
@@ -58,8 +59,11 @@ class WiFi:
                 pass
             else:
                 print("default txpower={}", self.m_wifi.config('txpower'))
-                self.m_wifi.config(txpower=7.0)
+                self.m_wifi.config(txpower = 7.0)
                 print("configured txpower={}", self.m_wifi.config('txpower'))
+
+            # Set hostname
+            self.m_wifi.config(dhcp_hostname = self.m_hostname)
 
             time.sleep(1)
             self.m_wifi.connect(self.m_ssid, self.m_password)
@@ -92,4 +96,17 @@ class WiFi:
     def __del__(self):
         self.m_wifi.disconnect()
 
+
+    # @returns A string representation of this WiFi object
+    #
+    def __str__(self):
+        s = "ssid:"
+        s += self.m_ssid
+        s += ",password:"
+        s += self.m_password
+        s += ",hostname:"
+        s += self.m_hostname
+        config = self.m_wifi.ifconfig()
+        s += ',config:'
+        s += config
 
