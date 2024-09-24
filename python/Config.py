@@ -53,6 +53,10 @@ class Config:
         self.m_number_board = config["number-board"]
         self.m_rules_file = config["rules-file"]
 
+        # Remove ".local" from hostname, if present
+        hostname_list = self.m_hostname.split(".")
+        self.m_hostname = hostname_list[0]
+
         # Build heads object
         heads = config["heads"]
         self.m_head_array = []
