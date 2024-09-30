@@ -51,6 +51,10 @@ def do_connect():
 
     global g_telnet_server
     g_telnet_server = TelnetServer.TelnetServer()
+
+    welcome = hostname + " " + str(g_wifi.m_wifi_ip) + "\r\n"
+    g_telnet_server.set_welcome(welcome)
+
     g_telnet_server.start()
 
 do_connect()

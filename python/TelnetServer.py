@@ -33,8 +33,6 @@ import uos
 import errno
 from uio import IOBase 
 
-# Provide necessary functions for dupterm and replace telnet control characters that come in.
-
 class TelnetConn(IOBase):
     
     # Class variables
@@ -45,8 +43,9 @@ class TelnetConn(IOBase):
     # @param p_client_socket A socket object for read/writing to the attached client
     # @param p_client_addr The IP address of the attached client
     # @param p_client_port The port number of the attached client
+    # @param p_welcome The welcome message to print at the start of each client session
     #
-    def __init__(self, p_client_socket, p_client_addr, p_client_port):
+    def __init__(self, p_client_socket, p_client_addr, p_client_port, p_welcome):
         self.m_client_socket = p_client_socket
         self.m_client_addr = p_client_addr
         self.m_client_port = p_client_port
@@ -59,6 +58,9 @@ class TelnetConn(IOBase):
         #self.m_client_socket.sendall(bytes([255, 251, 1])) # turn off local echo
 
         # Send initial prompt
+        if (p_welcome):
+            self.write(p_welcome)
+
         self.prompt()
 
         #self.start_repl()
@@ -160,6 +162,8 @@ class TelnetConn(IOBase):
         self.close()
 
 
+g_welcome = None
+
 class TelnetServer:
 
     # Class variables
@@ -170,6 +174,14 @@ class TelnetServer:
     #
     def __init__(self):
         self.m_server_socket = None
+
+
+    # Set the welcome message printed at the start of each client session
+    # @param p_welcome The welcome message to print at the start of each client session
+    #
+    def set_welcome(self, p_welcome):
+        global g_welcome
+        g_welcome = p_welcome
 
 
     # Listening for telnet connections on port 23
@@ -247,6 +259,6 @@ def cb_accept_telnet_connect(p_server_socket):
     print("Telnet connection from:", client_addr, ":", client_port)
 
     # Create a new TelnetConn object
-    TelnetConn(client_socket, client_addr, client_port)
+    TelnetConn(client_socket, client_addr, client_port, g_welcome)
 
 

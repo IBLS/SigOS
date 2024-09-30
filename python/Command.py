@@ -49,7 +49,14 @@ class Command:
     def Help():
         help_list = list()
         for cmd in Command.c_command_list:
-            s = cmd.m_word_list[0]
+            s = ""
+            for word in cmd.m_word_list:
+                if (word[0] == "$"):
+                    s += word[1:]
+                    s += " "
+                else:
+                    s += word
+                    s += " "
             s += ": "
             s += cmd.m_desc
             help_list.append(s)
@@ -92,7 +99,7 @@ class Command:
 
         for i in range(len(p_input_words)):
             # '$' represents a variable, skip it
-            if (self.m_word_list[i] == '$'):
+            if (self.m_word_list[i][0] == '$'):
                 continue
 
             if (p_input_words[i] != self.m_word_list[i]):

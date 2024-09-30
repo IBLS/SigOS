@@ -37,7 +37,7 @@ def fn_request(p_word_list):
     ok = ["ok"]
     return True, ok
 
-wl = ["request", "$"]
+wl = ["request", "${rule}|{name}"]
 Command.Command(wl, "Request activation of a Rule by number or name", fn_request)
 
 
@@ -45,7 +45,7 @@ def fn_release(p_word_list):
     ok = ["ok"]
     return True, ok
 
-wl = ["release", "$"]
+wl = ["release", "${rule}|{name}"]
 Command.Command(wl, "Release previous Rule activation by number or name", fn_release)
 
 
@@ -61,7 +61,7 @@ def fn_log_n(p_word_list):
     ok = ["ok"]
     return True, ok
 
-wl = ["log", "$"]
+wl = ["log", "${entry_num}"]
 Command.Command(wl, "Print a specified line of the log Log", fn_log_n)
 
 
