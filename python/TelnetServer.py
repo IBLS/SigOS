@@ -28,6 +28,7 @@
 
 import socket
 import network
+import select
 import uos
 import errno
 from uio import IOBase 
@@ -49,20 +50,16 @@ class TelnetConn(IOBase):
         self.m_client_socket = p_client_socket
         self.m_client_addr = p_client_addr
         self.m_client_port = p_client_port
+        self.m_to_discard = 0
 
-        self.m_discard_count = 0
-        self.m_state = 0
         TelnetConn.c_wrapper_list.append(self)
 
         self.m_client_socket.setblocking(False)
-        self.m_client_socket.sendall(bytes([255, 252, 34])) # dont allow line mode
-        self.m_client_socket.sendall(bytes([255, 251, 1])) # turn off local echo
+        #self.m_client_socket.sendall(bytes([255, 252, 34])) # dont allow line mode
+        #self.m_client_socket.sendall(bytes([255, 251, 1])) # turn off local echo
 
-        self.write("Welcome ")
-        self.write(str(self.m_client_addr))
-        self.write(":")
-        self.write(str(self.m_client_port))
-        self.write("!\r\n")
+        # Send initial prompt
+        self.prompt()
 
         #self.start_repl()
 
@@ -70,8 +67,6 @@ class TelnetConn(IOBase):
     # Connect the MicroPython terminal (the REPL) to the client socket
     #
     def  start_repl(self):
-        # dupterm_notify() not available under MicroPython v1.1
-        # self.m_client_socket.setsockopt(socket.SOL_SOCKET, 20, uos.dupterm_notify)
         uos.dupterm(self.m_client_socket, 0)
 
 
@@ -83,47 +78,40 @@ class TelnetConn(IOBase):
 
     # Read characters (if any) into p_buffer
     # @param p_buffer A memory buffer to receive characters into
-    # @returns The number of bytes read into p_buffer, or None
+    # @returns The number of bytes read into p_buffer
     # 
     def readinto(self, p_buffer):
         readbytes = 0
         for i in range(len(p_buffer)):
             try:
                 byte = 0
-                # discard telnet control characters and
-                # null bytes 
-                byte = self.socket.recv(1)[0]
+                while (byte == 0):
+                    byte = self.m_client_socket.recv(1)[0]
 
-            except (OSError) as e:
-                if len(e.args) > 0 and e.args[0] == errno.EAGAIN:
+                    # discard telnet control characters and null bytes 
+                    if byte == 0:
+                        continue
+
+                    if byte == 0xFF:
+                        self.m_to_discard = 2
+                        byte = 0
+                        continue
+
+                    if self.m_to_discard > 0:
+                        self.m_to_discard -= 1
+                        byte = 0
+                        continue
+
+                p_buffer[i] = byte
+                readbytes += 1
+
+            except (IndexError, OSError) as e:
+                if type(e) == IndexError or len(e.args) > 0 and e.args[0] == errno.EAGAIN:
                     # No more bytes in the socket, return and try again later
-                    if (readbytes == 0):
-                        return None
                     return readbytes
                 else:
                     # Some other error?
                     raise
-
-            if (self.m_state == 0):
-                # discard telnet control characters and
-                # null bytes 
-                if (byte == 0):
-                    self.m_discard_count += 1
-                    continue
-                if (byte == 0xFF):
-                    self.m_state = 1
-                    self.m_discard_count += 1
-                    continue
-
-            if (self.m_state == 1):
-                # Discard this control character
-                self.m_discard_count += 1
-                self.m_state = 0
-                continue
-
-            # Add character to p_buffer
-            p_buffer[i] = byte
-            readbytes += 1
 
         return readbytes
 
@@ -148,6 +136,13 @@ class TelnetConn(IOBase):
                     raise
 
         return bytes_out
+
+
+
+    # Print a prompt on the terminal
+    #
+    def prompt(self):
+        self.write("> ")
 
 
     # Close the connection
@@ -209,6 +204,10 @@ class TelnetServer:
         # Register a callback function for accepting new connections
         server_socket.setsockopt(socket.SOL_SOCKET, 20, cb_accept_telnet_connect)
 
+        # Setup poller
+        self.m_poller = select.poll()
+        self.m_poller.register(server_socket, select.POLLIN)
+
         # Report if the server was started on an AP, Station, or both
         for i in (network.AP_IF, network.STA_IF):
             wlan = network.WLAN(i)
@@ -218,6 +217,14 @@ class TelnetServer:
 
         # Failed to connect to server
         return False
+
+
+    # Poll the socket for input
+    # @returns True if input was ready
+    #
+    def poll(self):
+        res = self.m_poller.poll(10)
+        return res
 
  
     # Close all server ports

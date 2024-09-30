@@ -56,14 +56,21 @@ class Command:
         return help_list
 
 
+    # Attempt to execute the command given by the list of words
+    # @param p_input_words A list of command words and parameters
+    # @returns (cmd_match, func_result, result_list), where
+    #          cmd_match is true if this command matches
+    #          func_result is the result of the function
+    #          result_list is a list of strings from the function
+    #
     @staticmethod
     def ParseAndExec(p_input_words):
         for cmd in Command.c_command_list:
             (cmd_match, func_result, result_list) = cmd.parse_and_exec(p_input_words)
             if (cmd_match):
-                return func_result, result_list
+                return True, func_result, result_list
         inv_cmd = ["Invalid command"]
-        return False, inv_cmd
+        return False, False, inv_cmd
 
 
     # Compare the input to the command, and if a match, execute the associated function.
@@ -71,7 +78,7 @@ class Command:
     # @param p_words_len The number of strings in p_words.
     # @param p_func_result The result of the function, if called
     # @param p_output Reference to a string to receive user-text from the command.
-    # @returns (cmd_match, func_result, result_lis), where
+    # @returns (cmd_match, func_result, result_list), where
     #          cmd_match is true if this command matches
     #          func_result is the result of the function
     #          result_list is a list of strings from the function

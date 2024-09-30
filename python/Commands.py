@@ -27,7 +27,7 @@ import Command
 
 
 def fn_help(p_word_list):
-    return True, Command.Help()
+    return True, Command.Command.Help()
 
 wl = ["help"]
 Command.Command(wl, "Provide a list of supported commands", fn_help)

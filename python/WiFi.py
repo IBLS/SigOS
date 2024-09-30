@@ -69,9 +69,10 @@ class WiFi:
             self.m_wifi.connect(self.m_ssid, self.m_password)
 
             # Wait here until connected
-            while (not self.m_wifi.isconnected()):
+            while (True):
                 print("status={}", self.m_wifi.status())
-                pass
+                if self.m_wifi.isconnected():
+                    break
 
         # Get my DHCP configuration
         config = self.m_wifi.ifconfig()
@@ -89,6 +90,14 @@ class WiFi:
     def disconnect(self):
         # Disconnect from wifi
         self.m_wifi.active(False)
+
+
+    async def poll(self):
+        if self.m_wifi.isconnected():
+            await uasyncio.sleep(0)
+            return True
+        else:
+            return self.connect()
 
 
     # Destructor will disconnect
