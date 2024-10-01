@@ -74,21 +74,19 @@ def loop():
         client_list = TelnetServer.TelnetConn.c_wrapper_list
         for client in client_list:
             len = client.readinto(buf)
-            print("len=", len)
+            # print("len=", len)
             keeplinebreaks = False
             lines = buf[0:len].splitlines(keeplinebreaks)
             for line in lines:
                 # Attempt to parse and execute the specified command line
-                print(line)
+                # print(line)
                 s = line.decode()
                 word_list = s.split(" ")
                 (cmd_match, func_result, result_list) = Command.Command.ParseAndExec(word_list)
                 if (not cmd_match):
-                    result_list.append('Invalid command\r\n')
+                    pass
                 if (not func_result):
-                    result_list.append('Command failed\r\n')
-                # Last line is the new prompt
-                #result_list.append("> ")
+                    result_list.append('Command failed')
                 for out_line in result_list:
                     try:
                         client.m_client_socket.write(out_line)

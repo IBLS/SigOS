@@ -26,6 +26,7 @@
 import sys
 import network
 import time
+import Log
 
 class WiFi:
 
@@ -43,6 +44,7 @@ class WiFi:
         self.m_wifi_mask = None
         self.m_wifi_router = None
         self.m_wifi_dns = None
+        self.m_log = Log.Log()
 
 
     # Attempt to connect to the Router/AP.
@@ -50,7 +52,9 @@ class WiFi:
     #
     def connect(self):
         if not self.m_wifi.isconnected():
-            print('connecting to network...')
+            s = 'WiFi connecting to network...'
+            self.m_log.add(self.m_hostname, s)
+            print(s)
             self.m_wifi.active(True)
 
             # Limit the transmit power, otherwise the board will reboot
@@ -58,9 +62,13 @@ class WiFi:
                 # txpower Not support in ESP8266
                 pass
             else:
-                print("default txpower={}", self.m_wifi.config('txpower'))
+                s = "default txpower=" + str(self.m_wifi.config('txpower'))
+                self.m_log.add(self.m_hostname, s)
+                print(s)
                 self.m_wifi.config(txpower = 7.0)
-                print("configured txpower={}", self.m_wifi.config('txpower'))
+                s = "configured txpower=" + str(self.m_wifi.config('txpower'))
+                self.m_log.add(self.m_hostname, s)
+                print(s)
 
             # Set hostname
             self.m_wifi.config(dhcp_hostname = self.m_hostname)
@@ -70,12 +78,13 @@ class WiFi:
 
             # Wait here until connected
             while (True):
-                print("status={}", self.m_wifi.status())
+                #print("status={}", self.m_wifi.status())
                 if self.m_wifi.isconnected():
                     break
 
         # Get my DHCP configuration
         config = self.m_wifi.ifconfig()
+        self.m_log.add(self.m_hostname, str(config))
         print('wifi config: {}', config)
         self.m_wifi_ip = config[0]
         self.m_wifi_mask = config[1]

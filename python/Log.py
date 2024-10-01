@@ -64,17 +64,19 @@ class Log:
     # Get an entry from the log
     # @param p_index Zero gets the most recent entry, 1 gets the next
     #                most recent entry, etc
-    # @returns A string of the specified log entry
+    # @returns A list containing the string of the specified log entry
     #
     def get_single(self, p_index):
+        l = list()
         if (p_index >= len(Log.c_log_time)):
-            return None
+            return l
         s = str(Log.c_log_time[p_index])
         s += " "
         s += Log.c_log_source[p_index]
         s += " "
         s += Log.c_log_text[p_index]
-        return s
+        l.append(s)
+        return l
 
 
     # Get all entries in the log
@@ -83,9 +85,9 @@ class Log:
     def get_all(self):
         l = list()
         for i in range(len(Log.c_log_time)):
-            s = self.get_single(i)
+            s = self.get_single(i)[0]
             l.append(s)
-        return s
+        return l
 
 
     # Get all entries in the log
@@ -96,7 +98,7 @@ class Log:
         for i in range(len(Log.c_log_time)-1, -1):
             s = self.get_single(i)
             l.append(s)
-        return s
+        return l
 
 
     # @returns The number of entries in the log

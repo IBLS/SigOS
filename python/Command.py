@@ -75,7 +75,7 @@ class Command:
         for cmd in Command.c_command_list:
             (cmd_match, func_result, result_list) = cmd.parse_and_exec(p_input_words)
             if (cmd_match):
-                return True, func_result, result_list
+                return cmd_match, func_result, result_list
         inv_cmd = ["Invalid command"]
         return False, False, inv_cmd
 

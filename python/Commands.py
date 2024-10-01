@@ -24,6 +24,7 @@
 #
 
 import Command
+import Log
 
 
 def fn_help(p_word_list):
@@ -50,16 +51,23 @@ Command.Command(wl, "Release previous Rule activation by number or name", fn_rel
 
 
 def fn_log(p_word_list):
-    ok = ["ok"]
-    return True, ok
+    log = Log.Log()
+    all_logs = log.get_all()
+    return True, all_logs
 
 wl = ["log"]
 Command.Command(wl, "Print the full Log", fn_log)
 
 
 def fn_log_n(p_word_list):
-    ok = ["ok"]
-    return True, ok
+    try:
+        index = int(p_word_list[1])
+    except:
+        err = ["Invalid index"]
+        return False, err
+    log = Log.Log()
+    one_log = log.get_single(index)
+    return True, one_log
 
 wl = ["log", "${entry_num}"]
 Command.Command(wl, "Print a specified line of the log Log", fn_log_n)
