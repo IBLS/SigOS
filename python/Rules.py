@@ -26,6 +26,7 @@
 import io
 import json
 import Rule
+import Log
 
 class Rules:
 
@@ -60,9 +61,11 @@ class Rules:
 
     # Startup by activating the default Rule.
     # Call this once at system startup after the hardware has been initialized
+    # @param p_source The name of the source, should be this hostname
     #
-    def startup(self):
-        self.activate_by_rule(self.m_default_rule)
+    def startup(self, p_source):
+        self.activate_by_rule_or_name(self.m_default_rule, p_source)
+        self.m_log = Log.Log()
 
 
     # Find and return the currently active Rule, or None
@@ -75,43 +78,26 @@ class Rules:
         return None
 
 
-    # Find and activiate the Rule by the given rule number
-    # @param p_rule The rule number to activate
-    # @returns True if the Rule was activated, False otherwise
+    # Find and activiate the Rule by the given rule number or rule name
+    # @param p_rule_or_name The rule number or name to activate
+    # @param p_source The source requesting the action
+    # @returns True on activation of new Rule, False if not found or not activated
     #
-    def activate_by_rule(self, p_rule):
+    def activate_by_rule_or_name(self, p_rule_or_name, p_source):
         active_priority = 0
         active_rule = self.find_active_rule()
         if (active_rule):
             active_priority = self.get_priority()
 
         for rule in self.m_rule_list:
-            if (rule.match_by_rule(p_rule)):
+            if (rule.match_by_rule(p_rule_or_name) or rule.match_by_name(p_rule_or_name)):
                 if (active_priority <= rule.get_priority()):
                     if (active_rule):
                         active_rule.deactivate()
                     rule.activate()
                     return True
-
-        return False
-
-
-    # Find and activiate the Rule by the given rule name
-    # @param p_name The name of the Rule to activate
-    # @returns True if the Rule was activated, False otherwise
-    #
-    def activate_by_name(self, p_name):
-        active_priority = 0
-        active_rule = self.find_active_rule()
-        if (active_rule):
-            active_priority = self.get_priority()
-
-        for rule in self.m_rule_list:
-            if (rule.match_by_name(p_name)):
-                if (active_priority <= rule.get_priority()):
-                    active_rule.deactivate()
-                    rule.activate()
-                    return True
+                else:
+                    break;
 
         return False
 

@@ -32,43 +32,65 @@ import TelnetServer
 import Config
 import Commands
 import Command
+import Rules
 
-def get_config():
-    config = Config.Config("config.json")
 
-get_config()
+# Perform necessary hardware setup
+#
+def setup_hardware():
+    pass
+
+setup_hardware()
+
+
+# Load the configuration file
+#
+g_config = Config.Config("config.json")
+
+
+# Load the rules from the file specified in the config file
+#
+print("Loading rules from ", g_config.m_rules_file)
+g_rules = Rules.Rules(g_config.m_rules_file)
+
 
 g_wifi = None
 g_telnet_server = None
+g_hostname = None
 
 def do_connect():
-    ssid = Config.Config.c_config.m_wifi_ssid
-    password = Config.Config.c_config.m_wifi_password
-    hostname = Config.Config.c_config.m_hostname
+    global g_hostname
+    global g_config
+    ssid = g_config.m_wifi_ssid
+    password = g_config.m_wifi_password
+    g_hostname = g_config.m_hostname
     global g_wifi
-    g_wifi = WiFi.WiFi(ssid, password, hostname)
+    g_wifi = WiFi.WiFi(ssid, password, g_hostname)
     g_wifi.connect()
 
     global g_telnet_server
     g_telnet_server = TelnetServer.TelnetServer()
 
-    welcome = hostname + " " + str(g_wifi.m_wifi_ip) + "\r\n"
+    welcome = g_hostname + " " + str(g_wifi.m_wifi_ip) + "\r\n"
     g_telnet_server.set_welcome(welcome)
 
     g_telnet_server.start()
 
 do_connect()
 
+
+# Initialzie the Rules state machine
+g_rules.startup(g_hostname)
+
+
 def loop():
 
+    print("Accepting connections")
     buf = bytearray(512)
     while (True):
 
         g_wifi.poll()
-        g_telnet_server.poll()
-        #print("sleeping...\n")
-        #time.sleep(1)
-        #continue
+        #g_telnet_server.poll()
  
         # Check for traffic from each Telnet clinet
         client_list = TelnetServer.TelnetConn.c_wrapper_list
@@ -82,7 +104,7 @@ def loop():
                 # print(line)
                 s = line.decode()
                 word_list = s.split(" ")
-                (cmd_match, func_result, result_list) = Command.Command.ParseAndExec(word_list)
+                (cmd_match, func_result, result_list) = Command.Command.ParseAndExec(word_list, client)
                 if (not cmd_match):
                     pass
                 if (not func_result):
@@ -97,8 +119,8 @@ def loop():
                 client.prompt()
 
         # Sleep at end of the loop to let other code run
-        print("sleeping...\n")
-        time.sleep(0.5)
+        #print("sleeping...\n")
+        time.sleep(0.2)
 
 loop()
 

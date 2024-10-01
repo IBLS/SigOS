@@ -83,20 +83,42 @@ class Rule:
         return p_name == self.m_name
 
 
-    # @returns A string representation of this rule set
+    # @returns An abbreviated string representation of this rule
+    #
+    def abbr_str(self):
+        s = '"rule": "'
+        s += str(self.m_rule)
+        s += '", "name": "'
+        s += str(self.m_name)
+        s += '", "indication": "'
+        s += str(self.m_indication)
+        s += '", "active": '
+        if self.m_is_active:
+            s += '"true"'
+        else:
+            s += '"false"'
+        return s
+
+
+    # @returns A string representation of this rule
     #
     def __str__(self):
-        s = "  rule: "
+        s = '"rule": "'
         s += str(self.m_rule)
-        s += "\n    name: "
+        s += '", "name": "'
         s += str(self.m_name)
-        s += "\n    indication: "
+        s += '", "indication": "'
         s += str(self.m_indication)
-        s += "\n    priority: "
+        s += '", "priority": "'
         s += str(self.m_priority)
-        s += "\n    condition: "
+        s += '", "condition": "'
         s += str(self.m_condition)
-        s += "\n    aspect: "
+        s += '"aspect": '
         s += str(self.m_aspect)
+        if self.m_is_active:
+            s += '"true"'
+        else:
+            s += '"false"'
         return s
+
 

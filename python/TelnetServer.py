@@ -32,6 +32,7 @@ import select
 import uos
 import errno
 from uio import IOBase 
+import Log
 
 class TelnetConn(IOBase):
     
@@ -123,6 +124,8 @@ class TelnetConn(IOBase):
     # @returns The number of bytes written
     #
     def write(self, p_buffer):
+        if (not self.m_client_socket):
+            return 0
         bytes_out = 0
         while (len(p_buffer) > 0):
             try:
@@ -150,10 +153,11 @@ class TelnetConn(IOBase):
     # Close the connection
     # 
     def close(self):
-        stop_repl()
-        if (self.m_socket):
-            self.m_socket.close()
-        self.m_socket = None
+        TelnetConn.c_wrapper_list.remove(self)
+        if (self.m_client_socket):
+            self.stop_repl()
+            self.m_client_socket.close()
+        self.m_client_socket = None
 
 
     # Destructor
@@ -256,9 +260,13 @@ def cb_accept_telnet_connect(p_server_socket):
     client_socket, client_addr_port = p_server_socket.accept()
     client_addr = client_addr_port[0]
     client_port = client_addr_port[1]
-    print("Telnet connection from:", client_addr, ":", client_port)
 
     # Create a new TelnetConn object
-    TelnetConn(client_socket, client_addr, client_port, g_welcome)
+    try:
+        TelnetConn(client_socket, client_addr, client_port, g_welcome)
+    except:
+        return
 
+    log = Log.Log()
+    log.add(str(client_addr), "Client connection")
 

@@ -30,6 +30,9 @@ import Log
 
 class WiFi:
 
+    # The class object holding the singleton WiFi object
+    c_wifi = None
+
     # Intialize the object as a Station that will connect to a Router
     # or Access Point
     #
@@ -45,6 +48,7 @@ class WiFi:
         self.m_wifi_router = None
         self.m_wifi_dns = None
         self.m_log = Log.Log()
+        WiFi.c_wifi = self
 
 
     # Attempt to connect to the Router/AP.

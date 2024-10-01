@@ -27,14 +27,14 @@ import Command
 import Log
 
 
-def fn_help(p_word_list):
+def fn_help(p_word_list, p_client):
     return True, Command.Command.Help()
 
 wl = ["help"]
 Command.Command(wl, "Provide a list of supported commands", fn_help)
 
 
-def fn_request(p_word_list):
+def fn_request(p_word_list, p_client):
     ok = ["ok"]
     return True, ok
 
@@ -42,7 +42,7 @@ wl = ["request", "${rule}|{name}"]
 Command.Command(wl, "Request activation of a Rule by number or name", fn_request)
 
 
-def fn_release(p_word_list):
+def fn_release(p_word_list, p_client):
     ok = ["ok"]
     return True, ok
 
@@ -50,7 +50,7 @@ wl = ["release", "${rule}|{name}"]
 Command.Command(wl, "Release previous Rule activation by number or name", fn_release)
 
 
-def fn_log(p_word_list):
+def fn_log(p_word_list, p_client):
     log = Log.Log()
     all_logs = log.get_all()
     return True, all_logs
@@ -59,7 +59,7 @@ wl = ["log"]
 Command.Command(wl, "Print the full Log", fn_log)
 
 
-def fn_log_n(p_word_list):
+def fn_log_n(p_word_list, p_client):
     try:
         index = int(p_word_list[1])
     except:
@@ -71,5 +71,17 @@ def fn_log_n(p_word_list):
 
 wl = ["log", "${entry_num}"]
 Command.Command(wl, "Print a specified line of the log Log", fn_log_n)
+
+
+def fn_close(p_word_list, p_client):
+    source = str(p_client.m_client_addr)
+    log = Log.Log()
+    log.add(source, "Disconnected client session")
+    p_client.close()
+    ok = ["ok"]
+    return True, ok
+
+wl = ["close"]
+Command.Command(wl, "Close the current client connection", fn_close)
 
 
