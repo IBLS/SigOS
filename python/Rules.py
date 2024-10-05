@@ -30,6 +30,9 @@ import Log
 
 class Rules:
 
+    # Class variable for the Rules singleton object
+    c_rules = None
+
     # Create an object to encapsulate all rules for a Signal
     # @param p_rule_file Filename of a json rules file
     #
@@ -57,6 +60,12 @@ class Rules:
                         rule["aspect"])
             self.m_rule_list.append(robj)
 
+        self.m_request_list = list()
+        self.m_active_rule = None
+
+        # Save this singleton
+        Rules.c_rules = self
+
 
 
     # Startup by activating the default Rule.
@@ -64,9 +73,43 @@ class Rules:
     # @param p_source The name of the source, should be this hostname
     #
     def startup(self, p_source):
-        self.activate_by_rule_or_name(self.m_default_rule, p_source)
-        self.m_log = Log.Log()
+        self.request_by_rule_or_name(self.m_default_rule, p_source)
 
+
+    # Request activation of a rule by number or name
+    # @param p_rule_or_name The rule number or name
+    # @param p_source The name of the requestor
+    # @returns True if valid request, False if invalid rule or name
+    #
+    def request_by_rule_or_name(self, p_rule_or_name, p_source):
+        # Verify valid rule
+        valid = False
+        for rule in self.m_rule_list:
+            if (rule.match_by_rule(p_rule_or_name):
+                valid = True
+                break
+            if (rule.match_by_name(p_rule_or_name)):
+                valid = True
+                break
+        if not valid:
+            return false
+
+        # Is the rule already in the list?
+        for req in self.m_request_list:
+            if ((req[0] == p_rule_or_name) and (req[1] == p_source)):
+                # Request is already registered
+                return True
+
+        # Add as new request
+        self.m_request_list.append([p_rule_or_name, p_source])
+        return True
+
+
+    #def activate_highest_rule(self):
+    #    high_rule = self.m_request_list[0]
+    #    for req in self.m_request_list:
+    #        if (
+            
 
     # Find and return the currently active Rule, or None
     #
@@ -87,7 +130,7 @@ class Rules:
         active_priority = 0
         active_rule = self.find_active_rule()
         if (active_rule):
-            active_priority = self.get_priority()
+            active_priority = active_rule.get_priority()
 
         for rule in self.m_rule_list:
             if (rule.match_by_rule(p_rule_or_name) or rule.match_by_name(p_rule_or_name)):

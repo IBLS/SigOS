@@ -25,6 +25,7 @@
 
 import Command
 import Log
+import Rules
 
 
 def fn_help(p_word_list, p_client):
@@ -35,8 +36,25 @@ Command.Command(wl, "Provide a list of supported commands", fn_help)
 
 
 def fn_request(p_word_list, p_client):
-    ok = ["ok"]
-    return True, ok
+    source = str(p_client.m_client_addr)
+    rule_or_name = p_word_list[1]
+    log = Log.Log()
+    out = list()
+    rules = Rules.Rules.c_rules
+    if rules.activate_by_rule_or_name(rule_or_name, source):
+        active_rule = rules.find_active_rule()
+        active_rule_desc = active_rule.abbr_str()
+        log_msg = "Activated "
+        log_msg += rule_or_name
+        log.add(source, log_msg)
+        out.append(log_msg)
+        out.append(active_rule_desc)
+    else:
+        log_msg = "Denied "
+        log_msg += rule_or_name
+        log.add(source, log_msg)
+        out.append(log_msg)
+    return True, out
 
 wl = ["request", "${rule}|{name}"]
 Command.Command(wl, "Request activation of a Rule by number or name", fn_request)
