@@ -42,25 +42,7 @@ class Rule:
         self.m_priority = p_priority
         self.m_condition = p_condition
         self.m_aspect = p_aspect
-        self.m_is_active = False
-
-
-    # @returns True if this Rule is currently active
-    #
-    def is_active(self):
-        return self.m_is_active
-
-
-    # Activate this Rule
-    #
-    def activate(self):
-        self.m_is_active = True
-
-
-    # De-activate this Rule
-    #
-    def deactivate(self):
-        self.m_is_active = False
+        self.m_source = ''
 
 
     # @returns The relative priority of this Rule
@@ -92,11 +74,7 @@ class Rule:
         s += str(self.m_name)
         s += '", "indication": "'
         s += str(self.m_indication)
-        s += '", "active": '
-        if self.m_is_active:
-            s += '"true"'
-        else:
-            s += '"false"'
+        s += '"'
         return s
 
 
@@ -109,16 +87,15 @@ class Rule:
         s += str(self.m_name)
         s += '", "indication": "'
         s += str(self.m_indication)
+        s += '", "source": "'
+        s += str(self.m_source)
         s += '", "priority": "'
         s += str(self.m_priority)
         s += '", "condition": "'
         s += str(self.m_condition)
-        s += '"aspect": '
+        s += '"aspect": "'
         s += str(self.m_aspect)
-        if self.m_is_active:
-            s += '"true"'
-        else:
-            s += '"false"'
+        s += '"'
         return s
 
 

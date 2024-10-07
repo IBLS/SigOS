@@ -60,8 +60,12 @@ class Rules:
                         rule["aspect"])
             self.m_rule_list.append(robj)
 
+        # The request list is maintained in ascending order
+        # according to rule priority.
         self.m_request_list = list()
-        self.m_active_rule = None
+
+        # Save a local Log object for convenience
+        self.m_log = Log.Log()
 
         # Save this singleton
         Rules.c_rules = self
@@ -73,84 +77,204 @@ class Rules:
     # @param p_source The name of the source, should be this hostname
     #
     def startup(self, p_source):
-        self.request_by_rule_or_name(self.m_default_rule, p_source)
+        state = self.request_by_rule_or_name(self.m_default_rule, p_source)
+        if state == 0:
+            msg = "Invalid default rule: "
+            msg += self.m_default_rule
+            self.m_log.add(p_source, msg)
+        if state == 1 or state == 2:
+            msg = "Invalid pending default rule: "
+            msg += self.m_default_rule
+            self.m_log.add(p_source, msg)
+        if state == 3:
+            msg = "Activated default rule: "
+            msg += self.m_default_rule
+            self.m_log.add(p_source, msg)
+
+
+    # Insert the given rule into the request list.
+    # @p_rule The rule to be inserted
+    # @p_source The name of the source making the request.
+    # @returns True if the rule was inserted, false if the rule
+    #          is already in the list.
+    #
+    def request(self, p_rule, p_source):
+        index = len(self.m_request_list)
+        for rule in reversed(self.m_request_list):
+            if p_rule.m_rule == rule.m_rule:
+                if p_rule.m_source == p_source:
+                    # Already in the request list
+                    return False
+            if p_rule.m_priority > rule.m_priority:
+                break
+            index -= 1
+        p_rule.m_source = p_source
+        self.m_request_list.insert(index, p_rule)
+        return True
+        
+
+    # Remove the specified rule from the request list.
+    # @p_rule The rule to be removed
+    # @p_source The name of the source making the request.
+    # @returns True if the rule was removed, false if the rule
+    #          was not in the list.
+    #
+    def release(self, p_rule, p_source):
+        index = 0
+        for rule in self.m_request_list:
+            if p_rule.m_rule == rule.m_rule:
+                if p_rule.m_source == rule.m_source:
+                    self.m_request_list.pop(index)
+                    return True
+            index += 1
+        return False
+        
+
+    # Remove the highest priority rule from the request list
+    # @returns The removed rule, or None
+    #
+    def pop_active(self):
+        if len(self.m_request_list) == 0:
+            return None
+
+        return self.m_request_list.pop()
+
+
+    # @returns The highest priority rule in the list, or None if empty
+    #
+    def get_active_rule(self):
+        if len(self.m_request_list) == 0:
+            return None
+        return self.m_request_list[-1]
+
+
+    # Find and return a rule by number or name.
+    # @p_rule_or_name A string of the rule number or name
+    # @returns The matching rule, or None if not a valid rule.
+    #
+    def find_rule(self, p_rule_or_name):
+        for rule in self.m_rule_list:
+            if (rule.m_rule == p_rule_or_name):
+                return rule
+            if (rule.m_name == p_rule_or_name):
+                return rule
+        return None
 
 
     # Request activation of a rule by number or name
     # @param p_rule_or_name The rule number or name
     # @param p_source The name of the requestor
-    # @returns True if valid request, False if invalid rule or name
+    # @returns state where:
+    #          0 - if invalid rule or name
+    #          1 - if the rule is already in the list
+    #          2 - if the rule was added but not activated
+    #          3 - if the rule was added and activated
     #
     def request_by_rule_or_name(self, p_rule_or_name, p_source):
-        # Verify valid rule
-        valid = False
-        for rule in self.m_rule_list:
-            if (rule.match_by_rule(p_rule_or_name):
-                valid = True
-                break
-            if (rule.match_by_name(p_rule_or_name)):
-                valid = True
-                break
-        if not valid:
-            return false
+        # Verify the request is a valid rule
+        valid_rule = self.find_rule(p_rule_or_name)
+        # Did we find a valid rule?
+        if not valid_rule:
+            return 0
 
-        # Is the rule already in the list?
-        for req in self.m_request_list:
-            if ((req[0] == p_rule_or_name) and (req[1] == p_source)):
-                # Request is already registered
-                return True
+        # Remember the current active rule
+        pre_active_rule = self.get_active_rule()
 
-        # Add as new request
-        self.m_request_list.append([p_rule_or_name, p_source])
-        return True
+        # Add the rule to the request list
+        if not self.request(valid_rule, p_source):
+            # This rule is already in the list
+            return 1
+
+        # Has the active rule changed?
+        post_active_rule = self.get_active_rule()
+        if pre_active_rule and pre_active_rule.m_rule == post_active_rule.m_rule:
+            # No, same rule is in effect, no change required
+            return 2
+
+        # We have changed the current active rule
+        if (pre_active_rule):
+            s = "Released: "
+            s += pre_active_rule.m_rule
+            s += ":"
+            s += pre_active_rule.m_name
+            self.m_log.add(p_source, s)
+
+        s = "Activated: "
+        s += post_active_rule.m_rule
+        s += ":"
+        s += post_active_rule.m_name
+        self.m_log.add(p_source, s)
+
+        # TODO: Figure out how to change hardware state
+
+        return 3
 
 
-    #def activate_highest_rule(self):
-    #    high_rule = self.m_request_list[0]
-    #    for req in self.m_request_list:
-    #        if (
-            
-
-    # Find and return the currently active Rule, or None
+    # Release a rule by number or name
+    # @param p_rule_or_name The rule number or name
+    # @param p_source The name of the requestor
+    # @returns state where:
+    #          0 - if invalid rule or name
+    #          1 - if the rule is was not in the request list
+    #          2 - if the rule was released but was not activated
+    #          3 - if the rule was activated and was released
     #
-    def find_active_rule(self):
-        for rule in self.m_rule_list:
-            if (rule.is_active()):
-                return rule
+    def release_by_rule_or_name(self, p_rule_or_name, p_source):
+        # Verify the release is a valid rule
+        valid_rule = self.find_rule(p_rule_or_name)
+        # Did we find a valid rule?
+        if not valid_rule:
+            return 0
 
-        return None
+        if len(self.m_request_list) < 2:
+            return 0
+
+        # Don't remove the default rule
+        if (p_rule_or_name == self.m_default_rule) or \
+           (p_rule_or_name == self.m_default_rule):
+            return 0
+
+        # Remember the current active rule
+        pre_active_rule = self.get_active_rule()
+
+        # Release the rule from the request list
+        if not self.release(valid_rule, p_source):
+            # This rule was not in the request list
+            return 1
+
+        # Has the active rule changed?
+        post_active_rule = self.get_active_rule()
+        if (pre_active_rule.m_rule == post_active_rule.m_rule):
+            # No, same rule is in effect, no change required
+            return 2
+
+        # We have changed the current active rule
+        if (pre_active_rule):
+            s = "Released: "
+            s += pre_active_rule.m_rule
+            s += ":"
+            s += pre_active_rule.m_name
+            self.m_log.add(p_source, s)
+
+        s = "Activated: "
+        s += post_active_rule.m_rule
+        s += ":"
+        s += post_active_rule.m_name
+        self.m_log.add(p_source, s)
+
+        # TODO: Figure out how to change hardware state
+
+        return 3
 
 
-    # Find and activiate the Rule by the given rule number or rule name
-    # @param p_rule_or_name The rule number or name to activate
-    # @param p_source The source requesting the action
-    # @returns True on activation of new Rule, False if not found or not activated
+    # @returns A string representation of the request list
     #
-    def activate_by_rule_or_name(self, p_rule_or_name, p_source):
-        active_priority = 0
-        active_rule = self.find_active_rule()
-        if (active_rule):
-            active_priority = active_rule.get_priority()
-
-        for rule in self.m_rule_list:
-            if (rule.match_by_rule(p_rule_or_name) or rule.match_by_name(p_rule_or_name)):
-                if (active_priority <= rule.get_priority()):
-                    if (active_rule):
-                        active_rule.deactivate()
-                    rule.activate()
-                    return True
-                else:
-                    break;
-
-        return False
-
-
-
-    # Deactivate any active rule.
-    #
-    def deactivate(self):
-        for rule in rules:
-            rule.deactivate()
+    def request_list(self):
+        out = list()
+        for rule in self.m_request_list:
+            s = str(rule)
+            out.append(s)
+        return out
 
 
     # @returns A string representation of this rule set

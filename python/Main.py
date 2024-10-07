@@ -45,6 +45,7 @@ setup_hardware()
 
 # Load the configuration file
 #
+print("Loading config")
 g_config = Config.Config("config.json")
 
 

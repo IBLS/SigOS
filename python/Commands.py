@@ -36,36 +36,75 @@ Command.Command(wl, "Provide a list of supported commands", fn_help)
 
 
 def fn_request(p_word_list, p_client):
-    source = str(p_client.m_client_addr)
     rule_or_name = p_word_list[1]
-    log = Log.Log()
-    out = list()
     rules = Rules.Rules.c_rules
-    if rules.activate_by_rule_or_name(rule_or_name, source):
-        active_rule = rules.find_active_rule()
-        active_rule_desc = active_rule.abbr_str()
-        log_msg = "Activated "
-        log_msg += rule_or_name
-        log.add(source, log_msg)
-        out.append(log_msg)
-        out.append(active_rule_desc)
-    else:
-        log_msg = "Denied "
-        log_msg += rule_or_name
-        log.add(source, log_msg)
-        out.append(log_msg)
+    if rule_or_name == "list":
+        out = rules.request_list()
+        return True, out
+    out = list()
+    source = str(p_client.m_client_addr)
+    state = rules.request_by_rule_or_name(rule_or_name, source)
+    if state == 0:
+        msg = "Invalid: "
+        msg += rule_or_name
+        out.append(msg)
+    if state == 1 or state == 2:
+        msg = "Pending: "
+        msg += rule_or_name
+        out.append(msg)
+    if state == 3:
+        msg = "Activated: "
+        msg += rule_or_name
+        out.append(msg)
     return True, out
 
-wl = ["request", "${rule}|{name}"]
+wl = ["request", "${rule}|{name}|list"]
 Command.Command(wl, "Request activation of a Rule by number or name", fn_request)
 
 
 def fn_release(p_word_list, p_client):
-    ok = ["ok"]
-    return True, ok
+    source = str(p_client.m_client_addr)
+    rule_or_name = p_word_list[1]
+    out = list()
+    rules = Rules.Rules.c_rules
+    state = rules.release_by_rule_or_name(rule_or_name, source)
+    if state == 0:
+        msg = "Invalid: "
+        msg += rule_or_name
+        out.append(msg)
+    if state == 1:
+        msg = "Not requested: "
+        msg += rule_or_name
+        out.append(msg)
+    if state == 2:
+        msg = "Released: "
+        msg += rule_or_name
+        out.append(msg)
+    if state == 3:
+        msg = "Deactivated: "
+        msg += rule_or_name
+        out.append(msg)
+        active_rule = rules.get_active_rule()
+        msg = "Activated: "
+        msg += active_rule.m_rule
+        out.append(msg)
+    return True, out
 
 wl = ["release", "${rule}|{name}"]
 Command.Command(wl, "Release previous Rule activation by number or name", fn_release)
+
+
+def fn_active(p_word_list, p_client):
+    source = str(p_client.m_client_addr)
+    out = list()
+    rules = Rules.Rules.c_rules
+    active_rule = rules.get_active_rule()
+    msg = active_rule.abbr_str()
+    out.append(msg)
+    return True, out
+
+wl = ["active"]
+Command.Command(wl, "Show the active Rule", fn_active)
 
 
 def fn_log(p_word_list, p_client):
