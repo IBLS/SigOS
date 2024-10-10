@@ -56,7 +56,6 @@ class Rules:
                         rule["name"],
                         rule["indication"],
                         rule["priority"],
-                        rule["condition"],
                         rule["aspect"])
             self.m_rule_list.append(robj)
 

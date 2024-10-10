@@ -31,16 +31,14 @@ class Rule:
     # @param p_name The formal name classifcation, e.g. "Diverging-clear"
     # @param p_indication Descriptive instruction conveyed by the signal
     # @param p_priority The numeric (real or float) relative priority of this aspect
-    # @param p_condition List of conditions that must be met, or None
     # @param p_aspect A list of commands that will change the signal
     #        semaphore, lights, etc to indicate the desired Aspect.
     #
-    def __init__(self, p_rule, p_name, p_indication, p_priority, p_condition, p_aspect):
+    def __init__(self, p_rule, p_name, p_indication, p_priority, p_aspect):
         self.m_rule = p_rule
         self.m_name = p_name
         self.m_indication = p_indication
         self.m_priority = p_priority
-        self.m_condition = p_condition
         self.m_aspect = p_aspect
         self.m_source = ''
 
@@ -91,8 +89,6 @@ class Rule:
         s += str(self.m_source)
         s += '", "priority": "'
         s += str(self.m_priority)
-        s += '", "condition": "'
-        s += str(self.m_condition)
         s += '"aspect": "'
         s += str(self.m_aspect)
         s += '"'

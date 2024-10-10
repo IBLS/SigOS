@@ -59,7 +59,7 @@ class Config:
 
         # Build heads object
         heads = config["heads"]
-        self.m_head_array = []
+        self.m_head_array = list()
         for head in heads:
             head_id = head["head-id"]
             head_obj = Head.Head(head_id)
