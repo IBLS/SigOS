@@ -5,7 +5,7 @@
   "wifi-password": "downcase",
   "ip-addr": "192.168.1.100",
   "light-on-approach": "true",
-  "number-board": "6224-1",
+  "number-plate": "6224-1",
   "rules-file": "atsf1959_rules_ss2.json",
   "heads" : [
         {

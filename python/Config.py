@@ -50,7 +50,7 @@ class Config:
         self.m_wifi_password = config["wifi-password"]
         self.m_ip_addr = config["ip-addr"]
         self.m_light_on_approach = config["light-on-approach"] == "true"
-        self.m_number_board = config["number-board"]
+        self.m_number_plate = config["number-plate"]
         self.m_rules_file = config["rules-file"]
 
         # Remove ".local" from hostname, if present
@@ -97,8 +97,8 @@ class Config:
         s += self.m_ip_addr
         s += "\nlight-on-approach: "
         s += str(self.m_light_on_approach)
-        s += "\nnumber-board: "
-        s += self.m_number_board
+        s += "\nnumber-plate: "
+        s += self.m_number_plate
         s += "\nrules_file: "
         s += self.m_rules_file
         s += "\n"
