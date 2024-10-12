@@ -50,8 +50,10 @@ class Config:
         self.m_wifi_password = config["wifi-password"]
         self.m_ip_addr = config["ip-addr"]
         self.m_light_on_approach = config["light-on-approach"] == "true"
-        self.m_number_plate = config["number-plate"]
+        self.m_number_plate = config["number-plate"] == "true"
         self.m_rules_file = config["rules-file"]
+        self.m_semaphore_count = 0
+        self.m_ligth_count = 0
 
         # Remove ".local" from hostname, if present
         hostname_list = self.m_hostname.split(".")
@@ -68,22 +70,50 @@ class Config:
                 lights_list = head["lights"]
                 for light in lights_list:
                     light_id = light["light-id"]
+                    ws281_id = light["ws281-id"]
                     colors = light["colors"]
                     light_obj = Light.Light(head_id, light_id, colors)
                     head_obj.add_light(light_obj)
-
-            if ("semaphores" in head):
+                    self.m_ligth_count += 1
+            elif ("semaphores" in head):
                 semaphore_list = head["semaphores"]
                 for semaphore in semaphore_list:
                     semaphore_id = semaphore["semaphore-id"]
                     degrees_per_second = semaphore["degrees-per-second"]
                     semaphore_obj = Semaphore.Semaphore(head_id, semaphore_id, degrees_per_second)
                     head_obj.add_semaphore(semaphore_obj)
+                    self.m_semaphore_count += 1
+            else:
+                self.m_log.add(p_source, "Invalid fixture in config 202410112120");
 
             self.m_head_array.append(head_obj)
 
         # Save this singleton
         Config.c_config = self
+
+
+    # @returns The number of heads configured for this signal
+    #
+    def head_count(self):
+        return len(self.m_head_array)
+
+
+    # @returns The number of semaphores configured for this signal
+    #
+    def semaphore_count(self):
+        return self.m_semaphore_count
+
+
+    # @returns The number of lights configured for this signal
+    #
+    def light_count(self):
+        return self.m_ligth_count
+
+
+    # @returns True if this signal has a number plate
+    #
+    def number_plate(self):
+        return self.m_number_plate
 
 
     # @returns A string representation of this rule set

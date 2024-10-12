@@ -39,7 +39,8 @@ class Rule:
         self.m_name = p_name
         self.m_indication = p_indication
         self.m_priority = p_priority
-        self.m_aspect = p_aspect
+        self.m_aspect_text = p_aspect
+        self.m_aspect = list()
         self.m_source = ''
 
 
@@ -89,9 +90,15 @@ class Rule:
         s += str(self.m_source)
         s += '", "priority": "'
         s += str(self.m_priority)
-        s += '"aspect": "'
-        s += str(self.m_aspect)
-        s += '"'
+        s += '"aspect": ['
+        for aspect in self.m_aspect_text:
+            s += '"'
+            s += aspect
+            s += '",'
+        # Remove last comma
+        if len(self.m_aspect_text) > 0:
+            s = s[:-1]
+        s += ']'
         return s
 
 

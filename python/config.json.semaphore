@@ -13,6 +13,7 @@
             "lights": [
                 {
                     "light-id": 1,
+                    "ws281-id" : 0,
                     "colors": ["red", "green", "yellow"]
                 }
             ],

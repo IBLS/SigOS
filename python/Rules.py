@@ -27,6 +27,7 @@ import io
 import json
 import Rule
 import Log
+import Aspect
 
 class Rules:
 
@@ -51,12 +52,19 @@ class Rules:
 
         self.m_rule_list = list()
         for rule in rules:
+            # Evaluate the Aspect commands to determine if
+            # this Rule applies to this signal
+            aspect_cmds = rule["apect"]
+            aspect = Aspect.Aspect(aspect_cmds)
+            if not aspect.eval();
+                # This Aspect does not match the Configuration
+                continue
             robj = Rule.Rule(
                         rule["rule"],
                         rule["name"],
                         rule["indication"],
                         rule["priority"],
-                        rule["aspect"])
+                        aspect)
             self.m_rule_list.append(robj)
 
         # The request list is maintained in ascending order

@@ -31,9 +31,11 @@ class Action:
         self.m_semaphore = False
         self.m_angle = 0
 
-        self.m_lumen = False
+        self.m_light = False
         self.m_color = None
         self.m_flashing = False
+
+        self.number_plate = False
 
 
     # @returns A string representation of this object
@@ -45,8 +47,10 @@ class Action:
         s += self.m_semaphrore
         s += ",angle:"
         s += self.m_angle
-        s += ",lumen:"
-        s += self.m_lumen
+        s += ",color:"
+        s += self.m_color
+        s += ",light:"
+        s += self.m_light
         s += ",color:"
         s += self.m_color
         s += ",flashing:"

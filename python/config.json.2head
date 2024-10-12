@@ -13,14 +13,17 @@
             "lights": [
                 {
                     "light-id": 1,
+                    "ws281-id" : 0,
                     "colors": ["green"]
                 },
                 {
                     "light-id": 2,
+                    "ws281-id" : 1,
                     "colors": ["yellow"]
                 },
                 {
                     "light-id": 3,
+                    "ws281-id" : 2,
                     "colors": ["red"]
                 }
             ]
@@ -30,10 +33,12 @@
             "lights": [
                 {
                     "light-id": 1,
+                    "ws281-id" : 3,
                     "colors": ["green"]
                 },
                 {
                     "light-id": 2,
+                    "ws281-id" : 4,
                     "colors": ["red"]
                 }
             ]

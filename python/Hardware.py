@@ -92,7 +92,7 @@ class Hardware:
     # Set the Lumen intensity level of the LED
     # @param p_percent A percent value between 0 (off) and 100 (max intensity)
     #
-    def set_led_lumen(self, p_percent)
+    def set_led_light(self, p_percent)
         duty = 65535 * p_percent
         if (duty > 0):
             duty /= 100
