@@ -115,10 +115,12 @@ class Aspect:
         # Create an action
         if fixture == "semaphore":
             if not head:
-                self.m_log.add(self.m_config.m_hostname, "Missing head parameter 202410112052");
+                self.m_log.add(self.m_config.m_hostname, \
+                    "Missing head parameter 202410112052");
                 return False
             if not angle:
-                self.m_log.add(self.m_config.m_hostname, "Missing angle parameter 202410112053");
+                self.m_log.add(self.m_config.m_hostname, \
+                    "Missing angle parameter 202410112053");
                 return False;
             action = Action.Action()
             action.m_semaphore = True
@@ -131,10 +133,12 @@ class Aspect:
 
         elif fixture == "light":
             if not head:
-                self.m_log.add(self.m_config.m_hostname, "Missing head parameter 202410112054");
+                self.m_log.add(self.m_config.m_hostname, \
+                    "Missing head parameter 202410112054");
                 return False
             if not color:
-                self.m_log.add(self.m_config.m_hostname, "Missing color parameter 202410112056");
+                self.m_log.add(self.m_config.m_hostname, \
+                    "Missing color parameter 202410112056");
                 return False
             action = Action.Action()
             action.m_light = True
@@ -145,7 +149,8 @@ class Aspect:
             self.m_head_count += 1
             self.m_light_count += 1
         else:
-            self.m_log.add(self.m_config.m_hostname, "Invalid aspect 202410112057");
+            self.m_log.add(self.m_config.m_hostname, \
+                "Invalid aspect 202410112057");
             return False
 
         return True

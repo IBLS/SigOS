@@ -54,18 +54,24 @@ class Rules:
         for rule in rules:
             # Evaluate the Aspect commands to determine if
             # this Rule applies to this signal
-            aspect_cmds = rule["apect"]
-            aspect = Aspect.Aspect(aspect_cmds)
-            if not aspect.eval();
-                # This Aspect does not match the Configuration
-                continue
-            robj = Rule.Rule(
-                        rule["rule"],
-                        rule["name"],
-                        rule["indication"],
-                        rule["priority"],
-                        aspect)
-            self.m_rule_list.append(robj)
+            aspect = None
+            aspect_list = rule["aspect"]
+            for aspect_cmds in aspect_list:
+                aspect = Aspect.Aspect(aspect_cmds)
+                if not aspect.eval():
+                    # This Aspect does not match the Configuration
+                    aspect = None
+                    continue
+
+            # Keep this rule only if the Aspect matches the Config
+            if aspect:
+                robj = Rule.Rule(
+                            rule["rule"],
+                            rule["name"],
+                            rule["indication"],
+                            rule["priority"],
+                            aspect)
+                self.m_rule_list.append(robj)
 
         # The request list is maintained in ascending order
         # according to rule priority.
@@ -76,7 +82,6 @@ class Rules:
 
         # Save this singleton
         Rules.c_rules = self
-
 
 
     # Startup by activating the default Rule.
