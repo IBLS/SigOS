@@ -88,8 +88,8 @@
             "indication": "STOP; THEN PROCEED AS PRESCRIBED BY RULE 320",
             "priority": 170,
             "aspect": [
-                "semaphore head:1 angle:90; light head:1 color:red; number-plate yes",
-                "light head:1 color:red; number-plate yes"
+                "semaphore head:1 angle:90; light head:1 color:red; number-plate:yes",
+                "light head:1 color:red; number-plate:yes"
             ]
         },
 

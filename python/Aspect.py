@@ -25,6 +25,7 @@
 
 import Config
 import Action
+import Log
 
 class Aspect:
 
@@ -61,7 +62,7 @@ class Aspect:
                 return False
 
         self.m_valid_config = self.check_config()
-        return m_valid_config
+        return self.m_valid_config
 
     # Evaluate a single aspect command>
     # @p_aspect_cmd An aspect command string.
@@ -97,15 +98,15 @@ class Aspect:
                 continue
 
             if args[0] == "head":
-                head = int(arg[1])
+                head = int(args[1])
                 continue
 
             if args[0] == "angle":
-                angle = int(arg[1])
+                angle = int(args[1])
                 continue
 
             if args[0] == "color":
-                color = arg[1]
+                color = args[1]
                 continue
 
             if args[0] == "flashing":

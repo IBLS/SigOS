@@ -304,3 +304,18 @@ class Rules:
             s += "\n"
         return s
 
+
+    # @returns A list of supported rules
+    #
+    def supported_rules(self):
+        out = list()
+        s = self.m_rule_set
+        s += " file="
+        s += self.m_rule_file
+        out.append(s)
+        for rule in self.m_rule_list:
+            #out.append(rule.abbr_str())
+            out.append(rule.simple_str())
+        return out
+
+

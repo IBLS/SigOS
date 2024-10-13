@@ -77,6 +77,17 @@ class Rule:
         return s
 
 
+    # @returns A simple-to-read string representation of this rule
+    #
+    def simple_str(self):
+        s = str(self.m_rule)
+        s += ', '
+        s += str(self.m_name)
+        s += ', '
+        s += str(self.m_indication)
+        return s
+
+
     # @returns A string representation of this rule
     #
     def __str__(self):

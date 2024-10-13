@@ -26,7 +26,7 @@
 class Action:
 
     def __init__(self):
-        self.m_head
+        self.m_head = None
 
         self.m_semaphore = False
         self.m_angle = 0

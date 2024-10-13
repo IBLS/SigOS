@@ -107,6 +107,15 @@ wl = ["active"]
 Command.Command(wl, "Show the active Rule", fn_active)
 
 
+def fn_rules(p_word_list, p_client):
+    rules = Rules.Rules.c_rules
+    out = rules.supported_rules()
+    return True, out
+
+wl = ["rules"]
+Command.Command(wl, "Print the list of supported Rules", fn_rules)
+
+
 def fn_log(p_word_list, p_client):
     log = Log.Log()
     all_logs = log.get_all()
