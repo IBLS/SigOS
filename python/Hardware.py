@@ -114,6 +114,23 @@ class Hardware:
         self.m_servo.duty(duty)
 
 
+    def neopixel(self):
+        # Set GPIO0 to output to drive NeoPixels
+        pin = Pin(0, Pin.OUT)
+
+        # create NeoPixel dirver on GPIO0 for 8 pixels
+        np = NeoPixel(pin, 8)
+
+        # Set the first pixel to while
+        np[0] = (255, 255, 255)
+
+        # Write data to all pixels
+        np.write()
+
+        # Get first pixel color
+        r, g, b = np[0]
+
+
     # @returns True if the B input signal has detected a train
     #
     def get_detect_b(self)

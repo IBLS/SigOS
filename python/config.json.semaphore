@@ -24,5 +24,17 @@
                 }
             ]
         }
+    ],
+  "color-chart" : [
+        { "name" : "red", "r" : 253, "g" : 1, "b" : 1 },
+        { "name" : "yellow", "r" : 222, "g" : 236, "b" : 0 },
+        { "name" : "green", "r" : 12, "g" : 189, "b" : 24 },
+        { "name" : "lunar-white", "r" : 225, "g" : 225, "b" : 255 },
+        { "name" : "white", "r" : 255, "g" : 255, "b" : 255 },
+        { "name" : "blue", "r" : 62, "g" : 14, "b" : 219 },
+        { "name" : "purple", "r" : 136, "g" : 0, "b" : 253 },
+        { "name" : "lemon-yellow", "r" : 253, "g" : 166, "b" : 0 },
+        { "name" : "black", "r" : 0, "g" : 0, "b" : 0 },
+        { "name" : "off", "r" : 0, "g" : 0, "b" : 0 }
     ]
 }

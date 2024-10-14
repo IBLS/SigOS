@@ -74,7 +74,7 @@ class Config:
                     colors = light["colors"]
                     light_obj = Light.Light(head_id, light_id, colors)
                     head_obj.add_light(light_obj)
-                    self.m_ligth_count += 1
+                    self.m_light_count += 1
             elif ("semaphores" in head):
                 semaphore_list = head["semaphores"]
                 for semaphore in semaphore_list:
@@ -87,6 +87,9 @@ class Config:
                 self.m_log.add(p_source, "Invalid fixture in config 202410112120");
 
             self.m_head_array.append(head_obj)
+
+        # Load the WS281 color chart
+        self.m_color_chart = config["color-chart"]
 
         # Save this singleton
         Config.c_config = self
@@ -107,7 +110,7 @@ class Config:
     # @returns The number of lights configured for this signal
     #
     def light_count(self):
-        return self.m_ligth_count
+        return self.m_light_count
 
 
     # @returns True if this signal has a number plate
