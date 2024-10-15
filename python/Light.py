@@ -23,6 +23,9 @@
 # 
 #
 
+import WS281
+
+
 class Light:
 
     # Create a Light object
@@ -30,12 +33,36 @@ class Light:
     #                  1 is the highest head, 2 is the next highest, etc
     # @param p_light_id The identifier (number) of the Light, 1 is highest on the head,
     #             2 is next highest, etc
-    # @param p_colors A list of one or more valid color names for this light
+    # @param p_flashes_per_minute The number of times to flash in 60 seconds
+    # @param p_color_list A list of one or more valid color names for this light
     #
-    def __init__(self, p_head_id, p_light_id, p_colors):
+    def __init__(self, p_head_id, p_light_id, p_flashes_per_minute, p_color_list):
         self.m_head_id = p_head_id
         self.m_light_id = p_light_id
-        self.m_colors = p_colors
+        self.m_flashes_per_minute = p_flashes_per_minute
+        self.m_color_list = p_color_list
+
+
+    # Initialize Light hardware
+    # Note: this is performed in the WS281 driver
+    #
+    def init_hardware(self):
+        pass
+
+
+    # Modify the aspect of this light
+    # @param p_ws281 The singleton hardware object controlling the WS281 hardware
+    # @param p_color The name of the color to set.
+    # @param p_intensity The brightness of the light in % (0-100)
+    # @param p_flashing When True then make this light flash
+    # @returns True on success, False if the requested state does not match
+    #
+    def set_aspect(self, p_ws281, p_color, p_intensity, p_flashing):
+        for color in self.m_color_list:
+            if p_color == color:
+                # Make the change
+                return p_ws281.set_color(p_color, p_intensity, p_flashing)
+        return False
 
 
     # @returns A string representation of this Light

@@ -33,20 +33,21 @@ import Config
 import Commands
 import Command
 import Rules
+import Hardware
 
 
-# Perform necessary hardware setup
+# Create the Hardware singleton
 #
-def setup_hardware():
-    pass
-
-setup_hardware()
-
+print("Creating Hardware singleton")
+Hardware.Hardware()
 
 # Load the configuration file
 #
 print("Loading config")
 g_config = Config.Config("config.json")
+
+# Initialize hardware
+Hardware.Hardware.InitHardware(g_config)
 
 
 # Load the rules from the file specified in the config file

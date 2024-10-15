@@ -218,6 +218,8 @@ class Rules:
         self.m_log.add(p_source, s)
 
         # TODO: Figure out how to change hardware state
+        if not post_active_rule.execute():
+            self.m_log.add(p_source, "Failed to execute 202410151727")
 
         return 3
 

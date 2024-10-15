@@ -23,6 +23,9 @@
 # 
 #
 
+import Aspect
+
+
 class Rule:
 
     # Create a Rule object to encapsulates a single operating rule
@@ -31,17 +34,24 @@ class Rule:
     # @param p_name The formal name classifcation, e.g. "Diverging-clear"
     # @param p_indication Descriptive instruction conveyed by the signal
     # @param p_priority The numeric (real or float) relative priority of this aspect
-    # @param p_aspect A list of commands that will change the signal
-    #        semaphore, lights, etc to indicate the desired Aspect.
+    # @param p_aspect An Aspect object that has already been evaluated.
     #
     def __init__(self, p_rule, p_name, p_indication, p_priority, p_aspect):
         self.m_rule = p_rule
         self.m_name = p_name
         self.m_indication = p_indication
         self.m_priority = p_priority
-        self.m_aspect_text = p_aspect
-        self.m_aspect = list()
-        self.m_source = ''
+        self.m_aspect = p_aspect
+
+
+    # Execute all Aspect changes associated with this Rule
+    # @returns True on success, False on failure
+    #
+    def execute(self):
+        if self.m_aspect:
+            return self.m_aspect.execute()
+        print("missing aspect 2020410151602")
+        return False
 
 
     # @returns The relative priority of this Rule
@@ -97,19 +107,8 @@ class Rule:
         s += str(self.m_name)
         s += '", "indication": "'
         s += str(self.m_indication)
-        s += '", "source": "'
-        s += str(self.m_source)
         s += '", "priority": "'
         s += str(self.m_priority)
-        s += '"aspect": ['
-        for aspect in self.m_aspect_text:
-            s += '"'
-            s += aspect
-            s += '",'
-        # Remove last comma
-        if len(self.m_aspect_text) > 0:
-            s = s[:-1]
-        s += ']'
         return s
 
 

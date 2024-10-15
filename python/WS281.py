@@ -28,12 +28,13 @@ from neopixel import NeoPixel
 
 class WS281:
 
-    # Create a NeoPixel driver
+    # Create a NeoPixel driver on a specific GPIO pin
     # @p_pin The output pin driving the NeoPixel signal
-    # @p_config The SigOS configuration object for thsi signal
+    # @p_light_count Number of lights driven on this chaing
+    # @p_color_char The color chart from Config
     #
-    def __init__(self, p_pin, p_config):
-        self.m_led_count = p_config.light_count()
+    def __init__(self, p_pin, p_light_count, p_color_chart):
+        self.m_led_count = p_light_count
 
         # Set GPIO to output to drive NeoPixels
         self.m_pin = Pin(p_pin, Pin.OUT)
@@ -42,7 +43,24 @@ class WS281:
         self.m_neopixel = NeoPixel(self.m_pin, self.m_led_count)
 
         # Get the WS281 color chart
-        self.m_color_chart = self.m_color_chart
+        self.m_color_chart = p_color_chart
+
+        self.all_off()
+
+
+    # Destructor - shut down PWM
+    #
+    def __del__(self):
+        self.all_off()
+        self.m_neopixel.deinit()
+
+
+    # Turn off all LEDs
+    #
+    def all_off(self):
+        # Turn off all LEDs
+        for i in  range(self.m_led_count):
+            self.set_color(i, "off")
 
 
     # Set the RGB values for a specific NeoPixel LED
@@ -53,10 +71,10 @@ class WS281:
     # @returns True on success, false on invalid index
     #
     def set(self, p_led_index, p_r, p_g, p_b):
-        if p_led_index <= self.m_led_count:
+        if p_led_index >= self.m_led_count:
             return False
 
-        self.m_neopixel[p_led_index] = (p_r, p_g, p_b)
+        self.m_neopixel[p_led_index] = (int(p_r), int(p_g), int(p_b))
         self.m_neopixel.write()
         return True
 
@@ -66,7 +84,7 @@ class WS281:
     # @returns (r, g, b) values of the LED, or None, None, None
     #
     def get(self, p_led_index):
-        if p_led_index <= self.m_led_count:
+        if p_led_index >= self.m_led_count:
             return False
 
         # Get first pixel color
@@ -76,15 +94,21 @@ class WS281:
     # Set the specified LED according to the color name
     # @param p_led_index The zero-based LED index
     # @param p_color_name The name of the color to set
+    # @param p_intensity Brightness of the color as a percentage, 0% to 100%
+    # @param p_flashing When True cause this light to flash
     # @returns True on success, false on invalid index or color name
     #
-    def set_color_name(self, p_led_index, p_color_name):
+    def set_color(self, p_led_index, p_color_name, p_intensity=100, p_flashing=False):
         for color in self.m_color_chart:
-            name = color["name"]
-            if name = p_color_name:
+            if color["name"] == p_color_name:
                 r = int(color["r"])
                 g = int(color["g"])
                 b = int(color["b"])
+                if (p_intensity < 100):
+                    r = (r * p_intensity) / 100
+                    g = (g * p_intensity) / 100
+                    b = (b * p_intensity) / 100
                 return self.set(p_led_index, r, g, b)
         return False
+        # TODO: Implement flashing
 

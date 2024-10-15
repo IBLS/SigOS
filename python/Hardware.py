@@ -32,9 +32,19 @@
 
 import sys
 import machine
+from machine import Pin, PWM
 import ubinascii
+import Semaphore
+import Light
+import WS281
 
 class Hardware:
+
+    # Class variable that holds the singleton instance of Hardware
+    c_hardware = None
+
+    # This will hoold the WS281 singleton controller object
+    c_ws281 = None
 
     # Determine underlying hardware and initialize pins
     #
@@ -42,109 +52,137 @@ class Hardware:
         self.m_platform = sys.platform
         self.m_unique_id = ubinascii.hexlify(machine.unique_id())
 
-        self.m_led_pwm_freq = 1000
-        self.m_led_pwm_duty_u16 = 65535/2
         if (self.m_platform == 'esp8266'):
             # ESP8266 pinout
             # Pin 1 - GND
-            # Pin 2 - On-board LED and PWM for semaphore light/LED
+            # Pin 2 - On-board LED and WS281 for lights/LED
             # Pin 3 - Detect B
             # Pin 4 - Detect B-
             # Pin 5 - Servo control out - GND at power-on to program
             # Pin 6 - /Reset (unused)
             # Pin 7 - Detect B+
             # Pin 8 - VCC
-            self.m_led = PWM(Pin(2), freq=self.m_led_pwm_freq, duty_u16=self.m_led_pwm_duty_u16)
-
-            self.m_servo_pwm_freq = 50 # freq=50 is required for servos
-            self.m_servo_pwm_duty = 40 # servo flag low-position
-            self.m_servo = PWM(Pin(5), freq=self.m_servo_pwm_freq, duty=self.m_servo_pwm_duty)
-
             self.m_detect_b  = Pin(3, Pin.IN, Pin.PULL_UP)
             self.m_detect_bm = Pin(4, Pin.IN, Pin.PULL_UP)
             self.m_detect_bp = Pin(7, Pin.IN, Pin.PULL_UP)
-        elsif (self.m_platform == 'esp32'):
+        elif (self.m_platform == "esp32"):
             # ESP32 S2 mini pins used - tries to use same "pin" numbers as ESP8266
             # Pin 2 - LED light
             # Pin 3 - detect block B
             # Pin 4 - detect block B-
             # Pin 5 - Servo control out
             # Pin 7 - detect block B+
-            self.m_led = PWM(Pin(2), freq=self.m_led_pwm_freq, duty_u16=self.m_led_pwm_duty_u16)
-
-            self.m_servo_pwm_freq = 50 # freq=50 is required for servos
-            self.m_servo_pwm_duty = 40 # servo flag low-position
-            self.m_servo = PWM(Pin(5), freq=self.m_servo_pwm_freq, duty=self.m_servo_pwm_duty)
-
             self.m_detect_b  = Pin(3, Pin.IN, Pin.PULL_UP)
             self.m_detect_bm = Pin(4, Pin.IN, Pin.PULL_UP)
             self.m_detect_bp = Pin(7, Pin.IN, Pin.PULL_UP)
         else:
             raise Exception('Unrecognized hardware {} 02407241136', self.m_platform)
 
-    # Destructor - shut down PWM
+        # All semaphores live here
+        self.m_semaphore_list = list()
+
+        # All lights live here
+        self.m_light_list = list()
+
+        # Placeholder for the WS281 hardware control object
+        Hardware.c_ws281 = None
+
+        # Save this singleton instance
+        Hardware.c_hardware = self
+
+
+    # Initialize all Hardware as needed. Call this method after
+    # loading all Config but before executing Rules that change Aspects.
+    # @param p_config The configuration object
     #
-    def __del__(self):
-        self.m_led.deinit()
-        self.m_servo.deinit()
+    @classmethod
+    def InitHardware(p_class, p_config):
+        Hardware.c_ws281 = WS281.WS281(p_config.m_ws281_gpio_pin, Hardware.LightCount(), p_config.m_color_chart)
+        Hardware.c_ws281.all_off()
+
+        for semaphore in p_class.c_hardware.m_semaphore_list:
+            semaphore.init_hardware()
+
+        for light in p_class.c_hardware.m_light_list:
+            light.init_hardware()
 
 
-    # Set the Lumen intensity level of the LED
-    # @param p_percent A percent value between 0 (off) and 100 (max intensity)
+    # Add a Semaphore object
+    # @param p_semaphore The Semaphore to add
     #
-    def set_led_light(self, p_percent)
-        duty = 65535 * p_percent
-        if (duty > 0):
-            duty /= 100
-        self.m_led_pwm_duty_u16 = duty
-        self.m_led.duty_u16(duty)
+    @classmethod
+    def AddSemaphore(p_class, p_semaphore):
+        p_class.c_hardware.m_semaphore_list.append(p_semaphore)
 
 
-    # Set the angular position of the semaphore flag
-    # @param p_percent A percent value between 0 (fully down) and 100 (fully up)
+    # Modify the aspect of the specified semaphore
+    # @param p_head_id Specifies the head containing the semaphore
+    # @param p_angle The new angle for the semaphore flag
+    # @returns True on success, False on error
     #
-    def set_servo_angle(self, p_percent)
-        min = 40
-        max = 115
-        duty = (max - min) * p_percent
-        if (duty > 0):
-            duty /= 100
-        duty += min
-        self.m_servo_pwm_duty = duty
-        self.m_servo.duty(duty)
+    @classmethod
+    def ChangeSemaphoreAspect(p_class, p_head_id, p_angle):
+        for semaphore in p_class.c_hardware.m_semaphore_list:
+            if p_head_id == semaphore.m_head_id:
+                # change the aspect
+                semaphore.set_aspect(p_angle)
+                return True
+        return False
 
 
-    def neopixel(self):
-        # Set GPIO0 to output to drive NeoPixels
-        pin = Pin(0, Pin.OUT)
+    # Add a Light object
+    # @param p_light The Light to add
+    #
+    @classmethod
+    def AddLight(p_class, p_light):
+        p_class.c_hardware.m_light_list.append(p_light)
 
-        # create NeoPixel dirver on GPIO0 for 8 pixels
-        np = NeoPixel(pin, 8)
 
-        # Set the first pixel to while
-        np[0] = (255, 255, 255)
+    # Modify the aspect of the specified light
+    # @param p_head_id Specifies the head containing the light
+    # @param p_color The new color for the light
+    # @param p_intensity The new intensity for the light (0-100)
+    # @param p_flashing To flash or not to flash, that is the question
+    # @returns True on success, False on error
+    #
+    @classmethod
+    def ChangeLightAspect(p_class, p_head_id, p_color, p_intensity, p_flashing):
+        for light in p_class.c_hardware.m_light_list:
+            if p_head_id == light.m_head_id:
+                if p_color in light.m_color_list:
+                    # change the aspect
+                    return light.set_aspect(Hardware.c_ws281, p_color, p_intensity, p_flashing)
+        return False
 
-        # Write data to all pixels
-        np.write()
 
-        # Get first pixel color
-        r, g, b = np[0]
+    # @returns The number of registered semaphores from Config
+    #
+    @classmethod
+    def SemaphoreCount(p_class):
+        return len(p_class.c_hardware.m_semaphore_list)
+
+
+    # @returns The number of registered lights from Config
+    #
+    @classmethod
+    def LightCount(p_class):
+        return len(p_class.c_hardware.m_light_list)
 
 
     # @returns True if the B input signal has detected a train
     #
-    def get_detect_b(self)
+    def get_detect_b(self):
         return self.m_detect_b.value()
 
 
     # @returns True if the B- input signal has detected a train
     #
-    def get_detect_bm(self)
+    def get_detect_bm(self):
         return self.m_detect_bm.value()
 
 
     # @returns True if the B+ input signal has detected a train
     #
-    def get_detect_bp(self)
+    def get_detect_bp(self):
         return self.m_detect_bp.value()
 

@@ -25,6 +25,7 @@
 
 import Config
 import Action
+import Hardware
 import Log
 
 class Aspect:
@@ -75,6 +76,7 @@ class Aspect:
         angle = None
         color = None
         flashing = False
+        number_plate = None
 
         words = p_aspect_cmd.split()
         for word in words:
@@ -83,18 +85,23 @@ class Aspect:
 
             # Look for fixture names first
             if args[0] == "semaphore":
-                fixture = word
+                fixture = args[0]
                 continue
 
             if args[0] == "light":
-                fixture = word
+                fixture = args[0]
                 continue
 
             if args[0] == "number-plate":
-                if args[1] == "yes":
-                    self.m_number_plate = True
-                if args[1] == "no":
-                    self.m_number_plate = False
+                fixture = args[0]
+                continue
+
+            if args[0] == "yes":
+                number_plate = True
+                continue
+
+            if args[0] == "no":
+                number_plate = False
                 continue
 
             if args[0] == "head":
@@ -116,40 +123,49 @@ class Aspect:
         # Create an action
         if fixture == "semaphore":
             if not head:
+                self.m_log.add(self.m_config.m_hostname, p_aspect_cmd)
                 self.m_log.add(self.m_config.m_hostname, \
                     "Missing head parameter 202410112052");
                 return False
-            if not angle:
+            if not isinstance(angle, int):
+                self.m_log.add(self.m_config.m_hostname, p_aspect_cmd)
                 self.m_log.add(self.m_config.m_hostname, \
                     "Missing angle parameter 202410112053");
                 return False;
             action = Action.Action()
             action.m_semaphore = True
-            action.m_head = head
+            action.m_head_id = head
             action.m_angle = angle
-            action.m_number_plate = self.m_number_plate
             self.m_action_list.append(action)
             self.m_head_count += 1
             self.m_semaphore_count +=1 
 
         elif fixture == "light":
             if not head:
+                self.m_log.add(self.m_config.m_hostname, p_aspect_cmd)
                 self.m_log.add(self.m_config.m_hostname, \
                     "Missing head parameter 202410112054");
                 return False
             if not color:
+                self.m_log.add(self.m_config.m_hostname, p_aspect_cmd)
                 self.m_log.add(self.m_config.m_hostname, \
                     "Missing color parameter 202410112056");
                 return False
             action = Action.Action()
             action.m_light = True
+            action.m_head_id = head
             action.m_color = color
+            # TODO: fix intensity to be proportional to sunlight
+            action.m_intensity = 100
             action.m_flashing = flashing
-            action.m_number_plate = self.m_number_plate
             self.m_action_list.append(action)
             self.m_head_count += 1
             self.m_light_count += 1
+        elif fixture == "number-plate":
+            # number-plate is simply used for modifying the rule
+            self.m_number_plate = number_plate
         else:
+            self.m_log.add(self.m_config.m_hostname, p_aspect_cmd)
             self.m_log.add(self.m_config.m_hostname, \
                 "Invalid aspect 202410112057");
             return False
@@ -157,7 +173,7 @@ class Aspect:
         return True
 
 
-    # Check this Aspect again the Configuration of this signal.
+    # Check this Aspect against the Configuration of this signal.
     # Determine if this Aspect is approrpirate for this Config.
     # @returns True if this Aspect matches the Config, False otherwise
     #
@@ -165,10 +181,10 @@ class Aspect:
         if self.m_head_count != self.m_config.head_count():
             return False
 
-        if self.m_semaphore_count != self.m_config.semaphore_count():
+        if self.m_semaphore_count != Hardware.Hardware.SemaphoreCount():
             return False
 
-        if self.m_light_count != self.m_config.light_count():
+        if self.m_light_count != Hardware.Hardware.LightCount():
             return False
 
         # Only check for a number plate if it was specifically defined
@@ -180,4 +196,13 @@ class Aspect:
         # This Aspect matches the Configuration
         return True
 
+
+    # Execute the Actions assigned to this Aspect
+    # @returns True on success, False on failure
+    #
+    def execute(self):
+        for action in self.m_action_list:
+            if not action.execute():
+                return False
+        return True
 

@@ -23,19 +23,59 @@
 # 
 #
 
+import Hardware
+import Log
+
+
 class Action:
 
     def __init__(self):
-        self.m_head = None
+        self.m_head_id = None
 
         self.m_semaphore = False
-        self.m_angle = 0
+        self.m_angle = None
 
         self.m_light = False
         self.m_color = None
+        self.m_intensity = 100
         self.m_flashing = False
 
-        self.number_plate = False
+        # Save a localLog object for convenience
+        self.m_log = Log.Log()
+
+
+    # Validate the values assigned to this action
+    # @returns True on valid test
+    #
+    def validate(self):
+        if self.m_semaphore:
+            if self.m_angle >= 0 and self.m_angle <= 90:
+                return True
+        elif self.m_light:
+            if not self.m_color:
+                self.m_log.add("Action", "invalid color 202410151804")
+                return False
+            if self.m_intensity >= 0 and self.m_intensity <= 100:
+                return True
+        else:
+            self.m_log.add("Action", "missing fixture 202410151805")
+            return False
+
+
+    # Execute this Action
+    # @returns True on success, False on failure
+    #
+    def execute(self):
+        if not self.validate():
+            return False
+
+        if self.m_semaphore:
+            return Hardware.Hardware.ChangeSemaphoreAspect(self.m_head_id, self.m_angle)
+
+        if self.m_light:
+            return Hardware.Hardware.ChangeLightAspect(self.m_head_id, self.m_color, self.m_intensity, self.m_flashing)
+
+        return False
 
 
     # @returns A string representation of this object

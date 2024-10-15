@@ -1,12 +1,13 @@
 {
-  "board-type": "esp8266",
-  "hostname": "thurber-west",
+  "board-type": "esp32",
+  "hostname": "thurber-west.local",
   "wifi-ssid": "IGNRR",
   "wifi-password": "downcase",
   "ip-addr": "192.168.1.101",
   "light-on-approach": "true",
   "number-plate": "",
   "rules-file": "atsf1959_rules_ss2.json",
+  "ws281-gpio-pin": 2,
   "heads" : [
         {
             "head-id": 1,
@@ -14,13 +15,16 @@
                 {
                     "light-id": 1,
                     "ws281-id" : 0,
+                    "flashes-per-minute" : 60,
                     "colors": ["red", "green", "yellow"]
                 }
             ],
             "semaphores": [
                 {
-                    "semaphore-id": 1,
-                    "degrees-per-second": 30
+                    "degrees-per-second": 30,
+                    "0-degrees-pwm" : 115,
+                    "90-degrees-pwm" : 45,
+                    "gpio_pin" : 5
                 }
             ]
         }
@@ -37,4 +41,5 @@
         { "name" : "black", "r" : 0, "g" : 0, "b" : 0 },
         { "name" : "off", "r" : 0, "g" : 0, "b" : 0 }
     ]
+
 }
