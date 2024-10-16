@@ -217,9 +217,9 @@ class Rules:
         s += post_active_rule.m_name
         self.m_log.add(p_source, s)
 
-        # TODO: Figure out how to change hardware state
-        if not post_active_rule.execute():
-            self.m_log.add(p_source, "Failed to execute 202410151727")
+        # Change hardware state
+        if not post_active_rule.execute(p_source, self.m_log):
+            self.m_log.add("Rules", "Failed to execute 202410151727")
 
         return 3
 
@@ -276,7 +276,9 @@ class Rules:
         s += post_active_rule.m_name
         self.m_log.add(p_source, s)
 
-        # TODO: Figure out how to change hardware state
+        # Change hardware state
+        if not post_active_rule.execute(p_source, self.m_log):
+            self.m_log.add("Rules", "Failed to execute 202410160914")
 
         return 3
 

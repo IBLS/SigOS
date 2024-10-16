@@ -198,11 +198,14 @@ class Aspect:
 
 
     # Execute the Actions assigned to this Aspect
+    # @param p_source The source requesting the execution
+    # @param p_log Log to print error messages
     # @returns True on success, False on failure
     #
-    def execute(self):
+    def execute(self, p_source, p_log):
         for action in self.m_action_list:
-            if not action.execute():
+            if not action.execute(p_source, p_log):
+                p_log.add("Aspect", "execute failed 202410160828")
                 return False
         return True
 

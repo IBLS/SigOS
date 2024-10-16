@@ -59,8 +59,8 @@ class WS281:
     #
     def all_off(self):
         # Turn off all LEDs
-        for i in  range(self.m_led_count):
-            self.set_color(i, "off")
+        for i in range(self.m_led_count):
+            self.set(i, 0, 0, 0)
 
 
     # Set the RGB values for a specific NeoPixel LED
@@ -96,9 +96,10 @@ class WS281:
     # @param p_color_name The name of the color to set
     # @param p_intensity Brightness of the color as a percentage, 0% to 100%
     # @param p_flashing When True cause this light to flash
+    # @param p_log Log to write errors to
     # @returns True on success, false on invalid index or color name
     #
-    def set_color(self, p_led_index, p_color_name, p_intensity=100, p_flashing=False):
+    def set_color(self, p_led_index, p_color_name, p_intensity, p_flashing, p_log):
         for color in self.m_color_chart:
             if color["name"] == p_color_name:
                 r = int(color["r"])
@@ -109,6 +110,7 @@ class WS281:
                     g = (g * p_intensity) / 100
                     b = (b * p_intensity) / 100
                 return self.set(p_led_index, r, g, b)
+        p_log.add("WS281", "No matching color in chart 202410160905")
         return False
         # TODO: Implement flashing
 

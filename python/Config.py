@@ -71,7 +71,7 @@ class Config:
                     ws281_id = light["ws281-id"]
                     flashes_per_minute = light["flashes-per-minute"]
                     color_list = light["colors"]
-                    light_obj = Light.Light(head_id, light_id, flashes_per_minute, color_list)
+                    light_obj = Light.Light(head_id, light_id, ws281_id, flashes_per_minute, color_list)
                     Hardware.Hardware.AddLight(light_obj)
             elif ("semaphores" in head):
                 semaphore_list = head["semaphores"]

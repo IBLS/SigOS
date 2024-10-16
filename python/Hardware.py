@@ -118,15 +118,17 @@ class Hardware:
     # Modify the aspect of the specified semaphore
     # @param p_head_id Specifies the head containing the semaphore
     # @param p_angle The new angle for the semaphore flag
+    # @param p_log Log to write failure messages to
     # @returns True on success, False on error
     #
     @classmethod
-    def ChangeSemaphoreAspect(p_class, p_head_id, p_angle):
+    def ChangeSemaphoreAspect(p_class, p_head_id, p_angle, p_log):
         for semaphore in p_class.c_hardware.m_semaphore_list:
             if p_head_id == semaphore.m_head_id:
                 # change the aspect
                 semaphore.set_aspect(p_angle)
                 return True
+        p_log.add("Hardware", "No matching Semaphore 202410160900")
         return False
 
 
@@ -143,15 +145,17 @@ class Hardware:
     # @param p_color The new color for the light
     # @param p_intensity The new intensity for the light (0-100)
     # @param p_flashing To flash or not to flash, that is the question
+    # @param p_log Log to write failure messages to
     # @returns True on success, False on error
     #
     @classmethod
-    def ChangeLightAspect(p_class, p_head_id, p_color, p_intensity, p_flashing):
+    def ChangeLightAspect(p_class, p_head_id, p_color, p_intensity, p_flashing, p_log):
         for light in p_class.c_hardware.m_light_list:
             if p_head_id == light.m_head_id:
                 if p_color in light.m_color_list:
                     # change the aspect
-                    return light.set_aspect(Hardware.c_ws281, p_color, p_intensity, p_flashing)
+                    return light.set_aspect(Hardware.c_ws281, p_color, p_intensity, p_flashing, p_log)
+        p_log.add("Hardware", "No matching light 202410160901")
         return False
 
 

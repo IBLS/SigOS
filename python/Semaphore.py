@@ -59,7 +59,7 @@ class Semaphore:
         # Setup PWM hardware for server signal
         self.m_servo_pwm_freq = 50 # freq=50 is required for servos
         self.m_servo_pwm_duty = 40 # servo flag low-position
-        self.m_servo = PWM(Pin(p_gpio_pin), freq=self.m_servo_pwm_freq, duty=self.m_servo_pwm_duty)
+        self.m_servo = PWM(Pin(self.m_gpio_pin), freq=self.m_servo_pwm_freq, duty=self.m_servo_pwm_duty)
         self.set_aspect(90)
 
 
@@ -72,17 +72,18 @@ class Semaphore:
         ratio = 100 / 90
         percent = p_angle * ratio
         # Convert percent to duty
-        min = self.p_0_degrees_pwd
-        max = self.m_90_degrees_pwm
+        min = self.m_degrees_0_pwm
+        max = self.m_degrees_90_pwm
+        delta = max - min
         if min > max:
             # Swap min and max and invert percent
             temp = min
             min = max
             max = temp
+            delta = max - min
             percent = 100 - percent
-        duty = (max - min) * percent
-        if (duty > 0):
-            duty /= 100
+        duty = (delta * percent) / 100
+        duty += min
         self.set_servo_duty(duty)
         # TODO: Add support for degrees-per-second
 

@@ -45,12 +45,14 @@ class Rule:
 
 
     # Execute all Aspect changes associated with this Rule
+    # @param p_source The source requesting the execution
+    # @param p_log Log to print error messages
     # @returns True on success, False on failure
     #
-    def execute(self):
+    def execute(self, p_source, p_log):
         if self.m_aspect:
-            return self.m_aspect.execute()
-        print("missing aspect 2020410151602")
+            return self.m_aspect.execute(p_source, p_log)
+        p_log.add("Rule", "Missing aspect 2020410151602")
         return False
 
 

@@ -40,60 +40,62 @@ class Action:
         self.m_intensity = 100
         self.m_flashing = False
 
-        # Save a localLog object for convenience
-        self.m_log = Log.Log()
-
 
     # Validate the values assigned to this action
+    # @param p_source The source requesting the execution
+    # @param p_log Log to print error messages
     # @returns True on valid test
     #
-    def validate(self):
+    def validate(self, p_source, p_log):
         if self.m_semaphore:
             if self.m_angle >= 0 and self.m_angle <= 90:
                 return True
         elif self.m_light:
             if not self.m_color:
-                self.m_log.add("Action", "invalid color 202410151804")
+                p_log.add("Action", "Invalid color 202410151804")
                 return False
             if self.m_intensity >= 0 and self.m_intensity <= 100:
                 return True
         else:
-            self.m_log.add("Action", "missing fixture 202410151805")
+            p_log.add("Action", "Validate failed 202410160833")
             return False
 
 
     # Execute this Action
+    # @param p_source The source requesting the execution
+    # @param p_log Log to print error messages
     # @returns True on success, False on failure
     #
-    def execute(self):
-        if not self.validate():
+    def execute(self, p_source, p_log):
+        if not self.validate(p_source, p_log):
             return False
 
         if self.m_semaphore:
-            return Hardware.Hardware.ChangeSemaphoreAspect(self.m_head_id, self.m_angle)
+            return Hardware.Hardware.ChangeSemaphoreAspect(self.m_head_id, self.m_angle, p_log)
 
         if self.m_light:
-            return Hardware.Hardware.ChangeLightAspect(self.m_head_id, self.m_color, self.m_intensity, self.m_flashing)
+            return Hardware.Hardware.ChangeLightAspect(self.m_head_id, self.m_color, self.m_intensity, self.m_flashing, p_log)
 
+        p_log.add("Action", "Invalid fixture 202410160829")
         return False
 
 
     # @returns A string representation of this object
     #
     def __str__(self):
-        s = "head:"
-        s += self.m_head
+        s = "head_id:"
+        s += str(self.m_head_id)
         s += ",semaphore:"
-        s += self.m_semaphrore
+        s += str(self.m_semaphore)
         s += ",angle:"
-        s += self.m_angle
-        s += ",color:"
-        s += self.m_color
+        s += str(self.m_angle)
         s += ",light:"
-        s += self.m_light
+        s += str(self.m_light)
         s += ",color:"
         s += self.m_color
+        s += ",intensity:"
+        s += str(self.m_intensity)
         s += ",flashing:"
-        s += self.m_flashing
+        s += str(self.m_flashing)
         return s
 

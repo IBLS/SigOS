@@ -33,12 +33,14 @@ class Light:
     #                  1 is the highest head, 2 is the next highest, etc
     # @param p_light_id The identifier (number) of the Light, 1 is highest on the head,
     #             2 is next highest, etc
+    # @param p_ws281_id The zero-based index of the LED in the WS281 chain
     # @param p_flashes_per_minute The number of times to flash in 60 seconds
     # @param p_color_list A list of one or more valid color names for this light
     #
-    def __init__(self, p_head_id, p_light_id, p_flashes_per_minute, p_color_list):
+    def __init__(self, p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list):
         self.m_head_id = p_head_id
         self.m_light_id = p_light_id
+        self.m_ws281_id = p_ws281_id
         self.m_flashes_per_minute = p_flashes_per_minute
         self.m_color_list = p_color_list
 
@@ -55,13 +57,15 @@ class Light:
     # @param p_color The name of the color to set.
     # @param p_intensity The brightness of the light in % (0-100)
     # @param p_flashing When True then make this light flash
+    # @param p_log Log to write error messages to
     # @returns True on success, False if the requested state does not match
     #
-    def set_aspect(self, p_ws281, p_color, p_intensity, p_flashing):
+    def set_aspect(self, p_ws281, p_color, p_intensity, p_flashing, p_log):
         for color in self.m_color_list:
             if p_color == color:
                 # Make the change
-                return p_ws281.set_color(p_color, p_intensity, p_flashing)
+                return p_ws281.set_color(self.m_ws281_id, p_color, p_intensity, p_flashing, p_log)
+        p_log.add("Light", "No matching color 202410160903")
         return False
 
 
