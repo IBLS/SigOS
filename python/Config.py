@@ -73,17 +73,15 @@ class Config:
                     color_list = light["colors"]
                     light_obj = Light.Light(head_id, light_id, ws281_id, flashes_per_minute, color_list)
                     Hardware.Hardware.AddLight(light_obj)
-            elif ("semaphores" in head):
+            if ("semaphores" in head):
                 semaphore_list = head["semaphores"]
                 for semaphore in semaphore_list:
                     degrees_per_second = semaphore["degrees-per-second"]
-                    degrees_0_pwm = semaphore["0_degrees_pwm"]
+                    degrees_0_pwm = semaphore["0-degrees-pwm"]
                     degrees_90_pwm = semaphore["90-degrees-pwm"]
                     gpio_pin = semaphore["gpio-pin"]
                     semaphore_obj = Semaphore.Semaphore(head_id, gpio_pin, degrees_per_second, degrees_0_pwm, degrees_90_pwm)
                     Hardware.Hardware.AddSemaphore(semaphore_obj)
-            else:
-                self.m_log.add(p_source, "Invalid fixture in config 202410112120");
 
             # Keep count of the number of unique heads
             if head_id not in head_list:

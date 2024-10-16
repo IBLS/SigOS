@@ -22,9 +22,11 @@
             "semaphores": [
                 {
                     "degrees-per-second": 30,
-                    "0-degrees-pwm" : 115,
-                    "90-degrees-pwm" : 45,
-                    "gpio_pin" : 5
+                    "comment-pwm-max": 115,
+                    "comment-pwm-min": 40,
+                    "0-degrees-pwm" : 110,
+                    "90-degrees-pwm" : 60,
+                    "gpio-pin" : 5
                 }
             ]
         }

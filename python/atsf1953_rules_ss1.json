@@ -12,8 +12,8 @@
             "indication": "STOP",
             "priority": 199,
             "aspect": [
-                "semaphore head:1 angle:90; light head:1 color:red; number-plate:no",
-                "light head:1 color:red; number-plate:no"
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; number-plate:no",
+                "light head-id:1 color:red; number-plate:no"
             ]
         },
 
@@ -23,8 +23,8 @@
             "indication": "STOP, THEN PROCEED IN ACCORDANCE WITH RULE 509",
             "priority": 180,
             "aspect": [
-                "semaphore head:1 angle:90; light head:1 color:red; number-plate:yes",
-                "light head:1 color:red; number-plate:yes"
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; number-plate:yes",
+                "light head-id:1 color:red; number-plate:yes"
             ]
         },
 
@@ -34,8 +34,8 @@
             "indication": "PROCEED PREPARED TO ENTER TURNOUT OR TO STOP SHORT OF TRAIN OR OBSTRUCTION",
             "priority": 170,
             "aspect": [
-                "semaphore head:1 angle:45; light head:1 color:yellow; number-plate:no",
-                "light head:1 color:yellow; number-plate no"
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; number-plate:no",
+                "light head-id:1 color:yellow; number-plate no"
             ]
         },
 
@@ -45,8 +45,8 @@
             "indication": "PROCEED PREPARED TO STOP AT NEXT SIGNAL; IF EXCEEDING MEDIUM SPEED, IMMEDIATELY REDUCE TO THAT SPEED",
             "priority": 160,
             "aspect": [
-                "semaphore head:1 angle:45; light head:1 color:yellow; number-plate:yes",
-                "light head:1 color:yellow; number-plate:yes"
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; number-plate:yes",
+                "light head-id:1 color:yellow; number-plate:yes"
             ]
         },
 
@@ -56,8 +56,8 @@
             "indication": "PROCEED; APPROACH NEXT SIGNAL AT MEDIUM SPEED",
             "priority": 150,
             "aspect": [
-                "semaphore head:1 angle:45; light head:1 color:yellow; number-plate:no",
-                "light head:1 color:yellow; number-plate:no"
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; number-plate:no",
+                "light head-id:1 color:yellow; number-plate:no"
             ]
         },
 
@@ -67,8 +67,8 @@
             "indication": "PROCEED",
             "priority": 140,
             "aspect": [
-                "semaphore head:1 angle:0; light head:1 color:green",
-                "light head:1 color:green"
+                "semaphore head-id:1 angle:0; light head-id:1 color:green",
+                "light head-id:1 color:green"
             ]
         }
     ]

@@ -11,8 +11,8 @@
             "indication": "PROCEED",
             "priority": 100,
             "aspect": [
-                "semaphore head:1 angle:0; light head:1 color:green",
-                "light head:1 color:green"
+                "semaphore head-id:1 angle:0; light head-id:1 color:green",
+                "light head-id:1 color:green"
             ]
         },
 
@@ -22,7 +22,7 @@
             "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING LIMITED SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
             "priority": 110,
             "aspect": [
-                "light head:1 color:green flashing"
+                "light head-id:1 color:green flashing"
             ]
         },
 
@@ -32,10 +32,10 @@
             "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
             "priority": 120,
             "aspect": [
-                "semaphore head:1 angle:45; light head:1 color:yellow flashing; light head:2 color:yellow",
-                "semaphore head:1 angle:45; light head:1 color:yellow flashing",
-                "light head:1 color:yellow; light head:2 color:yellow",
-                "light head:1 color:yellow flashing"
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; light head-id:2 color:yellow",
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing",
+                "light head-id:1 color:yellow; light head-id:2 color:yellow",
+                "light head-id:1 color:yellow flashing"
             ]
         },
 
@@ -45,7 +45,7 @@
             "indication": "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT",
             "priority": 130,
             "aspect": [
-                "light head:1 color:red; light head:2 color:green"
+                "light head-id:1 color:red; light head-id:2 color:green"
             ]
         },
 
@@ -55,8 +55,8 @@
             "indication": "PROCEED PREPARING TO STOP AT NEXT SIGNAL; IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED",
             "priority": 140,
             "aspect": [
-                "semaphore head:1 angle:45; light head:1 color:yellow",
-                "light head:1 color:yellow"
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow",
+                "light head-id:1 color:yellow"
             ]
         },
 
@@ -66,7 +66,7 @@
             "indication": "PROCEED THROUGH DIVERGING ROUTE; PRESCRIBED SPEED THROUGH TURNOUT; APPROACH NEXT SIGNAL PREPARING TO STOP, IF EXCEEDING MEDIUM SPEED IMMEDIATELY REDUCE TO MEDIUM SPEED",
             "priority": 150,
             "aspect": [
-                "light head:1 color:red; light head:2 color:yellow flashing"
+                "light head-id:1 color:red; light head-id:2 color:yellow flashing"
             ]
         },
 
@@ -76,9 +76,9 @@
             "indication": "PROCEED AT RESTRICTED SPEED",
             "priority": 160,
             "aspect": [
-                "semaphore head:1 angle:90; light head:1 color:red flashing",
-                "light head:1 color:red; light head:2 color:yellow",
-                "light head:1 color:red flashing"
+                "semaphore head-id:1 angle:90; light head-id:1 color:red flashing",
+                "light head-id:1 color:red; light head-id:2 color:yellow",
+                "light head-id:1 color:red flashing"
             ]
         },
 
@@ -88,8 +88,8 @@
             "indication": "STOP; THEN PROCEED AS PRESCRIBED BY RULE 320",
             "priority": 170,
             "aspect": [
-                "semaphore head:1 angle:90; light head:1 color:red; number-plate:yes",
-                "light head:1 color:red; number-plate:yes"
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; number-plate:yes",
+                "light head-id:1 color:red; number-plate:yes"
             ]
         },
 
@@ -99,8 +99,8 @@
             "indication": "STOP",
             "priority": 180,
             "aspect": [
-                "semaphore head:1 angle:90; light head:1 color:red",
-                "light head:1 color:red"
+                "semaphore head-id:1 angle:90; light head-id:1 color:red",
+                "light head-id:1 color:red"
             ]
         }
     ]

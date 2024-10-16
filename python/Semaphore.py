@@ -40,8 +40,8 @@ class Semaphore:
     # @param p_90_degrees_pwm Servo PWM value for 90 degrees
     #
     def __init__(self, p_head_id, p_gpio_pin, p_degrees_per_second, p_0_degrees_pwm, p_90_degrees_pwm):
-        self.m_gpio_pin = p_gpio_pin
         self.m_head_id = p_head_id
+        self.m_gpio_pin = p_gpio_pin
         self.m_degrees_per_second = p_degrees_per_second
         self.m_degrees_0_pwm = p_0_degrees_pwm
         self.m_degrees_90_pwm = p_90_degrees_pwm
