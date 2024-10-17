@@ -15,7 +15,7 @@
                 {
                     "light-id": 1,
                     "ws281-id" : 0,
-                    "flashes-per-minute" : 60,
+                    "flashes-per-minute" : 40,
                     "colors": ["red", "green", "yellow"]
                 }
             ],
