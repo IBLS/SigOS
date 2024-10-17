@@ -27,7 +27,6 @@ import io
 import json
 import Semaphore
 import Light
-import Hardware
 
 class Config:
 
@@ -71,8 +70,8 @@ class Config:
                     ws281_id = light["ws281-id"]
                     flashes_per_minute = light["flashes-per-minute"]
                     color_list = light["colors"]
-                    light_obj = Light.Light(head_id, light_id, ws281_id, flashes_per_minute, color_list)
-                    Hardware.Hardware.AddLight(light_obj)
+                    # Create a new Light and store it in the Light class list
+                    Light.Light(head_id, light_id, ws281_id, flashes_per_minute, color_list)
             if ("semaphores" in head):
                 semaphore_list = head["semaphores"]
                 for semaphore in semaphore_list:
@@ -80,8 +79,8 @@ class Config:
                     degrees_0_pwm = semaphore["0-degrees-pwm"]
                     degrees_90_pwm = semaphore["90-degrees-pwm"]
                     gpio_pin = semaphore["gpio-pin"]
-                    semaphore_obj = Semaphore.Semaphore(head_id, gpio_pin, degrees_per_second, degrees_0_pwm, degrees_90_pwm)
-                    Hardware.Hardware.AddSemaphore(semaphore_obj)
+                    # Create a new Semaphore and store it in the Semaphore class list
+                    Semaphore.Semaphore(head_id, gpio_pin, degrees_per_second, degrees_0_pwm, degrees_90_pwm)
 
             # Keep count of the number of unique heads
             if head_id not in head_list:

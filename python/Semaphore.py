@@ -25,10 +25,16 @@
 
 import sys
 import machine
-from machine import Pin, PWM
+from machine import Pin, PWM, Timer
 
 
 class Semaphore:
+
+    # Class variable for holding instances of Semaphore
+    c_semaphore_list = list()
+
+    # Class variable for generating timer id's
+    c_timer_id = 0
 
     # Create a Semaphore object
     # @param p_head_id The identifier (number) of the Head containing this semaphore,
@@ -45,31 +51,91 @@ class Semaphore:
         self.m_degrees_per_second = p_degrees_per_second
         self.m_degrees_0_pwm = p_0_degrees_pwm
         self.m_degrees_90_pwm = p_90_degrees_pwm
+        pwm_per_90degrees = abs(p_90_degrees_pwm - p_0_degrees_pwm)
+        pwm_per_degree = pwm_per_90degrees / 90.0
+        self.m_pwm_per_second = pwm_per_degree * p_degrees_per_second
+        self.m_pwm_duty = None
+        self.m_pwm_step = None
+        self.m_pwm_target = None
+        self.m_angle_target = None
+        self.m_servo = None
+        self.m_timer = None
 
-    # Destructor - shut down PWM
+        # Keep a local list of Semaphores
+        Semaphore.c_semaphore_list.append(self)
+
+    # Destructor
     #
     def __del__(self):
         if self.m_servo:
             self.m_servo.deinit()
+        if self.m_timer:
+            self.m_timer.deinit()
+
+
+    # Initialize the servo hardware, must be called prior to set_servo_angle()
+    #
+    @classmethod
+    def InitHardware(p_class, p_config):
+        for semaphore in p_class.c_semaphore_list:
+            semaphore.init_hardware()
+
+
+    # Modify the aspect of the specified semaphore
+    # @param p_head_id Specifies the head containing the semaphore
+    # @param p_angle The new angle for the semaphore flag
+    # @param p_log Log to write failure messages to
+    # @returns True on success, False on error
+    #
+    @classmethod
+    def ChangeSemaphoreAspect(p_class, p_head_id, p_angle, p_log):
+        for semaphore in p_class.c_semaphore_list:
+            if p_head_id == semaphore.m_head_id:
+                # change the aspect
+                semaphore.set_aspect(p_angle)
+                return True
+        p_log.add("Hardware", "No matching Semaphore 202410160900")
+        return False
+
+
+    # @returns The number of created Semaphore objects
+    #
+    @classmethod
+    def Count(p_class):
+        return len(p_class.c_semaphore_list)
+
+
+    # Adjust servos that are in the process of changing state
+    #
+    @classmethod
+    def AdjustDuty(p_class):
+        for semaphore in p_class.c_semaphore_list:
+            semaphore.adjust_duty()
 
 
     # Initialize the servo hardware, must be called prior to set_servo_angle()
     #
     def init_hardware(self):
         # Setup PWM hardware for server signal
-        self.m_servo_pwm_freq = 50 # freq=50 is required for servos
-        self.m_servo_pwm_duty = 40 # servo flag low-position
-        self.m_servo = PWM(Pin(self.m_gpio_pin), freq=self.m_servo_pwm_freq, duty=self.m_servo_pwm_duty)
-        self.set_aspect(90)
+        pwm_freq = 50 # freq=50 is required for servos
+        self.m_pwm_duty = self.m_degrees_90_pwm # servo flag low-position
+        self.m_pwm_target = self.m_degrees_90_pwm
+        self.m_angle_target = 90
+        self.m_servo = PWM(Pin(self.m_gpio_pin), freq=pwm_freq, duty=self.m_pwm_duty)
+
+        # Create and start timer
+        self.m_timer = machine.Timer(Semaphore.c_timer_id)
+        pwm_per_second = int(self.m_pwm_per_second)
+        self.m_timer.init(mode=Timer.PERIODIC, freq=pwm_per_second, callback=servo_callback)
 
 
-    # Set a new aspect for the semaphore flag
+    # Convert from degrees to PWM duty cycle
     # @p_angle The angle of the flag, 0, 45, or 90
-    # @returns True on succes, False on state mismatch
+    # @returns PWM duty cycle
     #
-    def set_aspect(self, p_angle):
+    def degrees_to_pwm(self, p_angle):
         # Convert from angle to percent
-        ratio = 100 / 90
+        ratio = 100.0 / 90.0
         percent = p_angle * ratio
         # Convert percent to duty
         min = self.m_degrees_0_pwm
@@ -81,20 +147,51 @@ class Semaphore:
             min = max
             max = temp
             delta = max - min
-            percent = 100 - percent
-        duty = (delta * percent) / 100
-        duty += min
-        self.set_servo_duty(duty)
-        # TODO: Add support for degrees-per-second
+            percent = 100. - percent
+        duty_offset = (delta * percent) / 100.0
+        duty = min + duty_offset
+        return duty
+
+
+    # Adjust the duty cycle by 1 and restart timer if necessary
+    #
+    def adjust_duty(self):
+        # Has the servo completed it movement?
+        if self.m_pwm_duty == self.m_pwm_target:
+            return
+
+        # Compute the new duty from the old self.m_pwm_duty
+        new_duty = self.m_pwm_duty
+        if new_duty < self.m_pwm_target:
+            new_duty += 1
+        elif new_duty > self.m_pwm_target:
+            new_duty -= 1
+        else:
+            # Have met the target
+            pass
+
+        # Update the servo position
+        self.set_servo_duty(new_duty)
+
+
+    # Set a new aspect for the semaphore flag
+    # @p_angle The angle of the flag, 0, 45, or 90
+    # @returns True on succes, False on state mismatch
+    #
+    def set_aspect(self, p_angle):
+        # Update targets to new request
+        self.m_angle_target = p_angle
+        duty = self.degrees_to_pwm(p_angle)
+        self.m_pwm_target = duty
 
 
     # Set the angular position of the semaphore flag
     # @param p_duty The duty cycle value of the servo waveform
     #
     def set_servo_duty(self, p_duty):
-        p_duty = int(p_duty)
-        self.m_servo_pwm_duty = p_duty
-        self.m_servo.duty(p_duty)
+        duty = int(p_duty)
+        self.m_pwm_duty = duty
+        self.m_servo.duty(duty)
 
 
     # @returns A string representation of this Semaphore
@@ -106,4 +203,11 @@ class Semaphore:
         s += "\n    degrees-per-second: "
         s += str(self.m_degrees_per_second)
         return s
+
+
+# Timer callback to adjust the servo duty cycle
+#
+def servo_callback(p_timer):
+    Semaphore.AdjustDuty()
+
 

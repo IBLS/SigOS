@@ -25,6 +25,7 @@
 
 from machine import Pin
 from neopixel import NeoPixel
+import Config
 
 class WS281:
 
@@ -53,6 +54,17 @@ class WS281:
     def __del__(self):
         self.all_off()
         self.m_neopixel.deinit()
+
+
+    # Initialize all Hardware as needed. Call this method after
+    # loading all Config but before executing Rules that change Aspects.
+    # @param p_config The configuration object
+    # @param p_light_count Total number of WS281 lights on the chain.
+    #
+    @classmethod
+    def InitHardware(p_class, p_config, p_light_count):
+        WS281.c_ws281 = WS281(p_config.m_ws281_gpio_pin, p_light_count, p_config.m_color_chart)
+        WS281.c_ws281.all_off()
 
 
     # Turn off all LEDs
@@ -95,11 +107,10 @@ class WS281:
     # @param p_led_index The zero-based LED index
     # @param p_color_name The name of the color to set
     # @param p_intensity Brightness of the color as a percentage, 0% to 100%
-    # @param p_flashing When True cause this light to flash
     # @param p_log Log to write errors to
     # @returns True on success, false on invalid index or color name
     #
-    def set_color(self, p_led_index, p_color_name, p_intensity, p_flashing, p_log):
+    def set_color(self, p_led_index, p_color_name, p_intensity, p_log):
         for color in self.m_color_chart:
             if color["name"] == p_color_name:
                 r = int(color["r"])
@@ -112,5 +123,4 @@ class WS281:
                 return self.set(p_led_index, r, g, b)
         p_log.add("WS281", "No matching color in chart 202410160905")
         return False
-        # TODO: Implement flashing
 

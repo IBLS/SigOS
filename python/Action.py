@@ -23,7 +23,8 @@
 # 
 #
 
-import Hardware
+import Semaphore
+import Light
 import Log
 
 
@@ -71,10 +72,10 @@ class Action:
             return False
 
         if self.m_semaphore:
-            return Hardware.Hardware.ChangeSemaphoreAspect(self.m_head_id, self.m_angle, p_log)
+            return Semaphore.Semaphore.ChangeSemaphoreAspect(self.m_head_id, self.m_angle, p_log)
 
         if self.m_light:
-            return Hardware.Hardware.ChangeLightAspect(self.m_head_id, self.m_color, self.m_intensity, self.m_flashing, p_log)
+            return Light.Light.ChangeLightAspect(self.m_head_id, self.m_color, self.m_intensity, self.m_flashing, p_log)
 
         p_log.add("Action", "Invalid fixture 202410160829")
         return False

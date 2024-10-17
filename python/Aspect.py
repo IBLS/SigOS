@@ -25,7 +25,8 @@
 
 import Config
 import Action
-import Hardware
+import Semaphore
+import Light
 import Log
 
 class Aspect:
@@ -187,11 +188,11 @@ class Aspect:
             #print("mismatch head count")
             return False
 
-        if self.m_semaphore_count != Hardware.Hardware.SemaphoreCount():
+        if self.m_semaphore_count != Semaphore.Semaphore.Count():
             #print("mismatch semaphore count")
             return False
 
-        if self.m_light_count != Hardware.Hardware.LightCount():
+        if self.m_light_count != Light.Light.Count():
             #print("mismatch light count")
             return False
 

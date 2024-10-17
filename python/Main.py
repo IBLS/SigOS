@@ -33,13 +33,10 @@ import Config
 import Commands
 import Command
 import Rules
-import Hardware
+import Semaphore
+import Light
+import WS281
 
-
-# Create the Hardware singleton
-#
-print("Creating Hardware singleton")
-Hardware.Hardware()
 
 # Load the configuration file
 #
@@ -47,7 +44,9 @@ print("Loading config")
 g_config = Config.Config("config.json")
 
 # Initialize hardware
-Hardware.Hardware.InitHardware(g_config)
+WS281.WS281.InitHardware(g_config, Light.Light.Count())
+Semaphore.Semaphore.InitHardware(g_config)
+Light.Light.InitHardware(g_config)
 
 
 # Load the rules from the file specified in the config file
@@ -89,6 +88,8 @@ def loop():
 
     print("Accepting connections")
     buf = bytearray(512)
+    # Time between polls
+    poll_time = 0.2
     while (True):
 
         g_wifi.poll()
@@ -122,7 +123,7 @@ def loop():
 
         # Sleep at end of the loop to let other code run
         #print("sleeping...\n")
-        time.sleep(0.2)
+        time.sleep(poll_time)
 
 loop()
 

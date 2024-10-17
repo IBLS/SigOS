@@ -32,7 +32,7 @@
             "indication": "PROCEED; APPROACH NEXT SIGNAL NOT EXCEEDING MEDIUM SPEED, AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
             "priority": 120,
             "aspect": [
-                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; light head-id:2 color:yellow",
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; light head-id:2 color:yellow",
                 "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing",
                 "light head-id:1 color:yellow; light head-id:2 color:yellow",
                 "light head-id:1 color:yellow flashing"

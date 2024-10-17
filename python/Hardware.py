@@ -43,9 +43,6 @@ class Hardware:
     # Class variable that holds the singleton instance of Hardware
     c_hardware = None
 
-    # This will hoold the WS281 singleton controller object
-    c_ws281 = None
-
     # Determine underlying hardware and initialize pins
     #
     def __init__(self):
@@ -78,99 +75,8 @@ class Hardware:
         else:
             raise Exception('Unrecognized hardware {} 02407241136', self.m_platform)
 
-        # All semaphores live here
-        self.m_semaphore_list = list()
-
-        # All lights live here
-        self.m_light_list = list()
-
-        # Placeholder for the WS281 hardware control object
-        Hardware.c_ws281 = None
-
         # Save this singleton instance
         Hardware.c_hardware = self
-
-
-    # Initialize all Hardware as needed. Call this method after
-    # loading all Config but before executing Rules that change Aspects.
-    # @param p_config The configuration object
-    #
-    @classmethod
-    def InitHardware(p_class, p_config):
-        Hardware.c_ws281 = WS281.WS281(p_config.m_ws281_gpio_pin, Hardware.LightCount(), p_config.m_color_chart)
-        Hardware.c_ws281.all_off()
-
-        for semaphore in p_class.c_hardware.m_semaphore_list:
-            semaphore.init_hardware()
-
-        for light in p_class.c_hardware.m_light_list:
-            light.init_hardware()
-
-
-    # Add a Semaphore object
-    # @param p_semaphore The Semaphore to add
-    #
-    @classmethod
-    def AddSemaphore(p_class, p_semaphore):
-        p_class.c_hardware.m_semaphore_list.append(p_semaphore)
-
-
-    # Modify the aspect of the specified semaphore
-    # @param p_head_id Specifies the head containing the semaphore
-    # @param p_angle The new angle for the semaphore flag
-    # @param p_log Log to write failure messages to
-    # @returns True on success, False on error
-    #
-    @classmethod
-    def ChangeSemaphoreAspect(p_class, p_head_id, p_angle, p_log):
-        for semaphore in p_class.c_hardware.m_semaphore_list:
-            if p_head_id == semaphore.m_head_id:
-                # change the aspect
-                semaphore.set_aspect(p_angle)
-                return True
-        p_log.add("Hardware", "No matching Semaphore 202410160900")
-        return False
-
-
-    # Add a Light object
-    # @param p_light The Light to add
-    #
-    @classmethod
-    def AddLight(p_class, p_light):
-        p_class.c_hardware.m_light_list.append(p_light)
-
-
-    # Modify the aspect of the specified light
-    # @param p_head_id Specifies the head containing the light
-    # @param p_color The new color for the light
-    # @param p_intensity The new intensity for the light (0-100)
-    # @param p_flashing To flash or not to flash, that is the question
-    # @param p_log Log to write failure messages to
-    # @returns True on success, False on error
-    #
-    @classmethod
-    def ChangeLightAspect(p_class, p_head_id, p_color, p_intensity, p_flashing, p_log):
-        for light in p_class.c_hardware.m_light_list:
-            if p_head_id == light.m_head_id:
-                if p_color in light.m_color_list:
-                    # change the aspect
-                    return light.set_aspect(Hardware.c_ws281, p_color, p_intensity, p_flashing, p_log)
-        p_log.add("Hardware", "No matching light 202410160901")
-        return False
-
-
-    # @returns The number of registered semaphores from Config
-    #
-    @classmethod
-    def SemaphoreCount(p_class):
-        return len(p_class.c_hardware.m_semaphore_list)
-
-
-    # @returns The number of registered lights from Config
-    #
-    @classmethod
-    def LightCount(p_class):
-        return len(p_class.c_hardware.m_light_list)
 
 
     # @returns True if the B input signal has detected a train
