@@ -97,14 +97,10 @@ class Aspect:
 
             if args[0] == "number-plate":
                 fixture = args[0]
-                continue
-
-            if args[0] == "yes":
-                number_plate = True
-                continue
-
-            if args[0] == "no":
-                number_plate = False
+                if args[1] and args[1] == "yes":
+                    number_plate = True
+                else:
+                    number_plate = False
                 continue
 
             if args[0] == "head-id":

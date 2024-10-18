@@ -99,8 +99,8 @@
             "indication": "STOP",
             "priority": 180,
             "aspect": [
-                "semaphore head-id:1 angle:90; light head-id:1 color:red",
-                "light head-id:1 color:red"
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; number-plate:no",
+                "light head-id:1 color:red; number-plate:no"
             ]
         }
     ]
