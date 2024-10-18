@@ -26,6 +26,7 @@
 import sys
 import machine
 from machine import Pin, PWM, Timer
+import Light
 
 
 class Semaphore:
@@ -57,6 +58,7 @@ class Semaphore:
         self.m_pwm_duty = None
         self.m_pwm_step = None
         self.m_pwm_target = None
+        self.m_servo_moving = False
         self.m_angle_target = None
         self.m_servo = None
         self.m_timer = None
@@ -92,8 +94,7 @@ class Semaphore:
         for semaphore in p_class.c_semaphore_list:
             if p_head_id == semaphore.m_head_id:
                 # change the aspect
-                semaphore.set_aspect(p_angle)
-                return True
+                return semaphore.set_aspect(p_angle)
         p_log.add("Hardware", "No matching Semaphore 202410160900")
         return False
 
@@ -156,19 +157,20 @@ class Semaphore:
     # Adjust the duty cycle by 1 and restart timer if necessary
     #
     def adjust_duty(self):
-        # Has the servo completed it movement?
-        if self.m_pwm_duty == self.m_pwm_target:
+        if not self.m_servo_moving:
             return
 
         # Compute the new duty from the old self.m_pwm_duty
         new_duty = self.m_pwm_duty
-        if new_duty < self.m_pwm_target:
+        if int(new_duty) < int(self.m_pwm_target):
             new_duty += 1
-        elif new_duty > self.m_pwm_target:
+        elif int(new_duty) > int(self.m_pwm_target):
             new_duty -= 1
         else:
-            # Have met the target
-            pass
+            # Re-enable light output
+            Light.Light.Inhibit(self.m_head_id, False)
+            # Movement complete
+            self.m_servo_moving = False
 
         # Update the servo position
         self.set_servo_duty(new_duty)
@@ -183,6 +185,11 @@ class Semaphore:
         self.m_angle_target = p_angle
         duty = self.degrees_to_pwm(p_angle)
         self.m_pwm_target = duty
+        if int(self.m_pwm_target) != int(self.m_pwm_duty):
+            self.m_servo_moving = True
+            # Inhibit light output during movement
+            Light.Light.Inhibit(self.m_head_id, True)
+        return True
 
 
     # Set the angular position of the semaphore flag

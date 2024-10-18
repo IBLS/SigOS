@@ -51,6 +51,8 @@ class Light:
         self.m_ws281_id = p_ws281_id
         self.m_flashes_per_minute = p_flashes_per_minute
         self.m_color_list = p_color_list
+        self.m_inhibit_req = False
+        self.m_update_ack = False
         self.m_timer = None
         # Stores current Aspect settings
         self.m_ws281 = None
@@ -115,6 +117,22 @@ class Light:
             light.adjust_flash()
 
 
+
+    # This method will inhibit the output of a light.  Typically called by a
+    # Semaphore during movement.
+    # @param p_head_id The head-id of the light to inhibit
+    # @param p_inhibit The inhibit state, True for inhibit
+    #
+    @classmethod
+    def Inhibit(p_class, p_head_id, p_inhibit):
+        for light in p_class.c_light_list:
+            if p_head_id == light.m_head_id:
+                # Found the matching light
+                # Change inhibit state
+                light.m_inhibit_req = p_inhibit
+                light.m_update_ack = False
+
+
     # Initialize Light hardware
     # Note: this is performed in the WS281 driver
     #
@@ -149,22 +167,45 @@ class Light:
         self.m_aspect_color = p_color
         self.m_aspect_intensity = p_intensity
         self.m_aspect_flashing = p_flashing
-        self.m_aspect_flashing_on = True
+        self.m_aspect_flashing_on = p_flashing
         self.m_log = p_log
-        return p_ws281.set_color(self.m_ws281_id, p_color, p_intensity, p_log)
+        self.m_update_ack = False
+        # All LED updates are performed in the timer callback adjust_flash()
+        return True
 
 
     # Called by timer handler to toggle lights with Aspect of flashing
     #
     def adjust_flash(self):
-        if not self.m_aspect_flashing:
+        if not self.m_ws281:
             return
-        if self.m_aspect_flashing_on:
+
+        if self.m_log:
+            self.m_log.add("adjust_flash", "inhibit_req:" + str(self.m_inhibit_req))
+
+        if not self.m_update_ack and self.m_inhibit_req:
+            self.m_update_ack = True
+            self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
+            return
+
+        if not self.m_update_ack and not self.m_inhibit_req:
+            self.m_update_ack = True
+            self.m_ws281.set_color(self.m_ws281_id, self.m_aspect_color, self.m_aspect_intensity, self.m_log)
+            return
+
+        # Prevent flashing while the LED is inhibited
+        if self.m_inhibit_req:
+            return
+
+        if self.m_aspect_flashing and self.m_aspect_flashing_on:
             self.m_aspect_flashing_on = False
             self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
-        else:
+            return
+
+        if self.m_aspect_flashing and not self.m_aspect_flashing_on:
             self.m_aspect_flashing_on = True
             self.m_ws281.set_color(self.m_ws281_id, self.m_aspect_color, self.m_aspect_intensity, self.m_log)
+            return
 
 
     # @returns A string representation of this Light
