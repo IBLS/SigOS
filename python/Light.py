@@ -180,9 +180,6 @@ class Light:
         if not self.m_ws281:
             return
 
-        if self.m_log:
-            self.m_log.add("adjust_flash", "inhibit_req:" + str(self.m_inhibit_req))
-
         if not self.m_update_ack and self.m_inhibit_req:
             self.m_update_ack = True
             self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
