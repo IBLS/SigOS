@@ -49,7 +49,11 @@ class Config:
         self.m_wifi_password = config["wifi-password"]
         self.m_ip_addr = config["ip-addr"]
         self.m_light_on_approach = config["light-on-approach"] == "true"
-        self.m_number_plate = config["number-plate"] == "true"
+        self.m_number_plate = config["number-plate"]
+        if self.m_number_plate and (len(self.m_number_plate) > 0):
+            self.m_number_plate_present = True
+        else:
+            self.m_number_plate_present = False
         self.m_rules_file = config["rules-file"]
         self.m_ws281_gpio_pin = config["ws281-gpio-pin"]
 
@@ -98,12 +102,6 @@ class Config:
     #
     def head_count(self):
         return self.m_head_count
-
-
-    # @returns True if this signal has a number plate
-    #
-    def number_plate(self):
-        return self.m_number_plate
 
 
     # @returns A string representation of this rule set

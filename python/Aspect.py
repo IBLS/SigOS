@@ -97,6 +97,9 @@ class Aspect:
 
             if args[0] == "number-plate":
                 fixture = args[0]
+                continue
+
+            if args[0] == "present":
                 if args[1] and args[1] == "yes":
                     number_plate = True
                 else:
@@ -195,7 +198,7 @@ class Aspect:
         # Only check for a number plate if it was specifically defined
         # in this Aspect.
         if self.m_number_plate is not None:
-            if self.m_number_plate != self.m_config.number_plate():
+            if self.m_number_plate != self.m_config.m_number_plate_present:
                 #print("mismatch number-plate")
                 return False
 

@@ -25,6 +25,7 @@
 
 import Command
 import Log
+import Config
 import Rules
 
 
@@ -114,6 +115,17 @@ def fn_rules(p_word_list, p_client):
 
 wl = ["rules"]
 Command.Command(wl, "Print the list of supported Rules", fn_rules)
+
+
+def fn_number_plate(p_word_list, p_client):
+    config = Config.Config.c_config
+    out = ["None"]
+    if config.m_number_plate and (len(config.m_number_plate) > 0):
+        out = [config.m_number_plate]
+    return True, out
+
+wl = ["number-plate"]
+Command.Command(wl, "Show the number-plate, or None", fn_number_plate)
 
 
 def fn_log(p_word_list, p_client):
