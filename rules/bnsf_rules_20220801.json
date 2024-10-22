@@ -1,0 +1,339 @@
+{
+    "rule-set": "BNSF Rules 8-1-2022",
+    "source": "https://mope.nyc3.cdn.digitaloceanspaces.com/media/4/content/2022/12/02/Signal_Aspects_and_Indications.pdf",
+    "author": "Daris A Nevil <daris@nevil.org>",
+    "default-rule": "9.1.3",
+
+    "rules": [
+        {
+            "rule": "9.1.3",
+            "name": "CLEAR",
+            "indication": "PROCEED",
+            "priority": 100,
+            "aspect": [
+                "semaphore head-id:1 angle:0; light head-id:1 color:green",
+                "light head-id:1 color:green",
+
+                "semaphore head-id:1 angle:0; light head-id:1 color:green; semaphore head-id:2 angle:90; light head-id:2 color:red",
+                "light head-id:1 color:green; light head-id:2 color:red",
+
+                "semaphore head-id:1 angle:0; light head-id:1 color:green; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 colore:red",
+                "light head-id:1 color:green; light head-id:2 color:red; light head-id:3 colore:red",
+
+                "semaphore head-id:1 angle:0; light head-id:1 color:green; light head-id:2 color:black",
+                "light head-id:1 color:green; light head-id:2 color:black",
+
+                "semaphore head-id:1 angle:0; light head-id:1 color:green; light head-id:2 color:black; light head-id:3 color:black",
+                "light head-id:1 color:green; light head-id:2 color:black; light head-id:3 color:black",
+
+                "semaphore head-id:1 angle:0; light head-id:1 color:green; light head-id:2 color:black; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:green; light head-id:2 color:black; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:0; light head-id:1 color:green; semaphore head-id:2 angle:90; light head-id:2 color:red; light head-id:3 color:black",
+                "light head-id:1 color:green; light head-id:2 color:red; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.4",
+            "name": "APPROACH-LIMITED",
+            "indication": "PROCEED PREPARED TO PASS NEXT SIGNAL NOT EXCEEDING 60 MPH AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
+            "priority": 110,
+            "aspect": [
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle:0; light head-id:2 color:green flashing",
+                "light head-id:1 color:yellow; light head-id:2 color:green flashing"
+            ]
+        },
+
+        {
+            "rule": "9.1.5",
+            "name": "ADVANCE-APPROACH",
+            "indication": "PROCEED PREPARED TO PASS NEXT SIGNAL NOT EXCEEDING 50 MPH AND BE PREPARED TO ENTER DIVERGING ROUTE AT PRESCRIBED SPEED",
+            "priority": 120,
+            "aspect": [
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle:0; light head-id:2 color:green",
+                "light head-id:1 color:yellow; light head-id:2 color:green",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle:0; light head-id:2 color:green; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow; light head-id:2 color:green; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle:0; light head-id:2 color:green; light head-id:3 color:black",
+                "light head-id:1 color:yellow; light head-id:2 color:green; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.6",
+            "name": "APPROACH-MEDIUM",
+            "indication": "PROCEED PREPARED TO PASS NEXT SIGNAL NOT EXCEEDING 40 MPH AND BE PREPARED TO ENTER DIVERGIN ROUTE AT PRESCRIBED SPEED",
+            "priority": 130,
+            "aspect": [
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing",
+                "light head-id:1 color:yellow flashing",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; semaphore head-id:2 angle:90; light head-id:2 color:red",
+                "light head-id:1 color:yellow flashing; light head-id:2 color:red",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow flashing; light head-id:2 color:red; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; light head-id:2 color:black;",
+                "light head-id:1 color:yellow flashing; light head-id:2 color:black;",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; light head-id:2 color:black; light head-id:3 color:black",
+                "light head-id:1 color:yellow flashing; light head-id:2 color:black; light head-id:3 color:black",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle 45; light head-id:2 color:yellow",
+                "light head-id:1 color:yellow; light head-id:2 color:yellow",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle 45; light head-id:2 color:yellow; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow; light head-id:2 color:yellow; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; light head-id:2 color:black; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow flashing; light head-id:2 color:black; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; light head-id:2 color:black; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow flashing; light head-id:2 color:black; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow flashing; sempahore head-id:2 angle:90; light head-id:2 color:red; light head-id:3 color:black",
+                "light head-id:1 color:yellow flashing; light head-id:2 color:red; light head-id:3 color:black",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; sempahore head-id:2 angle:45; light head-id:2 color:yellow; light head-id:3 color:black",
+                "light head-id:1 color:yellow; light head-id:2 color:yellow; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.7",
+            "name": "APPROACH-RESTRICTING",
+            "indication": "PROCEED PREPARED TO PASS NEXT SIGNAL AT RESTRICTED SPEED.  FREIGHT TRAINS EXCEEDING 30 MPH IMMEDIATELY REDUCE TO THAT SPEED.",
+            "priority": 140,
+            "aspect": [
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; light head-id:2 color:lunar-white",
+                "light head-id:1 color:yellow; light head-id:2 color: lunar-white",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; light head-id:2 color:lunar-white; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow; light head-id:2 color: lunar-white; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle:90; light head-id:3 color:red flashing",
+                "light head-id:1 color:yellow; light head-id:3 color:red flashing",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle:90; light head-id:2 color:red flashing; light head-id:3 color:black",
+                "light head-id:1 color:yellow; light head-id:2 color:red flashing; light head-id:3 color:black",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yellow; semaphore head-id:2 angle:90; light head-id:2 color:red flashing; semaphore head-id:3 angle:90; light head-id:3 color:black",
+                "light head-id:1 color:yellow; light head-id:2 color:red flashing; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.8",
+            "name": "APPROACH",
+            "indication": "PROCEED PREPARED TO STOP AT NEXT SIGNAL. TRAINS EXCEEDING 30 MPH IMMEDIATELY REDUCE TO THAT SPEED.",
+            "priority": 150,
+            "aspect": [
+                "semaphore head-id: 1 angle:45; light head-id:1 color:yellow",
+                "light head-id:1 color:yellow",
+
+                "semaphore head-id: 1 angle:45; light head-id:1 color:yellow; semphore head-id:2 angle:90; light head-id:2 color:red",
+                "light head-id:1 color:yellow; light head-id:2 color:red",
+
+                "semaphore head-id: 1 angle:45; light head-id:1 color:yellow; semphore head-id:2 angle:90; light head-id:2 color:red",
+                "light head-id:1 color:yellow; light head-id:2 color:red",
+
+                "semaphore head-id: 1 angle:45; light head-id:1 color:yellow; semphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow; light head-id:2 color:red; light head-id:3 color:red",
+
+                "semaphore head-id: 1 angle:45; light head-id:1 color:yellow; light head-id:2 color:black",
+                "light head-id:1 color:yellow; light head-id:2 color:black",
+
+                "semaphore head-id: 1 angle:45; light head-id:1 color:yellow; light head-id:2 color:black; light head-id:3 color:black",
+                "light head-id:1 color:yellow; light head-id:2 color:black; light head-id:3 color:black",
+
+                "semaphore head-id: 1 angle:45; light head-id:1 color:yellow; light head-id:2 color:black; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:yellow; light head-id:2 color:black; light head-id:3 color:red",
+
+                "light head-id:1 color:black; semaphore head-id:2 angle:45; light head-id:2 color:yellow",
+                "light head-id:1 color:black; light head-id:2 color:yellow",
+
+                "semaphore head-id:1 angle:45; light head-id:1 color:yello; semaphore head-id:2 angle:90; light head-id:2 color:red; light head-id:3 color:black",
+                "light head-id:1 color:yellow; light head-id:2 color:red; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.9",
+            "name": "DIVERGING-CLEAR",
+            "indication": "PROCEED ON DIVERGING ROUTE NOT EXCEEDING PRESCRIBED SPEED THROUGH TURNOUT",
+            "priority": 160,
+            "aspect": [
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:0; light head-id:2 color:green",
+                "light head-id:1 color:red; light head-id:2 color:green",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:0; light head-id:2 color:green; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:red; light head-id:2 color:green; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:0; light head-id:2 color:green; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:red; light head-id:2 color:green; light head-id:3 color:red",
+
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:0; light head-id:3 color:green",
+                "light head-id:1 color:red; light head-id:2 color:red; light head-id:3 color:green",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:0; light head-id:2 color:green; light head-id:3 color:black",
+                "light head-id:1 color:red; light head-id:2 color:green; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.10",
+            "name": "DIVERGING-APPROACH-DIVERGING",
+            "indication": "PROCEED ON DIVERGING ROUTE NOT EXCEEDING PRESCRIBED SPEED THROUGH TURNOUT PREPARED TO ADVANCE ON DIVERGING ROUTE AT THE NEXT SIGNAL NOT EXCEEDING PRESCRIBED SPEED THROUGH TURNOUT",
+            "priority": 170,
+            "aspect": [
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:45; light head-id:2 color:yellow; semaphore head-id:3 angle:45; light head-id:3 color:yellow",
+                "light head-id:1 color:red; light head-id:2 color:yellow; light head-id:3 color:yellow"
+            ]
+        },
+
+        {
+            "rule": "9.1.11",
+            "name": "DIVERGING-APPROACH-MEDIUM",
+            "indication": "PROCEED ON DIVERGING ROUTE NOT EXCEEDING PRESCRIBED SPEED THROUGH TURNOUT PREPARED TO PASS NEXT SIGNAL NOT EXCEEDING 35 MPH",
+            "priority": 180,
+            "aspect": [
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:45; light head-id:2 color:yellow flashing",
+                "light head-id:1 color:red; light head-id:2 color:yellow flashing",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:45; light head-id:2 color:yellow flashing; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:red; light head-id:2 color:yellow flashing; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:45; light head-id:2 color:yellow flashing; light head-id:3 color:black",
+                "light head-id:1 color:red; light head-id:2 color:yellow flashing; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.12",
+            "name": "DIVERGING-APPROACH",
+            "indication": "PROCEED ON DIVERGING ROUTE NOT EXCEEDING PRESCRIBED SPEED THROUGH TURNOUT; APPROACH NEXT SIGNAL PREPARED TO STOP. TRAINS EXCEEDING 30 MPH IMMEDIATELY REDUCE TO THAT SPEED.",
+            "priority": 190,
+            "aspect": [
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:45; light head-id:2 color:yellow",
+                "light head-id:1 color:red; light head-id:2 color:yellow",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:45; light head-id:2 color:yellow; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:red; light head-id:2 color:yellow; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:45; light head-id:2 color:yellow; light head-id:3 color:black",
+                "light head-id:1 color:red; light head-id:2 color:yellow; light head-id:3 color:black"
+            ]
+        },
+
+        {
+            "rule": "9.1.13",
+            "name": "RESTRICTING",
+            "indication": "PROCEED AT RESTRICTED SPEED.",
+            "priority": 200,
+            "aspect": [
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red flashing",
+                "name-plate: no; light head-id:1 color:red flashing",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red flashing",
+                "name-plate: no; light head-id:1 color:red; light head-id:2 color:red flashing",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red flashing; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "name-plate: no; light head-id:1 color:red; light head-id:2 color:red flashing; light head-id:3 color:red",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red flashing; semaphore head-id:2 angle:90; light head-id:2 color:red",
+                "name-plate: no; light head-id:1 color:red flashing; light head-id:2 color:red",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red flashing; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "name-plate: no; light head-id:1 color:red flashing; light head-id:2 color:red; light head-id:3 color:red",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 color:red flashing",
+                "name-plate: no; light head-id:1 color:red; light head-id:2 color:red; light head-id:3 color:red flashing",
+
+                "name-plate: no; light head-id:1 color:black; semaphore head-id:2 angle:90; light head-id:2 color:red flashing; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "name-plate: no; light head-id:1 color:black; light head-id:2 color:red flashing; light head-id:3 color:red",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red flashing; semaphore head-id:2 angle:90; light head-id:2 color:red; light head-id:3 color:black",
+                "name-plate: no; light head-id:1 color:red flashing; light head-id:2 color:red; light head-id:3 color:black",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red flashing; light head-id:3 color:black",
+                "name-plate: no; light head-id:1 color:red; light head-id:2 color:red flashing; light head-id:3 color:black",
+
+                "name-plate: no; light head-id:1 color:lunar-white",
+
+                "name-plate: no; light head-id:1 color:lunar-white; semaphore head-id:2 angle:90; light head-id:2 color:red",
+                "name-plate: no; light head-id:1 color:lunar-white; light head-id:2 color:red",
+                "name-plate: no; light head-id:1 color:lunar-white; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "name-plate: no; light head-id:1 color:lunar-white; light head-id:2 color:red; light head-id:3 color:red",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red; light head-id:2 color:lunar-white",
+                "name-plate: no; light head-id:1 color:red; light head-id:2 color:lunar-white",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red; light head-id:3 color:lunar-white",
+                "name-plate: no; light head-id:1 color:red; light head-id:2 color:red; light head-id:3 color:lunar-white",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red; light head-id:2 color:lunar-white; semaphore head-id:3 angel:90; light head-id:3 color:red",
+                "name-plate: no; light head-id:1 color:red; light head-id:2 color:lunar-white; light head-id:3 color:red",
+
+                "name-plate: no; light head-id:1 color:black; light head-id:2 color:lunar-white",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red flashing; light head-id:2 color:black",
+
+                "name-plate: no; light head-id:1 color:black; semaphore head-id:2 angle:90; light head-id:2 color:red flashing",
+                "name-plate: no; light head-id:1 color:black; light head-id:2 color:red flashing",
+
+                "name-plate: no; semaphore head-id:1 angle:90; light head-id:1 color:red flashing; light head-id:2: color: black; semaphore head-id:3 angle:90; light head-id:2 color:red",
+                "name-plate: no; light head-id:1 color:red flashing; light head-id:2 color:black; light head-id:3 color:red",
+
+                "name-plate: yes; semaphore head-id:1 angle:90; light head-id:1 color:red",
+                "name-plate: yes; light head-id:1 color:red",
+
+                "name-plate: yes; semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red",
+                "name-plate: yes; light head-id:1 color:red; light head-id:2 color:red",
+
+                "name-plate: yes; semaphore head-id:1 angle:90; light head-id:1 color:red; light head-id:2 color:black",
+                "name-plate: yes; light head-id:1 color:red; light head-id:2 color:black",
+
+                "name-plate: yes; light head-id:1 color:black; semaphore head-id:2 angle:90; light head-id:1 color:red",
+                "name-plate: yes; light head-id:1 color:black; light head-id:2 color:red"
+            ]
+        },
+
+        {
+            "rule": "9.1.15",
+            "name": "STOP",
+            "indication": "STOP",
+            "priority": 210,
+            "aspect": [
+                "semaphore head-id:1 angle:90; light head-id:1 color:red",
+                "light head-id:1 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red",
+                "light head-id:1 color:red; light head-id:2 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:red; light head-id:2 color:red; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; light head-id:2 color:black",
+                "light head-id:1 color:red; light head-id:2 color:black",
+
+                "light head-id:1 color:black; semaphore head-id:2 angle:90; light head-id:2 color:red",
+                "light head-id:1 color:black; light head-id:2 color:red",
+
+                "light head-id:1 color:black; semaphore head-id:2 angle:90; light head-id:2 color:red; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:black; light head-id:2 color:red; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; light head-id:2 color:black; semaphore head-id:3 angle:90; light head-id:3 color:red",
+                "light head-id:1 color:red; light head-id:2 color:black; light head-id:3 color:red",
+
+                "semaphore head-id:1 angle:90; light head-id:1 color:red; semaphore head-id:2 angle:90; light head-id:2 color:red; light head-id:3 color:black",
+                "light head-id:1 color:red; light head-id:2 color:red; light head-id:3 color:black"
+
+            ]
+        }
+    ]
+}

@@ -35,6 +35,7 @@ import Command
 import Rules
 import Semaphore
 import Light
+import LightLevel
 import WS281
 
 
@@ -47,6 +48,7 @@ g_config = Config.Config("config.json")
 WS281.WS281.InitHardware(g_config, Light.Light.Count())
 Semaphore.Semaphore.InitHardware(g_config)
 Light.Light.InitHardware(g_config)
+LightLevel.LightLevel.InitHardware(g_config)
 
 
 # Load the rules from the file specified in the config file

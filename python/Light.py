@@ -57,7 +57,7 @@ class Light:
         # Stores current Aspect settings
         self.m_ws281 = None
         self.m_aspect_color = None
-        self.m_aspect_intensity = None
+        self.m_aspect_intensity = 100
         self.m_aspect_flashing = False
         self.m_aspect_flashing_on = False
         self.m_log = None
@@ -117,6 +117,14 @@ class Light:
             light.adjust_flash()
 
 
+    # Toggle lights with Aspect of "flashing"
+    # @param p_intensity_percent The intensity as a percentage 0-100
+    #
+    @classmethod
+    def AdjustIntensity(p_class, p_intensity_percent):
+        for light in p_class.c_light_list:
+            light.adjust_intensity(p_intensity_percent)
+
 
     # This method will inhibit the output of a light.  Typically called by a
     # Semaphore during movement.
@@ -165,7 +173,7 @@ class Light:
     def set_aspect(self, p_ws281, p_color, p_intensity, p_flashing, p_log):
         self.m_ws281 = p_ws281
         self.m_aspect_color = p_color
-        self.m_aspect_intensity = p_intensity
+        #self.m_aspect_intensity = p_intensity
         self.m_aspect_flashing = p_flashing
         self.m_aspect_flashing_on = p_flashing
         self.m_log = p_log
@@ -203,6 +211,16 @@ class Light:
             self.m_aspect_flashing_on = True
             self.m_ws281.set_color(self.m_ws281_id, self.m_aspect_color, self.m_aspect_intensity, self.m_log)
             return
+
+
+    # Called by timer handler to toggle lights with Aspect of flashing
+    # @param p_intensity_percent The intensity as a percentage 0-100
+    #
+    def adjust_intensity(self, p_intensity_percent):
+        self.m_aspect_intensity = int(p_intensity_percent)
+        # Change intensity
+        self.m_update_ack = False
+        self.adjust_flash()
 
 
     # @returns A string representation of this Light

@@ -43,6 +43,7 @@ class Config:
         config = json.load(fs)
         fs.close()
 
+        self.m_json_config = config
         self.m_board_type = config["board-type"]
         self.m_hostname = config["hostname"]
         self.m_wifi_ssid = config["wifi-ssid"]
@@ -96,6 +97,12 @@ class Config:
 
         # Save this singleton
         Config.c_config = self
+
+
+    # @returns The value of the named item from the json file
+    #
+    def get_value(self, p_json_name):
+        return self.m_json_config[p_json_name]
 
 
     # @returns The number of heads configured for this signal

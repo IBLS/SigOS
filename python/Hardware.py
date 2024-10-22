@@ -68,6 +68,7 @@ class Hardware:
             # Pin 3 - detect block B
             # Pin 4 - detect block B-
             # Pin 5 - Servo control out
+            # Pin 6 - ADC1_0 Light Level Detector
             # Pin 7 - detect block B+
             self.m_detect_b  = Pin(3, Pin.IN, Pin.PULL_UP)
             self.m_detect_bm = Pin(4, Pin.IN, Pin.PULL_UP)

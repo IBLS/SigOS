@@ -23,11 +23,13 @@
 # 
 #
 
+import os
 import Command
 import Log
 import Config
 import Rules
 
+SigOS_Version = "20241022"
 
 def fn_help(p_word_list, p_client):
     return True, Command.Command.Help()
@@ -161,5 +163,15 @@ def fn_close(p_word_list, p_client):
 
 wl = ["close"]
 Command.Command(wl, "Close the current client connection", fn_close)
+
+
+def fn_os(p_word_list, p_client):
+    out = list()
+    out.append("SigOS " + SigOS_Version)
+    out.extend(os.uname())
+    return True, out
+
+wl = ["os"]
+Command.Command(wl, "Show operating system and hardware info", fn_os)
 
 

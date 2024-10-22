@@ -8,6 +8,10 @@
   "number-plate": "",
   "rules-file": "atsf1959_rules_ss2.json",
   "ws281-gpio-pin": 2,
+  "light-level-percent": "auto"
+  "light-level-gpio-pin": 1,
+  "light-level-min-percent": 1,
+  "light-level-max-percent": 100,
   "heads" : [
         {
             "head-id": 1,
