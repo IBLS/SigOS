@@ -51,15 +51,14 @@ class Light:
         self.m_ws281_id = p_ws281_id
         self.m_flashes_per_minute = p_flashes_per_minute
         self.m_color_list = p_color_list
-        self.m_inhibit_req = False
-        self.m_update_ack = False
+        self.m_state_on = False
+        self.m_inhibit = False
+        self.m_update_req = False
         self.m_timer = None
-        # Stores current Aspect settings
         self.m_ws281 = None
         self.m_aspect_color = None
         self.m_aspect_intensity = 100
         self.m_aspect_flashing = False
-        self.m_aspect_flashing_on = False
         self.m_log = None
 
         # Save the new instance in the class
@@ -93,18 +92,17 @@ class Light:
     # Modify the aspect of the specified light
     # @param p_head_id Specifies the head containing the light
     # @param p_color The new color for the light
-    # @param p_intensity The new intensity for the light (0-100)
     # @param p_flashing To flash or not to flash, that is the question
     # @param p_log Log to write failure messages to
     # @returns True on success, False on error
     #
     @classmethod
-    def ChangeLightAspect(p_class, p_head_id, p_color, p_intensity, p_flashing, p_log):
+    def ChangeLightAspect(p_class, p_head_id, p_color, p_flashing, p_log):
         for light in p_class.c_light_list:
             if p_head_id == light.m_head_id:
                 if p_color in light.m_color_list:
                     # change the aspect
-                    return light.set_aspect(WS281.WS281.c_ws281, p_color, p_intensity, p_flashing, p_log)
+                    return light.set_aspect(WS281.WS281.c_ws281, p_color, p_flashing, p_log)
         p_log.add("Light", "No matching light 202410160901")
         return False
 
@@ -137,8 +135,7 @@ class Light:
             if p_head_id == light.m_head_id:
                 # Found the matching light
                 # Change inhibit state
-                light.m_inhibit_req = p_inhibit
-                light.m_update_ack = False
+                light.m_inhibit = p_inhibit
 
 
     # Initialize Light hardware
@@ -165,19 +162,18 @@ class Light:
     # Modify the aspect of this light
     # @param p_ws281 The singleton hardware object controlling the WS281 hardware
     # @param p_color The name of the color to set.
-    # @param p_intensity The brightness of the light in % (0-100)
     # @param p_flashing When True then make this light flash
     # @param p_log Log to write error messages to
     # @returns True on success, False if the requested state does not match
     #
-    def set_aspect(self, p_ws281, p_color, p_intensity, p_flashing, p_log):
+    def set_aspect(self, p_ws281, p_color, p_flashing, p_log):
         self.m_ws281 = p_ws281
         self.m_aspect_color = p_color
         #self.m_aspect_intensity = p_intensity
         self.m_aspect_flashing = p_flashing
-        self.m_aspect_flashing_on = p_flashing
+        self.m_state_on = True
         self.m_log = p_log
-        self.m_update_ack = False
+        self.m_update_req = True
         # All LED updates are performed in the timer callback adjust_flash()
         return True
 
@@ -188,29 +184,33 @@ class Light:
         if not self.m_ws281:
             return
 
-        if not self.m_update_ack and self.m_inhibit_req:
-            self.m_update_ack = True
+        if self.m_inhibit:
+            # Turn off LED - this is the highest priority action
             self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
             return
 
-        if not self.m_update_ack and not self.m_inhibit_req:
-            self.m_update_ack = True
+        if self.m_aspect_flashing:
+            # Update flashing on every interrupt
+            self.m_update_req = True
+
+        if not self.m_update_req:
+            # Nobody has requested an update
+            return
+
+        if self.m_state_on:
             self.m_ws281.set_color(self.m_ws281_id, self.m_aspect_color, self.m_aspect_intensity, self.m_log)
-            return
-
-        # Prevent flashing while the LED is inhibited
-        if self.m_inhibit_req:
-            return
-
-        if self.m_aspect_flashing and self.m_aspect_flashing_on:
-            self.m_aspect_flashing_on = False
+        else:
             self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
-            return
 
-        if self.m_aspect_flashing and not self.m_aspect_flashing_on:
-            self.m_aspect_flashing_on = True
-            self.m_ws281.set_color(self.m_ws281_id, self.m_aspect_color, self.m_aspect_intensity, self.m_log)
-            return
+        # Acknowledge the update has occured
+        self.m_update_ack = True
+
+        # Update flashing state for next interrupt
+        if self.m_aspect_flashing:
+            if self.m_state_on:
+                self.m_state_on = False
+            else:
+                self.m_state_on = True
 
 
     # Called by timer handler to toggle lights with Aspect of flashing

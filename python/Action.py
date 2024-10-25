@@ -38,7 +38,6 @@ class Action:
 
         self.m_light = False
         self.m_color = None
-        self.m_intensity = 100
         self.m_flashing = False
 
 
@@ -55,8 +54,7 @@ class Action:
             if not self.m_color:
                 p_log.add("Action", "Invalid color 202410151804")
                 return False
-            if self.m_intensity >= 0 and self.m_intensity <= 100:
-                return True
+            return True
         else:
             p_log.add("Action", "Validate failed 202410160833")
             return False
@@ -75,7 +73,7 @@ class Action:
             return Semaphore.Semaphore.ChangeSemaphoreAspect(self.m_head_id, self.m_angle, p_log)
 
         if self.m_light:
-            return Light.Light.ChangeLightAspect(self.m_head_id, self.m_color, self.m_intensity, self.m_flashing, p_log)
+            return Light.Light.ChangeLightAspect(self.m_head_id, self.m_color, self.m_flashing, p_log)
 
         p_log.add("Action", "Invalid fixture 202410160829")
         return False
@@ -94,8 +92,6 @@ class Action:
         s += str(self.m_light)
         s += ",color:"
         s += self.m_color
-        s += ",intensity:"
-        s += str(self.m_intensity)
         s += ",flashing:"
         s += str(self.m_flashing)
         return s
