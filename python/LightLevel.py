@@ -35,12 +35,13 @@ class LightLevel:
     c_light_level = None
 
     # Class variable for generating timer id's
-    c_timer_id = 1
+    c_timer_id = 2
 
     # Create the singleton object for monitoring the ambient light level.
     #
     def __init__(self):
         self.m_light_level_percent = None
+        self.m_percent_intensity_prev = 0
         self.m_light_level_gpio_pin = None
         self.m_light_level_min_percent = None
         self.m_light_level_max_percent = None
@@ -111,7 +112,12 @@ class LightLevel:
         elif percent_intensity > self.m_light_level_max_percent:
             percent_intensity = self.m_light_level_max_percent
 
+        # Check if the intensity level has changed
+        if int(self.m_percent_intensity_prev) == int(percent_intensity):
+            return
+
         Light.Light.AdjustIntensity(percent_intensity)
+        self.m_percent_intensity_prev = percent_intensity
 
 
 # Timer callback to read ambient light level and adjust Light output levels

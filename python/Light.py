@@ -169,7 +169,6 @@ class Light:
     def set_aspect(self, p_ws281, p_color, p_flashing, p_log):
         self.m_ws281 = p_ws281
         self.m_aspect_color = p_color
-        #self.m_aspect_intensity = p_intensity
         self.m_aspect_flashing = p_flashing
         self.m_state_on = True
         self.m_log = p_log
@@ -202,15 +201,15 @@ class Light:
         else:
             self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
 
-        # Acknowledge the update has occured
-        self.m_update_ack = True
-
         # Update flashing state for next interrupt
         if self.m_aspect_flashing:
             if self.m_state_on:
                 self.m_state_on = False
             else:
                 self.m_state_on = True
+
+        # Acknowledge the update has occured
+        self.m_update_req = False
 
 
     # Called by timer handler to toggle lights with Aspect of flashing
@@ -219,8 +218,8 @@ class Light:
     def adjust_intensity(self, p_intensity_percent):
         self.m_aspect_intensity = int(p_intensity_percent)
         # Change intensity
-        self.m_update_ack = False
-        self.adjust_flash()
+        self.m_update_req = True
+        #self.adjust_flash()
 
 
     # @returns A string representation of this Light
