@@ -44,9 +44,11 @@ class Rules:
         fs.close()
 
         self.m_rule_set = rd["rule-set"]
-        self.m_source = rd["source"]
+        self.m_source = rd["rule-set-source"]
         self.m_author = rd["author"]
-        self.m_default_rule = rd["default-rule"]
+        self.m_default_rule_number = rd["default-rule"]
+        self.m_default_rule = None
+        self.m_default_rule_source = None
 
         rules = rd["rules"]
 
@@ -84,18 +86,22 @@ class Rules:
     # @param p_source The name of the source, should be this hostname
     #
     def startup(self, p_source):
-        state = self.request_by_rule_or_name(self.m_default_rule, p_source)
+        self.m_default_rule = self.find_rule(self.m_default_rule_number)
+        self.m_default_rule_source = p_source
+        state = self.request_by_rule_or_name(self.m_default_rule_number, p_source)
+        return
+        # A message has already been placed into the log
         if state == 0:
             msg = "Invalid default rule: "
-            msg += self.m_default_rule
+            msg += str(self.m_default_rule)
             self.m_log.add(p_source, msg)
         if state == 1 or state == 2:
             msg = "Invalid pending default rule: "
-            msg += self.m_default_rule
+            msg += str(self.m_default_rule)
             self.m_log.add(p_source, msg)
         if state == 3:
             msg = "Activated default rule: "
-            msg += self.m_default_rule
+            msg += str(self.m_default_rule)
             self.m_log.add(p_source, msg)
 
 
@@ -130,7 +136,7 @@ class Rules:
         index = 0
         for rule in self.m_request_list:
             if p_rule.m_rule == rule.m_rule:
-                if p_rule.m_source == rule.m_source:
+                if p_source == rule.m_source:
                     self.m_request_list.pop(index)
                     return True
             index += 1
@@ -180,6 +186,10 @@ class Rules:
     def request_by_rule_or_name(self, p_rule_or_name, p_source):
         # Verify the request is a valid rule
         valid_rule = self.find_rule(p_rule_or_name)
+
+        # Make a shallow copy of the rule so it can have its own m_source, etc
+        valid_rule = valid_rule.copy()
+
         # Did we find a valid rule?
         if not valid_rule:
             return 0
@@ -235,13 +245,15 @@ class Rules:
         if not valid_rule:
             return 0
 
+        # Don't delete the last rule in the request queue
         if len(self.m_request_list) < 2:
             return 0
 
         # Don't remove the default rule
-        if (p_rule_or_name == self.m_default_rule) or \
-           (p_rule_or_name == self.m_default_rule):
-            return 0
+        if (p_rule_or_name == self.m_default_rule.m_rule) or \
+           (p_rule_or_name == self.m_default_rule.m_name):
+            if self.m_default_rule_source == p_source:
+                return 0
 
         # Remember the current active rule
         pre_active_rule = self.get_active_rule()
@@ -293,8 +305,8 @@ class Rules:
     def __str__(self):
         s = "rule-set: "
         s += self.m_rule_set
-        s += "\nsource: "
-        s += self.m_source
+        s += "\nrule-set-source: "
+        s += self.m_rule_set_source
         s += "\nauthor: "
         s += self.m_author
         s += "\n"
@@ -313,7 +325,6 @@ class Rules:
         s += self.m_rule_file
         out.append(s)
         for rule in self.m_rule_list:
-            #out.append(rule.abbr_str())
             out.append(rule.simple_str())
         return out
 

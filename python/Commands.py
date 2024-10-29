@@ -51,8 +51,12 @@ def fn_request(p_word_list, p_client):
         msg = "Invalid: "
         msg += rule_or_name
         out.append(msg)
-    if state == 1 or state == 2:
+    if state == 1:
         msg = "Pending: "
+        msg += rule_or_name
+        out.append(msg)
+    if state == 2:
+        msg = "Active: "
         msg += rule_or_name
         out.append(msg)
     if state == 3:
@@ -102,7 +106,7 @@ def fn_active(p_word_list, p_client):
     out = list()
     rules = Rules.Rules.c_rules
     active_rule = rules.get_active_rule()
-    msg = active_rule.abbr_str()
+    msg = str(active_rule)
     out.append(msg)
     return True, out
 

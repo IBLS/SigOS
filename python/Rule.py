@@ -42,6 +42,14 @@ class Rule:
         self.m_indication = p_indication
         self.m_priority = p_priority
         self.m_aspect = p_aspect
+        # Attributes to be set when the Rule is activated
+        self.m_source = None
+
+
+    # Make a shallow copy of this Rule
+    #
+    def copy(self):
+        return type(self)(self.m_rule, self.m_name, self.m_indication, self.m_priority, self.m_aspect)
 
 
     # Execute all Aspect changes associated with this Rule
@@ -76,19 +84,6 @@ class Rule:
         return p_name == self.m_name
 
 
-    # @returns An abbreviated string representation of this rule
-    #
-    def abbr_str(self):
-        s = '"rule": "'
-        s += str(self.m_rule)
-        s += '", "name": "'
-        s += str(self.m_name)
-        s += '", "indication": "'
-        s += str(self.m_indication)
-        s += '"'
-        return s
-
-
     # @returns A simple-to-read string representation of this rule
     #
     def simple_str(self):
@@ -107,6 +102,8 @@ class Rule:
         s += str(self.m_rule)
         s += '", "name": "'
         s += str(self.m_name)
+        s += '", "source": "'
+        s += str(self.m_source)
         s += '", "indication": "'
         s += str(self.m_indication)
         s += '", "priority": "'
