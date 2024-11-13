@@ -27,6 +27,7 @@ import sys
 import machine
 from machine import Pin, PWM, Timer
 import Light
+import Log
 
 
 class Semaphore:
@@ -45,8 +46,9 @@ class Semaphore:
     # @param p_degrees_per_second Speed in which the Semaphore flag moves
     # @param p_0_degrees_pwd Servo PWM value for 0 degrees
     # @param p_90_degrees_pwm Servo PWM value for 90 degrees
+    # @param p_log Log file to print messages to.
     #
-    def __init__(self, p_head_id, p_gpio_pin, p_degrees_per_second, p_0_degrees_pwm, p_90_degrees_pwm):
+    def __init__(self, p_head_id, p_gpio_pin, p_degrees_per_second, p_0_degrees_pwm, p_90_degrees_pwm, p_log):
         self.m_head_id = p_head_id
         self.m_gpio_pin = p_gpio_pin
         self.m_degrees_per_second = p_degrees_per_second
@@ -83,22 +85,6 @@ class Semaphore:
             semaphore.init_hardware()
 
 
-    # Modify the aspect of the specified semaphore
-    # @param p_head_id Specifies the head containing the semaphore
-    # @param p_angle The new angle for the semaphore flag
-    # @param p_log Log to write failure messages to
-    # @returns True on success, False on error
-    #
-    @classmethod
-    def ChangeSemaphoreAspect(p_class, p_head_id, p_angle, p_log):
-        for semaphore in p_class.c_semaphore_list:
-            if p_head_id == semaphore.m_head_id:
-                # change the aspect
-                return semaphore.set_aspect(p_angle)
-        p_log.add("Hardware", "No matching Semaphore 202410160900")
-        return False
-
-
     # @returns The number of created Semaphore objects
     #
     @classmethod
@@ -108,14 +94,14 @@ class Semaphore:
 
     # Check the Semaphore list for one that matches the input parameters
     # @param p_head_id The Head ID of the Semaphore to match
-    # @returns True if a Semaphore described in the config file matches
+    # @returns The matching Semaphore, or None
     #
     @classmethod
     def CheckForMatch(p_class, p_head_id):
         for semaphore in p_class.c_semaphore_list:
             if p_head_id == semaphore.m_head_id:
-                return True
-        return False
+                return semaphore
+        return None
 
     # Adjust servos that are in the process of changing state
     #

@@ -44,7 +44,6 @@
         { "name" : "purple", "r" : 136, "g" : 0, "b" : 253 },
         { "name" : "lemon-yellow", "r" : 253, "g" : 166, "b" : 0 },
         { "name" : "black", "r" : 0, "g" : 0, "b" : 0 },
-        { "name" : "off", "r" : 0, "g" : 0, "b" : 0 }
     ]
 
 }

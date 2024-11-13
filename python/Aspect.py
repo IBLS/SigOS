@@ -133,14 +133,15 @@ class Aspect:
                 self.m_log.add(self.m_config.m_hostname, \
                     "Missing angle parameter 202410112053");
                 return False
-            action = Action.Action()
-            action.m_semaphore = True
-            action.m_head_id = head_id
-            action.m_angle = angle
-            if not Semaphore.Semaphore.CheckForMatch(head_id):
+            matching_semaphore = Semaphore.Semaphore.CheckForMatch(head_id)
+            if not matching_semaphore:
                 # No semaphore matching this description in the config file
-                print("No semaphore:", head_id)
+                #print("No semaphore:", head_id)
                 return False
+            action = Action.Action()
+            action.m_head_id = head_id
+            action.m_semaphore = matching_semaphore
+            action.m_angle = angle
             self.m_action_list.append(action)
             if head_id not in self.m_head_list:
                 self.m_head_list.append(head_id)
@@ -157,14 +158,15 @@ class Aspect:
                 self.m_log.add(self.m_config.m_hostname, \
                     "Missing color parameter 202410112056");
                 return False
-            action = Action.Action()
-            action.m_light = True
-            action.m_head_id = head_id
-            action.m_color = color
-            if not Light.Light.CheckForMatch(head_id, color):
+            matching_light = Light.Light.CheckForMatch(head_id, color)
+            if not matching_light:
                 # No light matching this description in the config file
-                print("No light:", head_id)
+                #print("No light:", head_id)
                 return False
+            action = Action.Action()
+            action.m_head_id = head_id
+            action.m_light = matching_light
+            action.m_color = color
             action.m_flashing = flashing
             self.m_action_list.append(action)
             if head_id not in self.m_head_list:

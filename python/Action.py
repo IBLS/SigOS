@@ -33,10 +33,10 @@ class Action:
     def __init__(self):
         self.m_head_id = None
 
-        self.m_semaphore = False
+        self.m_semaphore = None
         self.m_angle = None
 
-        self.m_light = False
+        self.m_light = None
         self.m_color = None
         self.m_flashing = False
 
@@ -70,10 +70,10 @@ class Action:
             return False
 
         if self.m_semaphore:
-            return Semaphore.Semaphore.ChangeSemaphoreAspect(self.m_head_id, self.m_angle, p_log)
+            return self.m_semaphore.set_aspect(self.m_angle);
 
         if self.m_light:
-            return Light.Light.ChangeLightAspect(self.m_head_id, self.m_color, self.m_flashing, p_log)
+            return self.m_light.set_aspect(self.m_color, self.m_flashing)
 
         p_log.add("Action", "Invalid fixture 202410160829")
         return False

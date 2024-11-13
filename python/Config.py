@@ -27,6 +27,7 @@ import io
 import json
 import Semaphore
 import Light
+import Log
 
 class Config:
 
@@ -37,6 +38,9 @@ class Config:
     # @param p_file Filename of a json config file
     #
     def __init__(self, p_file):
+        # Save a local Log object for convenience
+        self.m_log = Log.Log()
+
         # Read the json file and parse
         self.m_file = p_file
         fs = io.open(p_file, 'r')
@@ -75,7 +79,7 @@ class Config:
                     flashes_per_minute = light["flashes-per-minute"]
                     color_list = light["colors"]
                     # Create a new Light and store it in the Light class list
-                    Light.Light(head_id, light_id, ws281_id, flashes_per_minute, color_list)
+                    Light.Light(head_id, light_id, ws281_id, flashes_per_minute, color_list, self.m_log)
             if ("semaphores" in head):
                 semaphore_list = head["semaphores"]
                 for semaphore in semaphore_list:
@@ -84,7 +88,7 @@ class Config:
                     degrees_90_pwm = semaphore["90-degrees-pwm"]
                     gpio_pin = semaphore["gpio-pin"]
                     # Create a new Semaphore and store it in the Semaphore class list
-                    Semaphore.Semaphore(head_id, gpio_pin, degrees_per_second, degrees_0_pwm, degrees_90_pwm)
+                    Semaphore.Semaphore(head_id, gpio_pin, degrees_per_second, degrees_0_pwm, degrees_90_pwm, self.m_log)
 
             # Keep count of the number of unique heads
             if head_id not in head_list:

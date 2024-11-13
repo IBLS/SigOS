@@ -44,11 +44,13 @@ class Light:
     # @param p_ws281_id The zero-based index of the LED in the WS281 chain
     # @param p_flashes_per_minute The number of times to flash in 60 seconds
     # @param p_color_list A list of one or more valid color names for this light
+    # @param p_log The Log file to print messages to.
     #
-    def __init__(self, p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list):
+    def __init__(self, p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list, p_log):
         print("Light:", p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list)
         self.m_head_id = p_head_id
         self.m_light_id = p_light_id
+        self.m_ws281 = None
         self.m_ws281_id = p_ws281_id
         self.m_flashes_per_minute = p_flashes_per_minute
         self.m_color_list = p_color_list
@@ -56,11 +58,10 @@ class Light:
         self.m_inhibit = False
         self.m_update_req = False
         self.m_timer = None
-        self.m_ws281 = None
         self.m_aspect_color = None
         self.m_aspect_intensity = 100
         self.m_aspect_flashing = False
-        self.m_log = None
+        self.m_log = p_log
 
         # Save the new instance in the class
         Light.c_light_list.append(self)
@@ -92,37 +93,16 @@ class Light:
 
     # Check the Light list for one that matches the input parameters
     # @param p_head_id The Head ID of the Light to match
-    # @returns True if a Light described in the config file matches
+    # @returns The matching Light, or None
     #
     @classmethod
     def CheckForMatch(p_class, p_head_id, p_color):
         print("CheckForMatch:", p_head_id, p_color)
         for light in p_class.c_light_list:
-            print("Checking Light:", str(light))
             if p_head_id == light.m_head_id:
                 if p_color in light.m_color_list:
-                    print("True")
-                    return True
-        print("False")
-        return False
-
-
-    # Modify the aspect of the specified light
-    # @param p_head_id Specifies the head containing the light
-    # @param p_color The new color for the light
-    # @param p_flashing To flash or not to flash, that is the question
-    # @param p_log Log to write failure messages to
-    # @returns True on success, False on error
-    #
-    @classmethod
-    def ChangeLightAspect(p_class, p_head_id, p_color, p_flashing, p_log):
-        for light in p_class.c_light_list:
-            if p_head_id == light.m_head_id:
-                if p_color in light.m_color_list:
-                    # change the aspect
-                    return light.set_aspect(WS281.WS281.c_ws281, p_color, p_flashing, p_log)
-        p_log.add("Light", "No matching light 202410160901")
-        return False
+                    return light
+        return None
 
 
     # Toggle lights with Aspect of "flashing"
@@ -140,6 +120,14 @@ class Light:
     def AdjustIntensity(p_class, p_intensity_percent):
         for light in p_class.c_light_list:
             light.adjust_intensity(p_intensity_percent)
+
+
+    # Turn all lights off. Called before changing Aspects
+    #
+    @classmethod
+    def AllOff(p_class):
+        for light in p_class.c_light_list:
+            light.off()
 
 
     # This method will inhibit the output of a light.  Typically called by a
@@ -160,6 +148,8 @@ class Light:
     # Note: this is performed in the WS281 driver
     #
     def init_hardware(self):
+        # Save link to WS281 driver
+        self.m_ws281 = WS281.WS281.c_ws281
         # Start timer
         self.m_timer = machine.Timer(Light.c_timer_id)
         # Compute the timer interrupt period.
@@ -178,32 +168,31 @@ class Light:
 
 
     # Modify the aspect of this light
-    # @param p_ws281 The singleton hardware object controlling the WS281 hardware
     # @param p_color The name of the color to set.
     # @param p_flashing When True then make this light flash
-    # @param p_log Log to write error messages to
     # @returns True on success, False if the requested state does not match
     #
-    def set_aspect(self, p_ws281, p_color, p_flashing, p_log):
-        self.m_ws281 = p_ws281
+    def set_aspect(self, p_color, p_flashing):
         self.m_aspect_color = p_color
         self.m_aspect_flashing = p_flashing
         self.m_state_on = True
-        self.m_log = p_log
         self.m_update_req = True
         # All LED updates are performed in the timer callback adjust_flash()
         return True
 
 
+    # Turn this light off
+    #
+    def off(self):
+        self.set_aspect("black", False)
+
+
     # Called by timer handler to toggle lights with Aspect of flashing
     #
     def adjust_flash(self):
-        if not self.m_ws281:
-            return
-
         if self.m_inhibit:
             # Turn off LED - this is the highest priority action
-            self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
+            self.m_ws281.set_color(self.m_ws281_id, "black", self.m_aspect_intensity, self.m_log)
             return
 
         if self.m_aspect_flashing:
@@ -217,7 +206,7 @@ class Light:
         if self.m_state_on:
             self.m_ws281.set_color(self.m_ws281_id, self.m_aspect_color, self.m_aspect_intensity, self.m_log)
         else:
-            self.m_ws281.set_color(self.m_ws281_id, "off", self.m_aspect_intensity, self.m_log)
+            self.m_ws281.set_color(self.m_ws281_id, "black", self.m_aspect_intensity, self.m_log)
 
         # Update flashing state for next interrupt
         if self.m_aspect_flashing:

@@ -28,6 +28,7 @@ import json
 import Rule
 import Log
 import Aspect
+import Light
 
 class Rules:
 
@@ -222,6 +223,9 @@ class Rules:
         s += post_active_rule.m_name
         self.m_log.add(p_source, s)
 
+        # Turn off all lights before setting new Aspect
+        Light.Light.AllOff()
+
         # Change hardware state
         if not post_active_rule.execute(p_source, self.m_log):
             self.m_log.add("Rules", "Failed to execute 202410151727")
@@ -282,6 +286,9 @@ class Rules:
         s += ":"
         s += post_active_rule.m_name
         self.m_log.add(p_source, s)
+
+        # Turn off all lights before setting new Aspect
+        Light.Light.AllOff()
 
         # Change hardware state
         if not post_active_rule.execute(p_source, self.m_log):
