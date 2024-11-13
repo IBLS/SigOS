@@ -106,6 +106,17 @@ class Semaphore:
         return len(p_class.c_semaphore_list)
 
 
+    # Check the Semaphore list for one that matches the input parameters
+    # @param p_head_id The Head ID of the Semaphore to match
+    # @returns True if a Semaphore described in the config file matches
+    #
+    @classmethod
+    def CheckForMatch(p_class, p_head_id):
+        for semaphore in p_class.c_semaphore_list:
+            if p_head_id == semaphore.m_head_id:
+                return True
+        return False
+
     # Adjust servos that are in the process of changing state
     #
     @classmethod

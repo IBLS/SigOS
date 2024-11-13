@@ -48,7 +48,6 @@ class Config:
         self.m_hostname = config["hostname"]
         self.m_wifi_ssid = config["wifi-ssid"]
         self.m_wifi_password = config["wifi-password"]
-        self.m_ip_addr = config["ip-addr"]
         self.m_light_on_approach = config["light-on-approach"] == "true"
         self.m_number_plate = config["number-plate"]
         if self.m_number_plate and (len(self.m_number_plate) > 0):
@@ -118,8 +117,6 @@ class Config:
         s += self.m_board_type
         s = "hostname: "
         s += self.m_hostname
-        s += "\nip-addr: "
-        s += self.m_ip_addr
         s += "\nlight-on-approach: "
         s += str(self.m_light_on_approach)
         s += "\nnumber-plate: "

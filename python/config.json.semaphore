@@ -1,9 +1,8 @@
 {
-  "board-type": "esp32",
+  "board-type": "esp32-c2-mini",
   "hostname": "thurber-west.local",
   "wifi-ssid": "IGNRR",
   "wifi-password": "downcase",
-  "ip-addr": "192.168.1.101",
   "light-on-approach": "true",
   "number-plate": "",
   "rules-file": "atsf1959_rules_ss2.json",

@@ -43,8 +43,6 @@ class Aspect:
 
         # Criteria that must match Config
         self.m_head_list = list()
-        self.m_semaphore_count = 0
-        self.m_light_count = 0
         self.m_number_plate = None
 
         self.m_valid_config = False
@@ -60,13 +58,14 @@ class Aspect:
     def eval(self):
         aspect_cmds = self.m_aspect_commands.split(';')
         for aspect_cmd in aspect_cmds:
-            #print("calling eval_single_aspect on " + aspect_cmd)
             if not self.eval_single_aspect(aspect_cmd):
-                #print("eval_single_aspect failed: " + str(aspect_cmd))
+                # This Aspect is invalid for the current configuration
                 return False
 
+        # Perform a check on the command results
         self.m_valid_config = self.check_config()
         return self.m_valid_config
+
 
     # Evaluate a single aspect command>
     # @p_aspect_cmd An aspect command string.
@@ -133,15 +132,18 @@ class Aspect:
                 self.m_log.add(self.m_config.m_hostname, p_aspect_cmd)
                 self.m_log.add(self.m_config.m_hostname, \
                     "Missing angle parameter 202410112053");
-                return False;
+                return False
             action = Action.Action()
             action.m_semaphore = True
             action.m_head_id = head_id
             action.m_angle = angle
+            if not Semaphore.Semaphore.CheckForMatch(head_id):
+                # No semaphore matching this description in the config file
+                print("No semaphore:", head_id)
+                return False
             self.m_action_list.append(action)
             if head_id not in self.m_head_list:
                 self.m_head_list.append(head_id)
-            self.m_semaphore_count +=1 
             return True
 
         if fixture == "light":
@@ -159,13 +161,14 @@ class Aspect:
             action.m_light = True
             action.m_head_id = head_id
             action.m_color = color
-            # TODO: fix intensity to be proportional to sunlight
-            action.m_intensity = 100
+            if not Light.Light.CheckForMatch(head_id, color):
+                # No light matching this description in the config file
+                print("No light:", head_id)
+                return False
             action.m_flashing = flashing
             self.m_action_list.append(action)
             if head_id not in self.m_head_list:
                 self.m_head_list.append(head_id)
-            self.m_light_count += 1
             return True
 
         if fixture == "number-plate":
@@ -184,22 +187,14 @@ class Aspect:
     #
     def check_config(self):
         if len(self.m_head_list) != self.m_config.head_count():
-            #print("mismatch head count")
-            return False
-
-        if self.m_semaphore_count != Semaphore.Semaphore.Count():
-            #print("mismatch semaphore count")
-            return False
-
-        if self.m_light_count != Light.Light.Count():
-            #print("mismatch light count")
+            print("mismatch head count")
             return False
 
         # Only check for a number plate if it was specifically defined
         # in this Aspect.
         if self.m_number_plate is not None:
             if self.m_number_plate != self.m_config.m_number_plate_present:
-                #print("mismatch number-plate")
+                print("mismatch number-plate")
                 return False
 
         # This Aspect matches the Configuration

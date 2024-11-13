@@ -46,6 +46,7 @@ class Light:
     # @param p_color_list A list of one or more valid color names for this light
     #
     def __init__(self, p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list):
+        print("Light:", p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list)
         self.m_head_id = p_head_id
         self.m_light_id = p_light_id
         self.m_ws281_id = p_ws281_id
@@ -87,6 +88,23 @@ class Light:
     @classmethod
     def Count(p_class):
         return len(p_class.c_light_list)
+
+
+    # Check the Light list for one that matches the input parameters
+    # @param p_head_id The Head ID of the Light to match
+    # @returns True if a Light described in the config file matches
+    #
+    @classmethod
+    def CheckForMatch(p_class, p_head_id, p_color):
+        print("CheckForMatch:", p_head_id, p_color)
+        for light in p_class.c_light_list:
+            print("Checking Light:", str(light))
+            if p_head_id == light.m_head_id:
+                if p_color in light.m_color_list:
+                    print("True")
+                    return True
+        print("False")
+        return False
 
 
     # Modify the aspect of the specified light
@@ -225,12 +243,26 @@ class Light:
     # @returns A string representation of this Light
     #
     def __str__(self):
-        s = "  light: "
+        s = "light:"
         s += str(self.m_light_id)
-        s += "\n    head-id: "
+        s += ", head-id:"
         s += str(self.m_head_id)
-        s += "\n    colors: "
-        s += str(self.m_colors)
+        s += ", colors:"
+        s += str(self.m_color_list)
+        s += ", ws281-id:"
+        s += str(self.m_ws281_id)
+        s += ", flashes-per-minute:"
+        s += str(self.m_flashes_per_minute)
+        s += ", state_on:"
+        s += str(self.m_state_on)
+        s += ", inhibit:"
+        s += str(self.m_inhibit)
+        s += ", aspect_color:"
+        s += str(self.m_aspect_color)
+        s += ", aspect_intensity:"
+        s += str(self.m_aspect_intensity)
+        s += ", aspect_flashing:"
+        s += str(self.m_aspect_flashing)
         return s
 
 

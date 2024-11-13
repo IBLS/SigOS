@@ -1,12 +1,16 @@
 {
   "board-type": "esp32-c2-mini",
-  "hostname": "thurber-east",
+  "hostname": "thurber-west.local",
   "wifi-ssid": "IGNRR",
   "wifi-password": "downcase",
-  "ip-addr": "192.168.1.100",
   "light-on-approach": "true",
   "number-plate": "6224-1",
   "rules-file": "atsf1959_rules_ss2.json",
+  "ws281-gpio-pin": 2,
+  "light-level-percent": "auto"
+  "light-level-gpio-pin": 1,
+  "light-level-min-percent": 1,
+  "light-level-max-percent": 100,
   "heads" : [
         {
             "head-id": 1,
@@ -14,16 +18,19 @@
                 {
                     "light-id": 1,
                     "ws281-id" : 0,
+                    "flashes-per-minute" : 40,
                     "colors": ["green"]
                 },
                 {
                     "light-id": 2,
                     "ws281-id" : 1,
+                    "flashes-per-minute" : 40,
                     "colors": ["yellow"]
                 },
                 {
                     "light-id": 3,
                     "ws281-id" : 2,
+                    "flashes-per-minute" : 40,
                     "colors": ["red"]
                 }
             ]
@@ -34,14 +41,34 @@
                 {
                     "light-id": 1,
                     "ws281-id" : 3,
+                    "flashes-per-minute" : 40,
                     "colors": ["green"]
                 },
                 {
                     "light-id": 2,
                     "ws281-id" : 4,
+                    "flashes-per-minute" : 40,
+                    "colors": ["yellow"]
+                },
+                {
+                    "light-id": 3,
+                    "ws281-id" : 5,
+                    "flashes-per-minute" : 40,
                     "colors": ["red"]
                 }
             ]
         }
+    ],
+  "color-chart" : [
+        { "name" : "red", "r" : 253, "g" : 1, "b" : 1 },
+        { "name" : "yellow", "r" : 222, "g" : 236, "b" : 0 },
+        { "name" : "green", "r" : 12, "g" : 189, "b" : 24 },
+        { "name" : "lunar-white", "r" : 225, "g" : 225, "b" : 255 },
+        { "name" : "white", "r" : 255, "g" : 255, "b" : 255 },
+        { "name" : "blue", "r" : 62, "g" : 14, "b" : 219 },
+        { "name" : "purple", "r" : 136, "g" : 0, "b" : 253 },
+        { "name" : "lemon-yellow", "r" : 253, "g" : 166, "b" : 0 },
+        { "name" : "black", "r" : 0, "g" : 0, "b" : 0 },
+        { "name" : "off", "r" : 0, "g" : 0, "b" : 0 }
     ]
 }

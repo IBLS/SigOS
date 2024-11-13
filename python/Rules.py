@@ -187,12 +187,12 @@ class Rules:
         # Verify the request is a valid rule
         valid_rule = self.find_rule(p_rule_or_name)
 
-        # Make a shallow copy of the rule so it can have its own m_source, etc
-        valid_rule = valid_rule.copy()
-
         # Did we find a valid rule?
         if not valid_rule:
             return 0
+
+        # Make a shallow copy of the rule so it can have its own m_source, etc
+        valid_rule = valid_rule.copy()
 
         # Remember the current active rule
         pre_active_rule = self.get_active_rule()
