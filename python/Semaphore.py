@@ -64,6 +64,7 @@ class Semaphore:
         self.m_angle_target = None
         self.m_servo = None
         self.m_timer = None
+        self.m_log = p_log
 
         # Keep a local list of Semaphores
         Semaphore.c_semaphore_list.append(self)

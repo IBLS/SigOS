@@ -47,7 +47,6 @@ class Light:
     # @param p_log The Log file to print messages to.
     #
     def __init__(self, p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list, p_log):
-        print("Light:", p_head_id, p_light_id, p_ws281_id, p_flashes_per_minute, p_color_list)
         self.m_head_id = p_head_id
         self.m_light_id = p_light_id
         self.m_ws281 = None
@@ -97,7 +96,6 @@ class Light:
     #
     @classmethod
     def CheckForMatch(p_class, p_head_id, p_color):
-        print("CheckForMatch:", p_head_id, p_color)
         for light in p_class.c_light_list:
             if p_head_id == light.m_head_id:
                 if p_color in light.m_color_list:
