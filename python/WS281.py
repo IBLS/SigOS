@@ -26,6 +26,8 @@
 from machine import Pin
 from neopixel import NeoPixel
 import Config
+import GPIO
+
 
 class WS281:
 
@@ -33,15 +35,16 @@ class WS281:
     # @p_pin The output pin driving the NeoPixel signal
     # @p_light_count Number of lights driven on this chaing
     # @p_color_char The color chart from Config
+    # @param p_log The logger object for error messages
     #
-    def __init__(self, p_pin, p_light_count, p_color_chart):
+    def __init__(self, p_pin, p_light_count, p_color_chart, p_log):
         self.m_led_count = p_light_count
 
         # Set GPIO to output to drive NeoPixels
-        self.m_pin = Pin(p_pin, Pin.OUT)
+        self.m_gpio = GPIO.GPIO("WS281", p_pin, Pin.OUT, None, p_log)
 
         # create NeoPixel driver the specified GPIO for p_led_count pixels
-        self.m_neopixel = NeoPixel(self.m_pin, self.m_led_count)
+        self.m_neopixel = NeoPixel(self.m_gpio.m_pin, self.m_led_count)
 
         # Get the WS281 color chart
         self.m_color_chart = p_color_chart
@@ -60,10 +63,11 @@ class WS281:
     # loading all Config but before executing Rules that change Aspects.
     # @param p_config The configuration object
     # @param p_light_count Total number of WS281 lights on the chain.
+    # @param p_log The logger object for error messages
     #
     @classmethod
-    def InitHardware(p_class, p_config, p_light_count):
-        WS281.c_ws281 = WS281(p_config.m_ws281_gpio_pin, p_light_count, p_config.m_color_chart)
+    def InitHardware(p_class, p_config, p_light_count, p_log):
+        WS281.c_ws281 = WS281(p_config.m_ws281_gpio_pin, p_light_count, p_config.m_color_chart, p_log)
         WS281.c_ws281.all_off()
 
 

@@ -98,6 +98,9 @@ class Config:
         # Load the WS281 color chart
         self.m_color_chart = config["color-chart"]
 
+        # Load Detectors
+        self.m_detectors = config["detectors"]
+
         # Save this singleton
         Config.c_config = self
 

@@ -69,5 +69,33 @@
         { "name" : "purple", "r" : 136, "g" : 0, "b" : 253 },
         { "name" : "lemon-yellow", "r" : 253, "g" : 166, "b" : 0 },
         { "name" : "black", "r" : 0, "g" : 0, "b" : 0 }
-    ]
+    ],
+  "detectors": [
+        {
+            "detector-name": "thurber-block",
+            "gpio-pin": 3,
+            "gpio-pull" : "up",
+            "active-hi": "true",
+            "active-cmds": [
+                {
+                    "target": "mingus-east.local",
+                    "cmd": "request 292"
+                },
+                {
+                    "target": "min-wells-west.local",
+                    "cmd": "request 292"
+                }
+            ],
+            "inactive-cmds": [
+                {
+                    "target": "mingus-east.local",
+                    "cmd": "release 292"
+                },
+                {
+                    "target": "min-wells-west.local",
+                    "cmd": "release 292"
+                }
+            ]
+        }
+    ] 
 }

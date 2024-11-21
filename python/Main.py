@@ -23,10 +23,8 @@
 # 
 #
 
-#import sys
-#import network
-#import uasyncio
 import time
+import Log
 import WiFi
 import TelnetServer
 import Config
@@ -38,6 +36,8 @@ import Light
 import LightLevel
 import WS281
 
+# Initialize logger
+log = Log.Log()
 
 # Load the configuration file
 #
@@ -45,7 +45,7 @@ print("Loading config")
 g_config = Config.Config("config.json")
 
 # Initialize hardware
-WS281.WS281.InitHardware(g_config, Light.Light.Count())
+WS281.WS281.InitHardware(g_config, Light.Light.Count(),log)
 Semaphore.Semaphore.InitHardware(g_config)
 Light.Light.InitHardware(g_config)
 LightLevel.LightLevel.InitHardware(g_config)
