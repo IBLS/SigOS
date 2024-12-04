@@ -26,6 +26,7 @@
 import machine
 from machine import ADC, Pin, Timer
 import Light
+import GPIO
 import Config
 
 
@@ -42,7 +43,7 @@ class LightLevel:
     def __init__(self):
         self.m_light_level_percent = None
         self.m_percent_intensity_prev = 0
-        self.m_light_level_gpio_pin = None
+        self.m_light_level_gpio_id = None
         self.m_light_level_min_percent = None
         self.m_light_level_max_percent = None
         self.m_adc = None
@@ -61,20 +62,22 @@ class LightLevel:
     # Initialize the hardware associated with Lights, if any.
     # Call this method after loading all Config but before executing Rules that change Aspects.
     # @param p_config The configuration object
+    # @param p_log Logger for messages
     #
     @classmethod
-    def InitHardware(p_class, p_config):
+    def InitHardware(p_class, p_config, p_log):
         LightLevel()
-        p_class.c_light_level.init_hardware(p_config)
+        p_class.c_light_level.init_hardware(p_config, p_log)
 
 
     # Initialize ambient light level hardware.
     # @param p_config The configuration object
+    # @param p_log Logger for messages
     #
-    def init_hardware(self, p_config):
+    def init_hardware(self, p_config, p_log):
         # Get config values
         self.m_light_level_percent = p_config.get_value("light-level-percent")
-        self.m_light_level_pin = p_config.get_value("light-level-gpio-pin")
+        self.m_light_level_id = p_config.get_value("light-level-gpio-pin")
         self.m_light_level_min_percent = p_config.get_value("light-level-min-percent")
         self.m_light_level_max_percent = p_config.get_value("light-level-max-percent")
 
@@ -83,17 +86,24 @@ class LightLevel:
             Light.Light.AdjustIntensity(self.m_light_level_percent)
             return
 
+        # Reserve the GPIO pin
+        self.m_light_level_gpio = GPIO.GPIO("LightLevel", self.m_light_level_id, Pin.IN, None, p_log)
+
         # Setup the A/D converter
-        self.m_adc = ADC(Pin(self.m_light_level_pin))
+        self.m_adc = ADC(self.m_light_level_gpio.m_pin)
+
         # Set 11dB attenuation (150mV - 2450mV)
         self.m_adc.atten(ADC.ATTN_11DB)
+
         # This is the resulting value from read_uv() with max input
         self.m_adc_uv_max = 2667000
 
         # Start timer
         self.m_timer = machine.Timer(LightLevel.c_timer_id)
+
         # Set timer for 1 second interrupt period
         period = 1.0
+
         # Convert from seconds to milliseconds
         i_period = int(period * 1000.0)
         self.m_timer.init(mode=Timer.PERIODIC, period=i_period, callback=light_level_callback)

@@ -27,6 +27,7 @@ import sys
 import machine
 from machine import Pin, PWM, Timer
 import Light
+import GPIO
 import Log
 
 
@@ -42,15 +43,16 @@ class Semaphore:
     # @param p_head_id The identifier (number) of the Head containing this semaphore,
     #        1 is the highest head, 2 is the next highest, etc.
     #        Please note that a Head may have only zero or one semaphores.
-    # @param p_gpio_pin The GPIO pin number driving the server signal
+    # @param p_gpio_id The GPIO pin number driving the server signal
     # @param p_degrees_per_second Speed in which the Semaphore flag moves
     # @param p_0_degrees_pwd Servo PWM value for 0 degrees
     # @param p_90_degrees_pwm Servo PWM value for 90 degrees
     # @param p_log Log file to print messages to.
     #
-    def __init__(self, p_head_id, p_gpio_pin, p_degrees_per_second, p_0_degrees_pwm, p_90_degrees_pwm, p_log):
+    def __init__(self, p_head_id, p_gpio_id, p_degrees_per_second, p_0_degrees_pwm, p_90_degrees_pwm, p_log):
         self.m_head_id = p_head_id
-        self.m_gpio_pin = p_gpio_pin
+        self.m_gpio_id = p_gpio_id
+        self.m_gpio_pin = None
         self.m_degrees_per_second = p_degrees_per_second
         self.m_degrees_0_pwm = p_0_degrees_pwm
         self.m_degrees_90_pwm = p_90_degrees_pwm
@@ -120,7 +122,8 @@ class Semaphore:
         self.m_pwm_duty = self.m_degrees_90_pwm # servo flag low-position
         self.m_pwm_target = self.m_degrees_90_pwm
         self.m_angle_target = 90
-        self.m_servo = PWM(Pin(self.m_gpio_pin), freq=pwm_freq, duty=self.m_pwm_duty)
+        self.m_gpio_pin = GPIO.GPIO("Semaphore", self.m_gpio_id, Pin.OUT, None, self.m_log)
+        self.m_servo = PWM(self.m_gpio_pin, freq=pwm_freq, duty=self.m_pwm_duty)
 
         # Create and start timer
         self.m_timer = machine.Timer(Semaphore.c_timer_id)

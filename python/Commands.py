@@ -28,25 +28,25 @@ import Command
 import Log
 import Config
 import Rules
+import TelnetServer
 
 SigOS_Version = "20241022"
 
-def fn_help(p_word_list, p_client):
+def fn_help(p_word_list, p_source):
     return True, Command.Command.Help()
 
 wl = ["help"]
 Command.Command(wl, "Provide a list of supported commands", fn_help)
 
 
-def fn_request(p_word_list, p_client):
+def fn_request(p_word_list, p_source):
     rule_or_name = p_word_list[1]
     rules = Rules.Rules.c_rules
     if rule_or_name == "list":
         out = rules.request_list()
         return True, out
     out = list()
-    source = str(p_client.m_client_addr)
-    state = rules.request_by_rule_or_name(rule_or_name, source)
+    state = rules.request_by_rule_or_name(rule_or_name, p_source)
     if state == 0:
         msg = "Invalid: "
         msg += rule_or_name
@@ -69,12 +69,11 @@ wl = ["request", "${rule}|{name}|list"]
 Command.Command(wl, "Request activation of a Rule by number or name", fn_request)
 
 
-def fn_release(p_word_list, p_client):
-    source = str(p_client.m_client_addr)
+def fn_release(p_word_list, p_source):
     rule_or_name = p_word_list[1]
     out = list()
     rules = Rules.Rules.c_rules
-    state = rules.release_by_rule_or_name(rule_or_name, source)
+    state = rules.release_by_rule_or_name(rule_or_name, p_source)
     if state == 0:
         msg = "Invalid: "
         msg += rule_or_name
@@ -101,8 +100,7 @@ wl = ["release", "${rule}|{name}"]
 Command.Command(wl, "Release previous Rule activation by number or name", fn_release)
 
 
-def fn_active(p_word_list, p_client):
-    source = str(p_client.m_client_addr)
+def fn_active(p_word_list, p_source):
     out = list()
     rules = Rules.Rules.c_rules
     active_rule = rules.get_active_rule()
@@ -114,7 +112,7 @@ wl = ["active"]
 Command.Command(wl, "Show the active Rule", fn_active)
 
 
-def fn_rules(p_word_list, p_client):
+def fn_rules(p_word_list, p_source):
     rules = Rules.Rules.c_rules
     out = rules.supported_rules()
     return True, out
@@ -123,7 +121,7 @@ wl = ["rules"]
 Command.Command(wl, "Print the list of supported Rules", fn_rules)
 
 
-def fn_number_plate(p_word_list, p_client):
+def fn_number_plate(p_word_list, p_source):
     config = Config.Config.c_config
     out = ["None"]
     if config.m_number_plate and (len(config.m_number_plate) > 0):
@@ -134,7 +132,7 @@ wl = ["number-plate"]
 Command.Command(wl, "Show the number-plate, or None", fn_number_plate)
 
 
-def fn_log(p_word_list, p_client):
+def fn_log(p_word_list, p_source):
     log = Log.Log()
     all_logs = log.get_all()
     return True, all_logs
@@ -143,7 +141,7 @@ wl = ["log"]
 Command.Command(wl, "Print the full Log", fn_log)
 
 
-def fn_log_n(p_word_list, p_client):
+def fn_log_n(p_word_list, p_source):
     try:
         index = int(p_word_list[1])
     except:
@@ -157,19 +155,21 @@ wl = ["log", "${entry_num}"]
 Command.Command(wl, "Print a specified line of the log Log", fn_log_n)
 
 
-def fn_close(p_word_list, p_client):
-    source = str(p_client.m_client_addr)
+def fn_close(p_word_list, p_source):
     log = Log.Log()
-    log.add(source, "Disconnected client session")
-    p_client.close()
-    ok = ["ok"]
-    return True, ok
+    log.add(p_source, "Disconnected client session")
+    msg = list()
+    if not TelnetServer.TelnetServer.Close(p_source):
+        msg.append("Failed to close connection")
+    else:
+        msg.append("ok")
+    return True, msg
 
 wl = ["close"]
 Command.Command(wl, "Close the current client connection", fn_close)
 
 
-def fn_os(p_word_list, p_client):
+def fn_os(p_word_list, p_source):
     out = list()
     out.append("SigOS " + SigOS_Version)
     out.extend(os.uname())

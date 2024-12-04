@@ -35,6 +35,7 @@ import Semaphore
 import Light
 import LightLevel
 import WS281
+import Detector
 
 # Initialize logger
 log = Log.Log()
@@ -48,7 +49,8 @@ g_config = Config.Config("config.json")
 WS281.WS281.InitHardware(g_config, Light.Light.Count(),log)
 Semaphore.Semaphore.InitHardware(g_config)
 Light.Light.InitHardware(g_config)
-LightLevel.LightLevel.InitHardware(g_config)
+LightLevel.LightLevel.InitHardware(g_config, log)
+Detector.Detector.InitHardware()
 
 
 # Load the rules from the file specified in the config file
@@ -96,20 +98,23 @@ def loop():
 
         g_wifi.poll()
         #g_telnet_server.poll()
+        Detector.Detector.Poll()
  
         # Check for traffic from each Telnet clinet
         client_list = TelnetServer.TelnetConn.c_wrapper_list
         for client in client_list:
             len = client.readinto(buf)
+            # Get the string name of Telnet client (usually its IP address)
+            source = str(client.m_client_addr)
             # print("len=", len)
             keeplinebreaks = False
             lines = buf[0:len].splitlines(keeplinebreaks)
             for line in lines:
+                # Convert binary buffer to string
+                line_decoded = line.decode()
                 # Attempt to parse and execute the specified command line
                 # print(line)
-                s = line.decode()
-                word_list = s.split(" ")
-                (cmd_match, func_result, result_list) = Command.Command.ParseAndExec(word_list, client)
+                (cmd_match, func_result, result_list) = Command.Command.ParseAndExec(line_decoded, source)
                 if (not cmd_match):
                     pass
                 if (not func_result):

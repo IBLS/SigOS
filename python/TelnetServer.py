@@ -255,6 +255,19 @@ class TelnetServer:
         for i in c_server_socket:
             c_server_socket[i].close()
 
+    # Close the specified client
+    # @param p_client_name The hostname or IP address string of the client to close.
+    # @returns True on success, false if client not found
+    #
+    @classmethod
+    def Close(p_class, p_client_name):
+        for client in TelnetConn.c_wrapper_list:
+            client_name = str(client.m_client_addr)
+            if client_name == p_client_name:
+                client.close()
+                return True
+        return False
+
 
 # Attach new clients to dupterm and 
 # send telnet control characters to disable line mode

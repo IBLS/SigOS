@@ -31,6 +31,37 @@ class Timestamp:
     #
     def __init__(self):
         self.m_time = time.time()
+        self.m_expire_sec = 0
+
+
+    # Set the future expire time for this timestamp.
+    # @param p_seconds The number of seconds from the creation of this object
+    #        before it expires.
+    #
+    def expire_after(self, p_seconds):
+        self.m_expire_sec = p_seconds;
+
+
+    # @returns True if this Timestamp has expired
+    #
+    def expired(self):
+        if (self.m_time + self.m_expire_sec) > time.time():
+            return True
+
+        return False
+
+
+    # @returns The time when the Timestamp will expire (or did expire)
+    #
+    def  get_expire_time(self):
+        return self.m_time + self.m_expire_sec;
+
+
+    # @returns The time when the Timestamp was created and initialized
+    #
+    def get_timestamp(self):
+        return self.m_time
+
 
     # @returns A human-readable string value of this Timestamp
     #

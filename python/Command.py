@@ -64,17 +64,18 @@ class Command:
 
 
     # Attempt to execute the command given by the list of words
-    # @param p_input_words A list of command words and parameters
-    # @param p_client The TelnetConn object making the request
+    # @param p_line A single line of "words" that form a command
+    # @param p_source The name of the source/client making the request
     # @returns (cmd_match, func_result, result_list), where
     #          cmd_match is true if this command matches
     #          func_result is the result of the function
     #          result_list is a list of strings from the function
     #
     @staticmethod
-    def ParseAndExec(p_input_words, p_client):
+    def ParseAndExec(p_line, p_source):
+        word_list = p_line.split(" ")
         for cmd in Command.c_command_list:
-            (cmd_match, func_result, result_list) = cmd.parse_and_exec(p_input_words, p_client)
+            (cmd_match, func_result, result_list) = cmd.parse_and_exec(word_list, p_source)
             if (cmd_match):
                 return cmd_match, func_result, result_list
         inv_cmd = ["Invalid command"]
@@ -83,13 +84,13 @@ class Command:
 
     # Compare the input to the command, and if a match, execute the associated function.
     # @param p_input_words A list of input words.
-    # @param p_client The TelnetConn object making the request
+    # @param p_source The name of the source/client making the request
     # @returns (cmd_match, func_result, result_list), where
     #          cmd_match is true if this command matches
     #          func_result is the result of the function
     #          result_list is a list of strings from the function
     #
-    def parse_and_exec(self, p_input_words, p_client):
+    def parse_and_exec(self, p_input_words, p_source):
 
         # Test if the input words invoke this command
         if (len(p_input_words) != len(self.m_word_list)):
@@ -105,7 +106,7 @@ class Command:
                 return False, False, ''
 
         # Execute the function and provide the output value
-        (func_result, result_list) = self.m_func(p_input_words, p_client)
+        (func_result, result_list) = self.m_func(p_input_words, p_source)
         return True, func_result, result_list
 
 

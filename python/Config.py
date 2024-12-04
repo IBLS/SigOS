@@ -27,6 +27,7 @@ import io
 import json
 import Semaphore
 import Light
+import Detector
 import Log
 
 class Config:
@@ -100,6 +101,9 @@ class Config:
 
         # Load Detectors
         self.m_detectors = config["detectors"]
+        for detector in self.m_detectors:
+            # Create a new Detector
+            Detector.Detector(detector, self.m_hostname, self.m_log)
 
         # Save this singleton
         Config.c_config = self

@@ -189,14 +189,14 @@ class Aspect:
     #
     def check_config(self):
         if len(self.m_head_list) != self.m_config.head_count():
-            print("mismatch head count")
+            #print("mismatch head count")
             return False
 
         # Only check for a number plate if it was specifically defined
         # in this Aspect.
         if self.m_number_plate is not None:
             if self.m_number_plate != self.m_config.m_number_plate_present:
-                print("mismatch number-plate")
+                #print("mismatch number-plate")
                 return False
 
         # This Aspect matches the Configuration

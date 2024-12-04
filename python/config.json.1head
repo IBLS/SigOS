@@ -1,10 +1,10 @@
 {
   "board-type": "esp32-c2-mini",
-  "hostname": "thurber-west.local",
+  "hostname": "mingus-east.local",
   "wifi-ssid": "IGNRR",
   "wifi-password": "downcase",
   "light-on-approach": "true",
-  "number-plate": "6224-1",
+  "number-plate": "",
   "rules-file": "atsf1959_rules_ss2.json",
   "ws281-gpio-pin": 2,
   "light-level-percent": "auto",
@@ -24,35 +24,6 @@
                 {
                     "light-id": 2,
                     "ws281-id" : 1,
-                    "flashes-per-minute" : 40,
-                    "colors": ["yellow", "black"]
-                },
-                {
-                    "light-id": 3,
-                    "ws281-id" : 2,
-                    "flashes-per-minute" : 40,
-                    "colors": ["red", "black"]
-                }
-            ]
-        },
-        {
-            "head-id": 2,
-            "lights": [
-                {
-                    "light-id": 1,
-                    "ws281-id" : 3,
-                    "flashes-per-minute" : 40,
-                    "colors": ["green", "black"]
-                },
-                {
-                    "light-id": 2,
-                    "ws281-id" : 4,
-                    "flashes-per-minute" : 40,
-                    "colors": ["yellow", "black"]
-                },
-                {
-                    "light-id": 3,
-                    "ws281-id" : 5,
                     "flashes-per-minute" : 40,
                     "colors": ["red", "black"]
                 }
