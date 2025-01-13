@@ -43,10 +43,6 @@ class TargetedCommand:
         self.m_command = p_command
         self.m_log = p_log
 
-        # Remove ".local" from target, if present
-        target_list = self.m_target.split(".")
-        self.m_target = target_list[0]
-
         # Does the target refer to me?
         self.m_local = False
         if p_hostname == self.m_target:

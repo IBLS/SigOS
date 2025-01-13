@@ -75,7 +75,9 @@ class WiFi:
                 print(s)
 
             # Set hostname
-            self.m_wifi.config(dhcp_hostname = self.m_hostname)
+            no_local = self.m_hostname.split(".")
+            print("Setting hostname:", no_local[0])
+            self.m_wifi.config(dhcp_hostname = no_local[0])
 
             time.sleep(1)
             self.m_wifi.connect(self.m_ssid, self.m_password)

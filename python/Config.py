@@ -63,8 +63,8 @@ class Config:
         self.m_ws281_gpio_pin = config["ws281-gpio-pin"]
 
         # Remove ".local" from hostname, if present
-        hostname_list = self.m_hostname.split(".")
-        self.m_hostname = hostname_list[0]
+        #hostname_list = self.m_hostname.split(".")
+        #self.m_hostname = hostname_list[0]
 
         # Build heads object
         heads = config["heads"]

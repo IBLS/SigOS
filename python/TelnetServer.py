@@ -112,12 +112,14 @@ class TelnetConn(IOBase):
                 if type(e) == IndexError or len(e.args) > 0 and e.args[0] == errno.EAGAIN:
                     # No more bytes in the socket, return and try again later
                     return readbytes
-                elif type(e) == OSError and len(e.args) > 0 and e.args[0] == errno.ECONNABORTED:
-                    # TODO: close this connection
-                    return 0
-                elif type(e) == OSError and len(e.args) > 0 and e.args[0] == errno.ENOTCONN:
-                    # TODO: close this connection
-                    return 0
+                elif type(e) == OSError and len(e.args) > 0:
+                    if e.args[0] == errno.ECONNABORTED or e.args[0] == errno.ECONNRESET or e.args[0] == errno.ENOTCONN:
+                        # Close this connection
+                        close()
+                        return 0
+                    else:
+                        # Some other error?
+                        raise
                 else:
                     # Some other error?
                     raise
