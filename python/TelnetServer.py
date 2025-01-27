@@ -115,7 +115,7 @@ class TelnetConn(IOBase):
                 elif type(e) == OSError and len(e.args) > 0:
                     if e.args[0] == errno.ECONNABORTED or e.args[0] == errno.ECONNRESET or e.args[0] == errno.ENOTCONN:
                         # Close this connection
-                        close()
+                        self.close()
                         return 0
                     else:
                         # Some other error?
