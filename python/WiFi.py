@@ -26,7 +26,11 @@
 import sys
 import network
 import time
+import machine
+import ntptime
 import Log
+import Config
+
 
 class WiFi:
 
@@ -35,11 +39,15 @@ class WiFi:
 
     # Intialize the object as a Station that will connect to a Router
     # or Access Point
+    # @param p_config Reference to the main Configuration object
+    # @param p_log Reference to the main Log object
     #
-    def __init__(self, p_ssid, p_password, p_hostname):
-        self.m_ssid = p_ssid
-        self.m_password = p_password
-        self.m_hostname = p_hostname
+    def __init__(self, p_config, p_log):
+        self.m_config = p_config
+        self.m_log = p_log
+        self.m_ssid = p_config.m_wifi_ssid
+        self.m_password = p_config.m_wifi_password
+        self.m_hostname = p_config.m_hostname
 
         self.m_wifi = network.WLAN(network.STA_IF)
         #self.m_wifi = network.WLAN(network.AP_IF)
@@ -47,7 +55,12 @@ class WiFi:
         self.m_wifi_mask = None
         self.m_wifi_router = None
         self.m_wifi_dns = None
-        self.m_log = Log.Log()
+
+        # Update using NTP every hour
+        self.m_ntp_update_sec = 1 * 60 * 60
+        # Last time an NTP update occurred
+        self.m_ntp_last_update = 0
+
         WiFi.c_wifi = self
 
 
@@ -92,6 +105,9 @@ class WiFi:
                 if self.m_wifi.isconnected():
                     break
 
+        # Update time with NTP
+        self.update_clock_ntp()
+
         # Get my DHCP configuration
         config = self.m_wifi.ifconfig()
         self.m_log.add(self.m_hostname, str(config))
@@ -111,12 +127,37 @@ class WiFi:
         self.m_wifi.active(False)
 
 
+    # Perform periodic tasks here, called from Main.py loop
+    #
     async def poll(self):
-        if self.m_wifi.isconnected():
-            await uasyncio.sleep(0)
-            return True
-        else:
+        # Reconnect if we lost connectivity
+        if not self.m_wifi.isconnected():
             return self.connect()
+
+        # Perform Wifi background processing
+        await uasyncio.sleep(0)
+
+        # Time to update local clock from NTP?
+        self.update_clock_ntp()
+
+        return True
+
+
+    # Update the local clock using NTP protocol
+    #
+    def update_clock_ntp(self):
+        # Time to update local clock from NTP?
+        if time.time() > self.m_ntp_last_update:
+            ntptime.host = self.m_config.m_ntp_host
+            ntptime.timeout = self.m_config.m_ntp_timeout_sec
+            ntptime.settime()
+            if self.m_config.m_tz_offset_sec:
+                # Adjust for Timezone
+                new_time = time.time()
+                new_time = new_time + self.m_config.m_tz_offset_sec
+                tm = time.gmtime(new_time)
+                machine.RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
+            self.m_ntp_last_update = time.time() + self.m_ntp_update_sec
 
 
     # Destructor will disconnect

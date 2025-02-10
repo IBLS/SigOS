@@ -1,0 +1,98 @@
+{
+  "board-type": "esp32-c2-mini",
+  "hostname": "mingus-east.local", "comment1": "Docs say name is limited to 32 chars",
+  "wifi-ssid": "IGNRR",
+  "wifi-password": "downcase",
+  "light-on-approach": "true",
+  "number-plate": "",
+  "rules-file": "atsf1959_rules_ss2.json",
+  "ws281-gpio-pin": 2,
+  "light-level-percent": "auto",
+  "light-level-gpio-pin": 1,
+  "light-level-min-percent": 1,
+  "light-level-max-percent": 100,
+  "heads" : [
+        {
+            "head-id": 1,
+            "lights": [
+                {
+                    "light-id": 1,
+                    "ws281-id" : 0,
+                    "flashes-per-minute" : 40,
+                    "colors": ["green", "black"]
+                },
+                {
+                    "light-id": 2,
+                    "ws281-id" : 1,
+                    "flashes-per-minute" : 40,
+                    "colors": ["red", "black"]
+                }
+            ]
+        }
+    ],
+  "color-chart" : [
+        { "name" : "red", "r" : 253, "g" : 1, "b" : 1 },
+        { "name" : "yellow", "r" : 222, "g" : 236, "b" : 0 },
+        { "name" : "green", "r" : 12, "g" : 189, "b" : 24 },
+        { "name" : "lunar-white", "r" : 225, "g" : 225, "b" : 255 },
+        { "name" : "white", "r" : 255, "g" : 255, "b" : 255 },
+        { "name" : "blue", "r" : 62, "g" : 14, "b" : 219 },
+        { "name" : "purple", "r" : 136, "g" : 0, "b" : 253 },
+        { "name" : "lemon-yellow", "r" : 253, "g" : 166, "b" : 0 },
+        { "name" : "black", "r" : 0, "g" : 0, "b" : 0 }
+    ],
+  "detectors": [
+        {
+            "detector-name": "thurber-block",
+            "gpio-pin": 3,
+            "gpio-pull" : "up",
+            "active-hi": "true",
+            "active-soak-sec": 1,
+            "active-hold-sec": 15,
+            "inactive-soak-sec": 3,
+            "inactive-hold-sec": 5,
+            "active-cmds": [
+                {
+                    "target": "mingus-east.local",
+                    "cmd": "request 292"
+                },
+                {
+                    "target": "min-wells-west.local",
+                    "cmd": "request 292"
+                }
+            ],
+            "inactive-cmds": [
+                {
+                    "target": "mingus-east.local",
+                    "cmd": "release 292"
+                },
+                {
+                    "target": "min-wells-west.local",
+                    "cmd": "release 292"
+                }
+            ]
+        }
+    ],
+  "state_machines": [
+        {
+            "machine-name": "push-button",
+            "machine-states": [
+                {
+                    "name": "init",
+                    "cmd": "reset",
+                    "next-state": "off"
+                },
+                {
+                    "name": "off",
+                    "cmd": "release 292",
+                    "next-state": "on"
+                },
+                {
+                    "name": "on",
+                    "cmd": "request 292",
+                    "next-state": "off"
+                }
+            ]
+        }
+   ]
+}

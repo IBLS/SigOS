@@ -38,9 +38,20 @@ class Log:
     # Limits the number of lines maintained in c_log_xxx
     c_log_limit = 32
 
+    # Save a reference to the Config
+    c_config = None
 
+    # Initialize
+    #
     def __init__(self):
         pass
+
+
+    # Keep a class reference to the master Config object
+    #
+    @classmethod
+    def SetConfig(p_class, p_config):
+        Log.c_config = p_config
 
 
     # Add new entry to the log
@@ -51,14 +62,20 @@ class Log:
         # Add the log entry
         ts = Timestamp.Timestamp()
         Log.c_log_time.append(str(ts))
+        if p_source is None:
+            raise Exception('Log: Undefined source 202402181548')
         Log.c_log_source.append(p_source)
+        if p_text is None:
+            raise Exception('Log: Undefined text 202402181549')
         Log.c_log_text.append(p_text)
+        #print(str(ts), p_source, p_text)
 
         # Remove oldest entry if necessary
         if (len(Log.c_log_time) > Log.c_log_limit):
             Log.c_log_time.pop(0)
             Log.c_log_source.pop(0)
             Log.c_log_text.pop(0)
+            #print("popped oldest log")
 
 
     # Get an entry from the log
@@ -72,6 +89,9 @@ class Log:
             return l
         s = str(Log.c_log_time[p_index])
         s += " "
+        if Log.c_config.m_tz_abbrev:
+            s += Log.c_config.m_tz_abbrev
+            s += " "
         s += Log.c_log_source[p_index]
         s += " "
         s += Log.c_log_text[p_index]

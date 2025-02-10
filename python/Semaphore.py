@@ -123,7 +123,7 @@ class Semaphore:
         self.m_pwm_target = self.m_degrees_90_pwm
         self.m_angle_target = 90
         self.m_gpio_pin = GPIO.GPIO("Semaphore", self.m_gpio_id, Pin.OUT, None, self.m_log)
-        self.m_servo = PWM(self.m_gpio_pin, freq=pwm_freq, duty=self.m_pwm_duty)
+        self.m_servo = PWM(self.m_gpio_id, freq=pwm_freq, duty=self.m_pwm_duty)
 
         # Create and start timer
         self.m_timer = machine.Timer(Semaphore.c_timer_id)

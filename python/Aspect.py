@@ -33,9 +33,12 @@ class Aspect:
 
     # Create a new Aspect
     # @param p_aspect_commands A string of aspect commands
+    # @param p_config Reference to the Config object
+    # @param p_log Reference to the Log object
     #
-    def __init__(self, p_aspect_commands):
-        self.m_config = Config.Config.c_config
+    def __init__(self, p_aspect_commands, p_config, p_log):
+        self.m_log = p_log
+        self.m_config = p_config
 
         # Make parsing easier by converting to lower case
         self.m_aspect_commands = p_aspect_commands.lower()
@@ -46,9 +49,6 @@ class Aspect:
         self.m_number_plate = None
 
         self.m_valid_config = False
-
-        # Create a log object for convenience
-        self.m_log = Log.Log()
 
 
     # Evaluate the aspect string. Save the condition results,

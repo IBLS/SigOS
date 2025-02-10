@@ -37,10 +37,11 @@ class Config:
 
     # Create an object to encapsulate configuraton for the signal
     # @param p_file Filename of a json config file
+    # @param p_log Reference to the Log object
     #
-    def __init__(self, p_file):
+    def __init__(self, p_file, p_log):
         # Save a local Log object for convenience
-        self.m_log = Log.Log()
+        self.m_log = p_log
 
         # Read the json file and parse
         self.m_file = p_file
@@ -62,9 +63,11 @@ class Config:
         self.m_rules_file = config["rules-file"]
         self.m_ws281_gpio_pin = config["ws281-gpio-pin"]
 
-        # Remove ".local" from hostname, if present
-        #hostname_list = self.m_hostname.split(".")
-        #self.m_hostname = hostname_list[0]
+        # Timezones
+        self.m_tz_offset_sec = config["tz-offset-sec"]
+        self.m_tz_abbrev = config["tz-abbrev"]
+        self.m_ntp_host = config["ntp-host"]
+        self.m_ntp_timeout_sec = config["ntp-timeout-sec"]
 
         # Build heads object
         heads = config["heads"]
@@ -100,10 +103,10 @@ class Config:
         self.m_color_chart = config["color-chart"]
 
         # Load Detectors
-        self.m_detectors = config["detectors"]
-        for detector in self.m_detectors:
+        #self.m_detectors = config["detectors"]
+        #for detector in self.m_detectors:
             # Create a new Detector
-            Detector.Detector(detector, self.m_hostname, self.m_log)
+            #Detector.Detector(detector, self.m_hostname, self.m_log)
 
         # Save this singleton
         Config.c_config = self

@@ -133,6 +133,7 @@ Command.Command(wl, "Show the number-plate, or None", fn_number_plate)
 
 
 def fn_log(p_word_list, p_source):
+    global g_log
     log = Log.Log()
     all_logs = log.get_all()
     return True, all_logs

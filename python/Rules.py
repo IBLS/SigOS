@@ -37,8 +37,13 @@ class Rules:
 
     # Create an object to encapsulate all rules for a Signal
     # @param p_rule_file Filename of a json rules file
+    # @param p_config Reference to the Config object
+    # @param p_log Reference to the Log object
     #
-    def __init__(self, p_rule_file):
+    def __init__(self, p_rule_file, p_config, p_log):
+        self.m_config = p_config
+        self.m_log = p_log
+
         self.m_rule_file = p_rule_file
         fs = io.open(p_rule_file, mode='r')
         rd = json.load(fs)
@@ -59,7 +64,7 @@ class Rules:
             # this Rule applies to this signal
             aspect_list = rule["aspect"]
             for aspect_cmds in aspect_list:
-                aspect = Aspect.Aspect(aspect_cmds)
+                aspect = Aspect.Aspect(aspect_cmds, p_config, p_log)
                 if not aspect.eval():
                     # This Aspect does not match the Configuration
                     continue
@@ -74,9 +79,6 @@ class Rules:
         # The request list is maintained in ascending order
         # according to rule priority.
         self.m_request_list = list()
-
-        # Save a local Log object for convenience
-        self.m_log = Log.Log()
 
         # Save this singleton
         Rules.c_rules = self

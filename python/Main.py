@@ -24,10 +24,10 @@
 #
 
 import time
-import Log
-import WiFi
-import TelnetServer
 import Config
+import Log
+import TelnetServer
+import WiFi
 import Commands
 import Command
 import Rules
@@ -38,45 +38,41 @@ import WS281
 import Detector
 
 # Initialize logger
-log = Log.Log()
+g_log = Log.Log()
 
 # Load the configuration file
 #
 print("Loading config")
-g_config = Config.Config("config.json")
+g_config = Config.Config("config.json", g_log)
+Log.Log.SetConfig(g_config)
 
 # Initialize hardware
-WS281.WS281.InitHardware(g_config, Light.Light.Count(),log)
+WS281.WS281.InitHardware(g_config, Light.Light.Count(), g_log)
 Semaphore.Semaphore.InitHardware(g_config)
 Light.Light.InitHardware(g_config)
-LightLevel.LightLevel.InitHardware(g_config, log)
+LightLevel.LightLevel.InitHardware(g_config, g_log)
 Detector.Detector.InitHardware()
 
 
 # Load the rules from the file specified in the config file
 #
-print("Loading rules from ", g_config.m_rules_file)
-g_rules = Rules.Rules(g_config.m_rules_file)
+print("Loading rules from", g_config.m_rules_file)
+g_rules = Rules.Rules(g_config.m_rules_file, g_config, g_log)
 
 
 g_wifi = None
 g_telnet_server = None
-g_hostname = None
 
 def do_connect():
-    global g_hostname
     global g_config
-    ssid = g_config.m_wifi_ssid
-    password = g_config.m_wifi_password
-    g_hostname = g_config.m_hostname
     global g_wifi
-    g_wifi = WiFi.WiFi(ssid, password, g_hostname)
+    g_wifi = WiFi.WiFi(g_config, g_log)
     g_wifi.connect()
 
     global g_telnet_server
     g_telnet_server = TelnetServer.TelnetServer()
 
-    welcome = g_hostname + " " + str(g_wifi.m_wifi_ip) + "\r\n"
+    welcome = g_config.m_hostname + " " + str(g_wifi.m_wifi_ip) + "\r\n"
     g_telnet_server.set_welcome(welcome)
 
     g_telnet_server.start()
@@ -85,7 +81,7 @@ do_connect()
 
 
 # Initialzie the Rules state machine
-g_rules.startup(g_hostname)
+g_rules.startup(g_config.m_hostname)
 
 
 def loop():
