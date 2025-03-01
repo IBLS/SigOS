@@ -143,6 +143,93 @@ class WiFi:
         return True
 
 
+
+    # Provide the Received Signal Strength Indicator
+    # Returned value is between 0dBm (strongest)
+    # and -255dBm (weakest)
+    #
+    def get_rssi_dbm(self):
+        rssi = -255
+        try:
+            rssi = self.m_wifi.status('rssi')
+        except:
+            rssi = -255
+        return rssi
+
+
+    # Get one of serveral WiFi parameters.
+    # @param p_param The string name of the parameter, including:
+    #   mac - MAC Address
+    #   ssid - WiFi access point name
+    #   channel - WiFi Channel
+    #   hidden - True if SSID is hidden
+    #   security - Security protocol supported
+    #   key - Access key
+    #   reconnects - Number of reconnect attempts to make
+    #   txpower - Max transmit power in dBm
+    #   pm - WiFi Power Management setting
+    # @returns A string result
+    #
+    def get_config(self, p_param):
+        msg = p_param
+        msg += ': '
+        result = None
+        try:
+            result = self.m_wifi.config(p_param)
+        except:
+            # Parameter not supported
+            return None
+
+        if p_param == 'mac':
+            msg += '{:02x}:'.format(result[0])
+            msg += '{:02x}:'.format(result[1])
+            msg += '{:02x}:'.format(result[2])
+            msg += '{:02x}:'.format(result[3])
+            msg += '{:02x}:'.format(result[4])
+            msg += '{:02x}'.format(result[5])
+        elif p_param == 'security':
+            if result == 0:
+                msg += 'open'
+            elif result == 1:
+                msg += 'WEP'
+            elif result == 2:
+                msg += 'WPA-PSK'
+            elif result == 3:
+                msg += 'WPA2-PSK'
+            elif result == 4:
+                msg += 'WPA/WPA2-PSK'
+            else:
+                msg += 'unknown'
+        elif p_param == 'hidden':
+            if result == 0:
+                msg += 'visible'
+            else:
+                msg += 'hidden'
+        elif p_param == 'reconnects':
+            if result == 0:
+                msg += 'none'
+            elif result < 0:
+                msg += 'unlimited'
+            else:
+                msg += str(result)
+        elif p_param == 'txpower':
+            msg += str(result)
+            msg += 'dBm'
+        elif p_param == 'pm':
+            if result == network.WLAN.PM_PERFORMANCE:
+                msg += 'Performance'
+            elif result == network.WLAN.PM_POWERSAVE:
+                msg += 'PowerSave'
+            elif result == network.WLAN.PM_NONE:
+                msg += 'No Power Management'
+            else:
+                msg += 'unknown'
+        else:
+            msg += str(result)
+
+        return msg
+        
+
     # Update the local clock using NTP protocol
     #
     def update_clock_ntp(self):

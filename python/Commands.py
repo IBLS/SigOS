@@ -24,13 +24,17 @@
 #
 
 import os
+import sys
+import machine
 import Command
 import Log
 import Config
 import Rules
 import TelnetServer
+import WiFi
 
-SigOS_Version = "20241022"
+
+SigOS_Version = "20250228"
 
 def fn_help(p_word_list, p_source):
     return True, Command.Command.Help()
@@ -118,7 +122,7 @@ def fn_rules(p_word_list, p_source):
     return True, out
 
 wl = ["rules"]
-Command.Command(wl, "Print the list of supported Rules", fn_rules)
+Command.Command(wl, "Show the list of supported Rules", fn_rules)
 
 
 def fn_number_plate(p_word_list, p_source):
@@ -139,7 +143,7 @@ def fn_log(p_word_list, p_source):
     return True, all_logs
 
 wl = ["log"]
-Command.Command(wl, "Print the full Log", fn_log)
+Command.Command(wl, "Show the full Log", fn_log)
 
 
 def fn_log_n(p_word_list, p_source):
@@ -153,7 +157,7 @@ def fn_log_n(p_word_list, p_source):
     return True, one_log
 
 wl = ["log", "${entry_num}"]
-Command.Command(wl, "Print a specified line of the log Log", fn_log_n)
+Command.Command(wl, "Show a specified line of the log Log", fn_log_n)
 
 
 def fn_close(p_word_list, p_source):
@@ -170,6 +174,62 @@ wl = ["close"]
 Command.Command(wl, "Close the current client connection", fn_close)
 
 
+def fn_rssi(p_word_list, p_source):
+    wifi = WiFi.WiFi.c_wifi
+    rssi_dbm = wifi.get_rssi_dbm()
+    out = list()
+    msg = "Received Signal Strength Indicator (RSSI): "
+    msg += str(rssi_dbm)
+    msg += "dBm"
+    out.append(msg)
+    return True, out
+
+wl = ["rssi"]
+Command.Command(wl, "Show the WIFI RSSI in dBm, 0 (strongest) to -255 (weakest)", fn_rssi)
+
+
+def fn_wifi(p_word_list, p_source):
+    wifi = WiFi.WiFi.c_wifi
+    config_list = list()
+
+    msg = wifi.get_config('mac')
+    if msg is not None:
+        config_list.append(msg)
+
+    msg = wifi.get_config('ssid')
+    if msg is not None:
+        config_list.append(msg)
+
+    msg = wifi.get_config('channel')
+    if msg is not None:
+        config_list.append(msg)
+
+    msg = wifi.get_config('hidden')
+    if msg is not None:
+        config_list.append(msg)
+
+    msg = wifi.get_config('security')
+    if msg is not None:
+        config_list.append(msg)
+
+    msg = wifi.get_config('reconnects')
+    if msg is not None:
+        config_list.append(msg)
+
+    msg = wifi.get_config('txpower')
+    if msg is not None:
+        config_list.append(msg)
+
+    msg = wifi.get_config('pm')
+    if msg is not None:
+        config_list.append(msg)
+
+    return True, config_list
+
+wl = ["wifi"]
+Command.Command(wl, "Show the crrent WIFI configuration parameters", fn_wifi)
+
+
 def fn_os(p_word_list, p_source):
     out = list()
     out.append("SigOS " + SigOS_Version)
@@ -178,5 +238,25 @@ def fn_os(p_word_list, p_source):
 
 wl = ["os"]
 Command.Command(wl, "Show operating system and hardware info", fn_os)
+
+
+def fn_reboot(p_word_list, p_source):
+    out = list()
+    out.append("Rebooting...")
+    # Need write to log
+    sys.exit()
+
+wl = ["reboot"]
+Command.Command(wl, "Reboot SigOS, leaving hardware peripherals unaffected", fn_reboot)
+
+
+def fn_reset(p_word_list, p_source):
+    out = list()
+    out.append("Resetting...")
+    # Need write to log
+    machine.reset()
+
+wl = ["reset"]
+Command.Command(wl, "Perform hardware reset", fn_reset)
 
 
