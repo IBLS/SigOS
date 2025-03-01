@@ -182,6 +182,8 @@ def fn_rssi(p_word_list, p_source):
     msg += str(rssi_dbm)
     msg += "dBm"
     out.append(msg)
+    msg = wifi.get_rssi_dbm_info()
+    out.append(msg)
     return True, out
 
 wl = ["rssi"]

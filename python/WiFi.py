@@ -157,6 +157,39 @@ class WiFi:
         return rssi
 
 
+    # Provide the Received Signal Strength Indicator
+    # Returned value is between 0dBm (strongest)
+    # and -255dBm (weakest)
+    #
+    def get_rssi_dbm_info(self):
+        rssi = self.get_rssi_dbm()
+        msg = str(rssi)
+        msg += 'dBm: '
+
+        if rssi >= -30:
+            msg += 'Amazing, max achievable signal strength'
+            return msg
+
+        if rssi >= -67:
+            msg += 'Very good, very reliable, timely delivery of data packets'
+            return msg
+
+        if rssi >= -70:
+            msg += 'Okay, minimum signal strength for reliable packet delivery'
+            return msg
+
+        if rssi >= -80:
+            msg += 'Not good, minimum signal strength, delivery may be unreliable'
+            return msg
+
+        if rssi >= -255:
+            msg += 'Not good, minimum signal strength, delivery may be unreliable'
+            return msg
+
+        msg += 'No signal'
+        return msg
+
+
     # Get one of serveral WiFi parameters.
     # @param p_param The string name of the parameter, including:
     #   mac - MAC Address
