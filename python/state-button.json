@@ -1,0 +1,39 @@
+{
+  "state-machines": [
+        {
+            "machine-name": "push-button",
+            "initial-state": "off",
+            "comment": "Reset to initial state with command 'state-machine push-button reset'",
+            "states": [
+                {
+                    "name": "off",
+                    "command": "release 292",
+                    "command-target": "mingus-east.local",
+                    "transition": [
+                        {
+                            "comment": "Activated with command 'state-machine push-button a-pressed'",
+                            "input": "a-pressed",
+                            "next-state": "on"
+                        }
+                    ]
+                },
+                {
+                    "name": "on",
+                    "command": "request 292",
+                    "command-target": "mingus-east.local",
+                    "transition": [
+                        {
+                            "comment": "Activated with command 'state-machine push-button b-pressed'",
+                            "input": "b-pressed",
+                            "next-state": "off"
+                        },
+                        {
+                            "timeout-sec": "300",
+                            "next-state": "off"
+                        }
+                    ]
+                }
+            ]
+        }
+   ]
+}

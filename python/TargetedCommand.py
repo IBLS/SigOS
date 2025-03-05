@@ -23,14 +23,13 @@
 # 
 #
 
-import Config
 import Command
 import Log
 
 
 class TargetedCommand:
 
-    # Create a new detector
+    # Create a new TargetedCommand
     # @param p_target The hostname of the target SigOS device where the
     #        command will be sent.
     # @param p_command The SigOS command that will be sent to p_target

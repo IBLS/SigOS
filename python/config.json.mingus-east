@@ -73,24 +73,35 @@
             ]
         }
     ],
-  "state_machines": [
+  "state-machine-comment": "state-machine push-button a-pressed",
+  "state-machines": [
         {
             "machine-name": "push-button",
+            "initial-state": "off",
             "machine-states": [
-                {
-                    "name": "init",
-                    "cmd": "reset",
-                    "next-state": "off"
-                },
                 {
                     "name": "off",
                     "cmd": "release 292",
-                    "next-state": "on"
+                    "transition": [
+                        {
+                            "input": "a-pressed",
+                            "next-state": "on"
+                        }
+                    ]
                 },
                 {
                     "name": "on",
                     "cmd": "request 292",
-                    "next-state": "off"
+                    "transition": [
+                        {
+                            "input": "b-pressed",
+                            "next-state": "off"
+                        },
+                        {
+                            "timeout": "300",
+                            "next-state": "off"
+                        }
+                    ]
                 }
             ]
         }
