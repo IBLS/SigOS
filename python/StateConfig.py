@@ -23,9 +23,11 @@
 # 
 #
 
-import StateMachine.py
-import State.py
-import StateTrans.py
+import io
+import json
+import StateMachine
+import State
+import StateTrans
 
 
 class StateConfig:
@@ -48,22 +50,23 @@ class StateConfig:
             initial_state = state_machine_json["initial-state"]
 
             state_list = list()
-            states_json = json_state["states"]
+            states_json = state_machine_json["states"]
             for state_json in states_json:
-                state_name = state_json["state-name"]
+                state_name = state_json["name"]
                 command = state_json["command"]
+                command_target = state_json["command-target"]
 
-                    transition_list = list()
-                    for transition_json in state_json["transition"]:
+                transition_list = list()
+                for transition_json in state_json["transition"]:
                     # next-state is a required attribute
                     next_state = transition_json["next-state"]
 
                     input_name = None
-                    if "input" in transition:
+                    if "input" in transition_json:
                         input_name = transition_json["input"]
 
                     timeout_sec = 0
-                    if "timeout-sec" in transition:
+                    if "timeout-sec" in transition_json:
                         timeout_sec = transition_json["timeout-sec"]
 
                     # Create a new State Transition object
@@ -71,11 +74,11 @@ class StateConfig:
                     transition_list.append(state_trans)
 
                 # Create a new State object
-                state = State.State(machine_name, state_name, command, transition_list, p_hostname, p_log)
+                state = State.State(machine_name, state_name, command, command_target, transition_list, p_hostname, p_log)
                 state_list.append(state)
 
             # Create a new StateMachine object
             # The StateMachine class holds a list of all StateMachine objects
-            StateMachine.StateMachine(machine_name, initial_state, state_list, p_log)
+            StateMachine.StateMachine(p_file, machine_name, initial_state, state_list, p_log)
 
 

@@ -31,16 +31,19 @@ import Timestamp
 class StateMachine:
 
     # Store each created StateMachine in this class list
+    c_state_machine_file = None
     c_state_machine_list = list()
 
 
     # Create an object to encapsulate configuraton for state machines
+    # @param p_filename The file that created this state machine
     # @param p_machine_name The name of this StateMachine
     # @param p_initial_state The name of the initial state
     # @param p_state_list The list of States contained in this machine
     # @param p_log Reference to the Log object
     #
-    def __init__(self, p_machine_name, p_initial_state, p_state_list, p_log)
+    def __init__(self, p_filename, p_machine_name, p_initial_state, p_state_list, p_log):
+        StateMachine.c_state_machine_file = p_filename
         self.m_machine_name = p_machine_name
         self.m_initial_state = p_initial_state
         self.m_state_list = p_state_list
@@ -50,6 +53,8 @@ class StateMachine:
         self.m_current_state = None
         self.enter_state(self.m_initial_state)
 
+        # Save the new instance in the class
+        StateMachine.c_state_machine_list.append(self)
 
 
     # Enter the given state
@@ -58,7 +63,7 @@ class StateMachine:
     #
     def enter_state(self, p_state_name):
         for state in self.m_state_list:
-            if p_state_name == state.enter(p_state_name):
+            if state.enter(p_state_name):
                 self.m_current_state = state
                 return True
         return False
@@ -101,18 +106,28 @@ class StateMachine:
             self.enter_state(next_state)
 
 
+    # Print all registered StateMachines
+    #
+    @classmethod
+    def Print(p_class):
+        for state_machine in p_class.c_state_machine_list:
+            print(str(state_machine))
+
+
     # @returns A string representation of this StateMachine
     #
     def __str__(self):
-        s = "machine_name:"
+        s  = "StateConfig file:"
+        s += StateMachine.c_state_machine_file
+        s += "\n machine_name:"
         s += str(self.m_machine_name)
-        s += ",initial_state:"
+        s += "\n  initial_state:"
         s += str(self.m_initial_state)
-        s += ",current_state:"
+        s += "\n  current_state:"
         s += str(self.m_current_state.m_state_name)
         for state in self.m_state_list:
-            s += ",{"
+            s += "\n  {"
             s += str(state)
-            s += "}"
+            s += "\n  }"
         return s
 

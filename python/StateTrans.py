@@ -79,20 +79,16 @@ class StateTrans:
     # @returns A string representation of this StateTrans
     #
     def __str__(self):
-        s  = "machine_name:"
-        s += str(self.m_machine_name)
-        s += ",state_name:"
-        s += str(self.m_state_name)
-        s += ",next_state:"
+        s  = "\n      next_state:"
         s += str(self.m_next_state)
         if self.m_input_name:
-            s += ",input:"
+            s += "\n      input:"
             s += str(self.m_input_name)
         if self.m_timeout_sec:
-            s += ",timeout-sec:"
+            s += "\n      timeout-sec:"
             s += str(self.m_timeout_sec)
         if self.m_expire_time:
-            s += ",expire_time:"
+            s += "\n      expire_time:"
             s += str(self.m_expire_time)
         return s
 

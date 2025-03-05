@@ -91,15 +91,13 @@ class State:
     # @returns A string representation of this State object
     #
     def __str__(self):
-        s  = "machine_name:"
-        s += str(self.m_machine_name)
-        s += ",state_name:"
+        s  = "\n    state_name:"
         s += str(self.m_state_name)
-        s += ","
+        s += "\n    "
         s += str(self.m_targeted_command)
         for trans in self.m_trans_list:
-            s += ",{"
+            s += "\n    {"
             s += str(trans)
-            s += "}"
+            s += "\n    }"
         return s
 

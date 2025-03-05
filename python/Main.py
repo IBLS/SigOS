@@ -36,6 +36,8 @@ import Light
 import LightLevel
 import WS281
 import Detector
+import StateConfig
+import StateMachine
 
 # Initialize logger
 g_log = Log.Log()
@@ -59,6 +61,11 @@ Detector.Detector.InitHardware()
 print("Loading rules from", g_config.m_rules_file)
 g_rules = Rules.Rules(g_config.m_rules_file, g_config, g_log)
 
+
+# Load state machines, if any
+print("Loading state machines")
+StateConfig.StateConfig("stateconfig.json", g_config.m_hostname, g_log)
+StateMachine.StateMachine.Print()
 
 g_wifi = None
 g_telnet_server = None
