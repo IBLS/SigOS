@@ -66,7 +66,7 @@ class GPIO:
         try:
             # Try to configure the specified pin, will throw exception if
             # this is not a valid configuration for the hardware.
-            self.m_pin = Pin(p_id, self.m_mode)
+            self.m_pin = Pin(p_id, self.m_mode, self.m_pull)
         except ValueError:
             msg = "Invalid gpio pin number, mode or pull-up: "
             msg += p_id

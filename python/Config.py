@@ -61,6 +61,7 @@ class Config:
         else:
             self.m_number_plate_present = False
         self.m_rules_file = config["rules-file"]
+        self.m_state_file = config["state-file"]
         self.m_ws281_gpio_pin = config["ws281-gpio-pin"]
 
         # Timezones

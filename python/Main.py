@@ -32,6 +32,8 @@ import Commands
 import Command
 import Rules
 import Semaphore
+import GPIO
+from machine import Pin
 import Light
 import LightLevel
 import WS281
@@ -55,6 +57,9 @@ Light.Light.InitHardware(g_config)
 LightLevel.LightLevel.InitHardware(g_config, g_log)
 Detector.Detector.InitHardware()
 
+# Setup the on-board pushbutton to drop to REPL
+g_repl_button = GPIO.GPIO("REPLButton", 0, Pin.IN, Pin.PULL_UP, g_log)
+
 
 # Load the rules from the file specified in the config file
 #
@@ -64,7 +69,7 @@ g_rules = Rules.Rules(g_config.m_rules_file, g_config, g_log)
 
 # Load state machines, if any
 print("Loading state machines")
-StateConfig.StateConfig("stateconfig.json", g_config.m_hostname, g_log)
+StateConfig.StateConfig(g_config.m_state_file, g_config.m_hostname, g_log)
 StateMachine.StateMachine.Print()
 
 g_wifi = None
@@ -98,6 +103,10 @@ def loop():
     # Time between polls
     poll_time = 0.2
     while (True):
+
+        # Test for REPL button
+        if g_repl_button.m_pin.value() == 0:
+            raise ValueError('Entering REPL')
 
         g_wifi.poll()
         #g_telnet_server.poll()
