@@ -33,6 +33,9 @@ class StateMachine:
     # Store each created StateMachine in this class list
     c_state_machine_file = None
     c_state_machine_list = list()
+    # Perform poll every second
+    c_poll_limit = 1.0
+    c_poll_count = 0.0
 
 
     # Create an object to encapsulate configuraton for state machines
@@ -91,9 +94,16 @@ class StateMachine:
 
     # Perform periodic polling for all of the registered StateMachines.
     # Call this method only after loading all Config
+    # @param p_poll_time The frequency this function is called, in
+    #        fractions of seconds
     #
     @classmethod
-    def Poll(p_class):
+    def Poll(p_class, p_poll_time):
+        p_class.c_poll_count += p_poll_time
+        if p_class.c_poll_limit < p_class.c_poll_count:
+            p_class.c_poll_count = 0
+            return
+
         for state_machine in p_class.c_state_machine_list:
             state_machine.poll()
 

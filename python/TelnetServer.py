@@ -33,12 +33,13 @@ import uos
 import errno
 from uio import IOBase 
 import Log
+import Command
 
 class TelnetConn(IOBase):
     
     # Class variables
-    c_wrapper_list = list()
-
+    c_client_list = list()
+    c_input_buffer = bytearray(512)
 
     # Initialize instance variable for a new object
     # @param p_client_socket A socket object for read/writing to the attached client
@@ -52,7 +53,7 @@ class TelnetConn(IOBase):
         self.m_client_port = p_client_port
         self.m_to_discard = 0
 
-        TelnetConn.c_wrapper_list.append(self)
+        TelnetConn.c_client_list.append(self)
 
         self.m_client_socket.setblocking(False)
         #self.m_client_socket.sendall(bytes([255, 252, 34])) # dont allow line mode
@@ -158,10 +159,44 @@ class TelnetConn(IOBase):
         self.write("> ")
 
 
+    # Poll will check for messages from the Telnet Client and
+    # execute commands as requested
+    #
+    @classmethod
+    def Poll(p_class):
+        # Check for traffic from each Telnet clinet
+        client_list = p_class.c_client_list
+        for client in client_list:
+            len = client.readinto(p_class.c_input_buffer)
+            # Get the string name of Telnet client (usually its IP address)
+            source = str(client.m_client_addr)
+            # print("len=", len)
+            keeplinebreaks = False
+            lines = p_class.c_input_buffer[0:len].splitlines(keeplinebreaks)
+            for line in lines:
+                # Convert binary buffer to string
+                line_decoded = line.decode()
+                # Attempt to parse and execute the specified command line
+                # print(line)
+                (cmd_match, func_result, result_list) = Command.Command.ParseAndExec(line_decoded, source)
+                if (not cmd_match):
+                    pass
+                if (not func_result):
+                    result_list.append('Command failed')
+                for out_line in result_list:
+                    try:
+                        client.m_client_socket.write(out_line)
+                        client.m_client_socket.write("\r\n")
+                    except Exception as e:
+                        # Log the error
+                        pass
+                client.prompt()
+
+
     # Close the connection
     # 
     def close(self):
-        TelnetConn.c_wrapper_list.remove(self)
+        TelnetConn.c_client_list.remove(self)
         if (self.m_client_socket):
             self.stop_repl()
             self.m_client_socket.close()
@@ -263,7 +298,7 @@ class TelnetServer:
     #
     @classmethod
     def Close(p_class, p_client_name):
-        for client in TelnetConn.c_wrapper_list:
+        for client in TelnetConn.c_client_list:
             client_name = str(client.m_client_addr)
             if client_name == p_client_name:
                 client.close()

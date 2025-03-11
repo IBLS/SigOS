@@ -23,6 +23,9 @@
 # 
 #
 
+from machine import Pin
+from machine import WDT
+import sys
 import time
 import Config
 import Log
@@ -33,7 +36,6 @@ import Command
 import Rules
 import Semaphore
 import GPIO
-from machine import Pin
 import Light
 import LightLevel
 import WS281
@@ -95,51 +97,40 @@ do_connect()
 # Initialzie the Rules state machine
 g_rules.startup(g_config.m_hostname)
 
+# Init and start the watchdog
+print("Platform =", sys.platform)
+g_wdt = None
+if sys.platform == 'esp8266':
+    # ESP8266 does not allow timeout to be specified
+    # See https://www.engineersgarage.com/micropython-esp8266-esp32-watchdog-timer-wdt/
+    g_wdt = WDT()
+    pass
+elif sys.platform == 'esp32':
+    g_wdt = WDT(timeout=2000)
+else:
+    raise Exception('Unrecognized hardware ', sys.platform, '02407241136')
 
 def loop():
 
     print("Accepting connections")
-    buf = bytearray(512)
     # Time between polls
     poll_time = 0.2
     while (True):
+
+        # Not dead (yet), feed the watchdog
+        g_wdt.feed()
 
         # Test for REPL button
         if g_repl_button.m_pin.value() == 0:
             raise ValueError('Entering REPL')
 
+        # Perform polls
         g_wifi.poll()
         #g_telnet_server.poll()
         Detector.Detector.Poll()
+        StateMachine.StateMachine.Poll(poll_time)
+        TelnetServer.TelnetConn.Poll()
  
-        # Check for traffic from each Telnet clinet
-        client_list = TelnetServer.TelnetConn.c_wrapper_list
-        for client in client_list:
-            len = client.readinto(buf)
-            # Get the string name of Telnet client (usually its IP address)
-            source = str(client.m_client_addr)
-            # print("len=", len)
-            keeplinebreaks = False
-            lines = buf[0:len].splitlines(keeplinebreaks)
-            for line in lines:
-                # Convert binary buffer to string
-                line_decoded = line.decode()
-                # Attempt to parse and execute the specified command line
-                # print(line)
-                (cmd_match, func_result, result_list) = Command.Command.ParseAndExec(line_decoded, source)
-                if (not cmd_match):
-                    pass
-                if (not func_result):
-                    result_list.append('Command failed')
-                for out_line in result_list:
-                    try:
-                        client.m_client_socket.write(out_line)
-                        client.m_client_socket.write("\r\n")
-                    except Exception as e:
-                        # Log the error
-                        pass
-                client.prompt()
-
         # Sleep at end of the loop to let other code run
         #print("sleeping...\n")
         time.sleep(poll_time)

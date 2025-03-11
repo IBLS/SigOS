@@ -125,8 +125,9 @@ class Semaphore:
         self.m_gpio_pin = GPIO.GPIO("Semaphore", self.m_gpio_id, Pin.OUT, None, self.m_log)
 
         # Read the current PWM duty, so we can smoothly transition to initial position
-        self.m_servo = PWM(self.m_gpio_id, freq=pwm_freq)
-        self.m_pwm_duty = self.m_servo.duty()
+        self.m_servo = PWM(self.m_gpio_id, freq=pwm_freq, duty=self.m_pwm_duty)
+        #self.m_servo = PWM(self.m_gpio_id, freq=pwm_freq)
+        #self.m_pwm_duty = self.m_servo.duty()
 
         # Create and start timer
         self.m_timer = machine.Timer(Semaphore.c_timer_id)
@@ -177,6 +178,7 @@ class Semaphore:
             self.m_servo_moving = False
 
         # Update the servo position
+        #print(new_duty)
         self.set_servo_duty(new_duty)
 
 
